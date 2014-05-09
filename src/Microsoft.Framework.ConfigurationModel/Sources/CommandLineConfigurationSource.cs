@@ -65,16 +65,16 @@ namespace Microsoft.Framework.ConfigurationModel
                     keyStartIndex = 2;
                 }
 
+                // If there is no valid prefix in current arugment, it is an invalid format
+                if (keyStartIndex == 0)
+                {
+                    throw new FormatException(Resources.FormatError_UnrecognizedArgumentFormat(currentArg));
+                }
+
                 var separator = currentArg.IndexOf('=');
 
                 if (separator < 0)
                 {
-                    // If there is neither equal sign nor prefix in current arugment, it is an invalid format
-                    if (keyStartIndex == 0)
-                    {
-                        throw new FormatException(Resources.FormatError_UnrecognizedArgumentFormat(currentArg));
-                    }
-
                     // If the switch is a key in given switch mappings, interpret it
                     if (_switchMappings != null && _switchMappings.ContainsKey(currentArg))
                     {

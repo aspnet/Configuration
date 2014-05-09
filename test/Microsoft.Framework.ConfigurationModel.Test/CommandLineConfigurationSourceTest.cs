@@ -15,22 +15,20 @@ namespace Microsoft.Framework.ConfigurationModel
         {
             var args = new string[]
                 {
-                    "Key1=Value1",
-                    "--Key2=Value2",
-                    "/Key3=Value3",
-                    "--Key4", "Value4",
-                    "/Key5", "Value5"
+                    "--Key1=Value1",
+                    "/Key2=Value2",
+                    "--Key3", "Value3",
+                    "/Key4", "Value4"
                 };
             var cmdLineConfig = new CommandLineConfigurationSource(args);
 
             cmdLineConfig.Load();
 
-            Assert.Equal(5, cmdLineConfig.Data.Count);
+            Assert.Equal(4, cmdLineConfig.Data.Count);
             Assert.Equal("Value1", cmdLineConfig.Data["Key1"]);
             Assert.Equal("Value2", cmdLineConfig.Data["Key2"]);
             Assert.Equal("Value3", cmdLineConfig.Data["Key3"]);
             Assert.Equal("Value4", cmdLineConfig.Data["Key4"]);
-            Assert.Equal("Value5", cmdLineConfig.Data["Key5"]);
         }
 
         [Fact]
@@ -183,10 +181,10 @@ namespace Microsoft.Framework.ConfigurationModel
         {
             var args = new string[]
                 {
-                    "ArgWithoutPrefixAndEqualSign"
+                    "ArgWithoutValidPrefix=Value"
                 };
             var expectedMsg = new FormatException(
-                Resources.FormatError_UnrecognizedArgumentFormat("ArgWithoutPrefixAndEqualSign")).Message;
+                Resources.FormatError_UnrecognizedArgumentFormat("ArgWithoutValidPrefix=Value")).Message;
             var cmdLineConfig = new CommandLineConfigurationSource(args);
 
             var exception = Assert.Throws<FormatException>(() => cmdLineConfig.Load());
