@@ -107,22 +107,6 @@ namespace Microsoft.Framework.ConfigurationModel
         }
 
         /// <summary>
-        /// No registered configuration source is capable of committing changes.
-        /// </summary>
-        internal static string Error_NoCommitableSource
-        {
-            get { return GetString("Error_NoCommitableSource"); }
-        }
-
-        /// <summary>
-        /// No registered configuration source is capable of committing changes.
-        /// </summary>
-        internal static string FormatError_NoCommitableSource()
-        {
-            return GetString("Error_NoCommitableSource");
-        }
-
-        /// <summary>
         /// The short switch '{0}' is not defined in the switch mappings.
         /// </summary>
         internal static string Error_ShortSwitchNotDefined

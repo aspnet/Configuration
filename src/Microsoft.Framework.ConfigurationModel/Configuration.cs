@@ -65,12 +65,10 @@ namespace Microsoft.Framework.ConfigurationModel
 
         public void Commit()
         {
-            var final = _committableSources.LastOrDefault();
-            if (final == null)
+            foreach (var src in _committableSources)
             {
-                throw new Exception(Resources.Error_NoCommitableSource);
+                src.Commit();
             }
-            final.Commit();
         }
 
         public IConfiguration GetSubKey(string key)
