@@ -123,6 +123,22 @@ namespace Microsoft.Framework.ConfigurationModel
         }
 
         /// <summary>
+        /// No registered configuration source was found.
+        /// </summary>
+        internal static string Error_NoConfigSource
+        {
+            get { return GetString("Error_NoConfigSource"); }
+        }
+
+        /// <summary>
+        /// No registered configuration source was found.
+        /// </summary>
+        internal static string FormatError_NoConfigSource()
+        {
+            return GetString("Error_NoConfigSource");
+        }
+
+        /// <summary>
         /// The short switch '{0}' is not defined in the switch mappings.
         /// </summary>
         internal static string Error_ShortSwitchNotDefined

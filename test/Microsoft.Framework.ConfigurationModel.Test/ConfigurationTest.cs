@@ -99,7 +99,7 @@ namespace Microsoft.Framework.ConfigurationModel
         }
 
         [Fact]
-        public void SettingValueUpdatesAllConfigurationSources()
+        public void SettingValueUpdatesLastConfigurationSource()
         {
             // Arrange
             var dic = new Dictionary<string, string>()
@@ -131,9 +131,9 @@ namespace Microsoft.Framework.ConfigurationModel
             // Assert
             Assert.Equal(3, CountAllEntries(config));
             Assert.Equal("NewValue", config.Get("Key"));
-            Assert.Equal("NewValue", memConfigSrc.Data["Key"]);
+            Assert.Equal("Value", memConfigSrc.Data["Key"]);
+            Assert.Equal("Value", iniConfigSrc.Data["Key"]);
             Assert.Equal("NewValue", envConfigSrc.Data["Key"]);
-            Assert.Equal("NewValue", iniConfigSrc.Data["Key"]);
         }
 
         [Fact]

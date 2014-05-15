@@ -49,10 +49,12 @@ namespace Microsoft.Framework.ConfigurationModel
             if (key == null) throw new ArgumentNullException("key");
             if (value == null) throw new ArgumentNullException("value");
 
-            foreach (var src in _sources)
+            var final = _sources.LastOrDefault();
+            if (final == null)
             {
-                src.Set(key, value);
+                throw new Exception(Resources.Error_NoConfigSource);
             }
+            final.Set(key, value);
         }
 
         public void Reload()
