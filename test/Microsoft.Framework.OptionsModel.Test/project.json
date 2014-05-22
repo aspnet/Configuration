@@ -1,7 +1,8 @@
 {
   "version": "0.1-alpha-*",
   "dependencies": {
-    "Microsoft.Framework.DependencyInjection": "",
+    "Microsoft.Framework.DependencyInjection" : "0.1-alpha-*",
+    "Microsoft.Framework.ConfigurationModel": "",
     "Microsoft.Framework.OptionsModel": "",
     "xunit.abstractions": "2.0.0-aspnet-*",
     "xunit.assert": "2.0.0-aspnet-*",
@@ -10,11 +11,7 @@
     "Xunit.KRunner": "0.1-alpha-*"
   },
   "configurations": {
-    "net45": {
-        "dependencies": {
-            "System.Runtime" : ""
-        }
-    }
+    "net45": {}
   },
   "commands": {
     "test": "Xunit.KRunner"

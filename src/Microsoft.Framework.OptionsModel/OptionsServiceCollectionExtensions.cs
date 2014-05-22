@@ -4,16 +4,17 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.OptionsModel;
 
 namespace Microsoft.Framework.DependencyInjection
 {
-    public static class ServiceCollectionExtensions
+    public static class OptionsServiceCollectionExtensions
     {
         public static IServiceCollection AddSetup([NotNull]this IServiceCollection services, Type setupType)
         {
             var serviceTypes = setupType.GetTypeInfo().ImplementedInterfaces
-                .Where(t => t.GetTypeInfo().IsGenericType && t.GetGenericTypeDefinition() == typeof (IOptionsSetup<>));
+                .Where(t => t.GetTypeInfo().IsGenericType && t.GetGenericTypeDefinition() == typeof(IOptionsSetup<>));
             foreach (var serviceType in serviceTypes)
             {
                 services.Add(new ServiceDescriptor
@@ -28,14 +29,14 @@ namespace Microsoft.Framework.DependencyInjection
 
         public static IServiceCollection AddSetup<TSetup>([NotNull]this IServiceCollection services)
         {
-            return services.AddSetup(typeof (TSetup));
+            return services.AddSetup(typeof(TSetup));
         }
 
         public static IServiceCollection AddSetup([NotNull]this IServiceCollection services, [NotNull]object setupInstance)
         {
             var setupType = setupInstance.GetType();
             var serviceTypes = setupType.GetTypeInfo().ImplementedInterfaces
-                .Where(t => t.GetTypeInfo().IsGenericType && t.GetGenericTypeDefinition() == typeof (IOptionsSetup<>));
+                .Where(t => t.GetTypeInfo().IsGenericType && t.GetGenericTypeDefinition() == typeof(IOptionsSetup<>));
             foreach (var serviceType in serviceTypes)
             {
                 services.Add(new ServiceDescriptor
@@ -48,19 +49,34 @@ namespace Microsoft.Framework.DependencyInjection
             return services;
         }
 
-
         public static IServiceCollection SetupOptions<TOptions>([NotNull]this IServiceCollection services,
             Action<TOptions> setupAction,
             int order)
         {
-            services.AddSetup(new OptionsSetup<TOptions>(setupAction) {Order = order});
+            services.AddSetup(new OptionsSetup<TOptions>(setupAction) { Order = order });
             return services;
         }
 
         public static IServiceCollection SetupOptions<TOptions>([NotNull]this IServiceCollection services,
             Action<TOptions> setupAction)
         {
-            return services.SetupOptions<TOptions>(setupAction, order: 0);
+            return services.SetupOptions(setupAction, order: OptionsConstants.DefaultOrder);
         }
+
+        // Consider do we want an overload that takes config, and also a setupAction?
+        public static IServiceCollection SetupConfigOptions<TOptions>([NotNull]this IServiceCollection services,
+            IConfiguration config,
+            int order)
+        {
+            services.AddSetup(new ConfigOptionsSetup<TOptions>(config, order));
+            return services;
+        }
+
+        public static IServiceCollection SetupConfigOptions<TOptions>([NotNull]this IServiceCollection services,
+            IConfiguration config)
+        {
+            return services.SetupConfigOptions<TOptions>(config, OptionsConstants.ConfigurationOrder);
+        }
+
     }
 }

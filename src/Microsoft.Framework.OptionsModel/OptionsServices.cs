@@ -27,31 +27,34 @@ namespace Microsoft.Framework.OptionsModel
                 LifecycleKind.Singleton);
         }
 
-// No convert on portable
-#if NET45 || K10
         public static void ReadProperties(object obj, IConfiguration config)
         {
+            // No convert on portable
+#if NET45 || K10
             if (obj == null || config == null)
             {
                 return;
             }
-            var props = obj.GetType().GetTypeInfo().DeclaredProperties;
+            var props = obj.GetType().GetProperties();
             foreach (var prop in props)
             {
-                if (!prop.CanWrite)
+                // Only try to set properties with public setters
+                if (prop.GetSetMethod() == null)
                 {
                     continue;
                 }
                 var configValue = config.Get(prop.Name);
                 if (configValue == null)
                 {
+                    // Try to bind recursively
+                    ReadProperties(prop.GetValue(obj), config.GetSubKey(prop.Name));
                     continue;
                 }
 
-                // TODO: what do we do about errors?
+                // TODO: what do we do about errors? https://github.com/aspnet/Configuration/issues/75
                 prop.SetValue(obj, Convert.ChangeType(configValue, prop.PropertyType));
             }
-        }
 #endif
+        }
     }
 }

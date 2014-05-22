@@ -8,13 +8,7 @@ namespace Microsoft.Framework.ConfigurationModel
 {
     public static class ConfigurationExtensions
     {
-#if NET45
-        public static T Get<T>(this IConfiguration configuration, string key) where T : IConvertible
-        {
-            return (T)Convert.ChangeType(configuration.Get(key), typeof(T));
-        }
-#endif
-#if K10
+#if NET45 || K10
         public static T Get<T>(this IConfiguration configuration, string key)
         {
             return (T)Convert.ChangeType(configuration.Get(key), typeof(T));

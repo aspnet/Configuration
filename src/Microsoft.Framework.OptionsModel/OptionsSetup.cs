@@ -9,7 +9,7 @@ namespace Microsoft.Framework.OptionsModel
     {
         public Action<TOptions> SetupAction { get; private set; }
 
-        public OptionsSetup(Action<TOptions> setupAction)
+        public OptionsSetup([NotNull]Action<TOptions> setupAction)
         {
             if (setupAction == null)
             {
@@ -18,11 +18,11 @@ namespace Microsoft.Framework.OptionsModel
             SetupAction = setupAction;
         }
 
-        public void Setup(TOptions options)
+        public virtual void Setup([NotNull]TOptions options)
         {
             SetupAction(options);
         }
 
-        public int Order { get; set; }
+        public virtual int Order { get; set; }
     }
 }

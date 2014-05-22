@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Microsoft.Framework.OptionsModel
 {
-    public class OptionsAccessor<TOptions> : IOptionsAccessor<TOptions> where TOptions : new()
+    public class OptionsAccessor<TOptions> : IOptionsAccessor<TOptions> where TOptions : class,new()
     {
         private object _lock = new object();
         private TOptions _options;
@@ -17,7 +17,7 @@ namespace Microsoft.Framework.OptionsModel
             _setups = setups;
         }
 
-        public TOptions Options
+        public virtual TOptions Options
         {
             get
             {
