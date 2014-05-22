@@ -50,8 +50,6 @@ namespace Microsoft.Framework.OptionsModel
                     ReadProperties(prop.GetValue(obj), config.GetSubKey(prop.Name));
                     continue;
                 }
-
-                // TODO: what do we do about errors? https://github.com/aspnet/Configuration/issues/75
                 prop.SetValue(obj, Convert.ChangeType(configValue, prop.PropertyType));
             }
 #endif
