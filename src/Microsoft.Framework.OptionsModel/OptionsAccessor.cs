@@ -40,7 +40,6 @@ namespace Microsoft.Framework.OptionsModel
                                         setup.Setup(options);
                                         return options;
                                     });
-                            // Consider: null out setups without creating race condition?
                         }
                     }
                 }
