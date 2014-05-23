@@ -17,8 +17,6 @@ namespace Microsoft.Framework.OptionsModel
 
         public int Order { get; set; }
 
-        public string SubKey { get; set; }
-
         public virtual void Setup(TOptions options)
         {
             OptionsServices.ReadProperties(options, _config);
