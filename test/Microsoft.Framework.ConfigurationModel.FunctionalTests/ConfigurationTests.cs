@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +9,7 @@ using Xunit;
 
 namespace Microsoft.Framework.ConfigurationModel
 {
-    public class ConfigurationTests
+    public class ConfigurationTests : IDisposable
     {
         private string _iniConfigFilePath;
         private string _xmlConfigFilePath;
@@ -63,11 +64,21 @@ CommonKey3:CommonKey4=IniValue6";
                 { "CommonKey1:CommonKey2:CommonKey3:CommonKey4", "MemValue6" }
             };
 
+        public ConfigurationTests()
+        {
+            _iniConfigFilePath = Path.GetTempFileName();
+            _xmlConfigFilePath = Path.GetTempFileName();
+            _jsonConfigFilePath = Path.GetTempFileName();
+
+            File.WriteAllText(_iniConfigFilePath, _iniConfigFileContent);
+            File.WriteAllText(_xmlConfigFilePath, _xmlConfigFileContent);
+            File.WriteAllText(_jsonConfigFilePath, _jsonConfigFileContent);
+        }
+
         [Fact]
         public void LoadAndCombineKeyValuePairsFromDifferentConfigurationSources()
         {
             // Arrange
-            ConfigFilesSetUp();
             var config = new Configuration();
 
             // Act
@@ -105,15 +116,12 @@ CommonKey3:CommonKey4=IniValue6";
             Assert.Equal("MemValue5", config.Get("CommonKey1:CommonKey2:MemKey7"));
 
             Assert.Equal("MemValue6", config.Get("CommonKey1:CommonKey2:CommonKey3:CommonKey4"));
-
-            ConfigFilesTearDown();
         }
 
         [Fact]
         public void CanOverrideValuesWithNewConfigurationSource()
         {
             // Arrange
-            ConfigFilesSetUp();
             var config = new Configuration();
 
             // Act & Assert
@@ -129,15 +137,12 @@ CommonKey3:CommonKey4=IniValue6";
             var memConfigSrc = new MemoryConfigurationSource(_memConfigContent);
             config.Add(memConfigSrc);
             Assert.Equal("MemValue6", config.Get("CommonKey1:CommonKey2:CommonKey3:CommonKey4"));
-
-            ConfigFilesTearDown();
         }
 
         [Fact]
         public void CanSetValuesAndReloadValues()
         {
             // Arrange
-            ConfigFilesSetUp();
             var config = new Configuration();
             config.AddIniFile(_iniConfigFilePath);
             config.AddJsonFile(_jsonConfigFilePath);
@@ -156,15 +161,12 @@ CommonKey3:CommonKey4=IniValue6";
             // Recover values by reloading
             config.Reload();
             Assert.Equal("XmlValue6", config.Get("CommonKey1:CommonKey2:CommonKey3:CommonKey4"));
-
-            ConfigFilesTearDown();
         }
 
         [Fact]
         public void CanCommitChangeBackToLastConfigFile()
         {
             // Arrange
-            ConfigFilesSetUp();
             var config = new Configuration();
             config.AddIniFile(_iniConfigFilePath);
             config.AddJsonFile(_jsonConfigFilePath);
@@ -181,8 +183,6 @@ CommonKey3:CommonKey4=IniValue6";
 
             var updatedXmlContent = _xmlConfigFileContent.Replace("XmlValue6", "NewValue");
             Assert.Equal(updatedXmlContent, File.ReadAllText(_xmlConfigFilePath));
-
-            ConfigFilesTearDown();
         }
 
         private static int CountAllEntries(Configuration config)
@@ -190,18 +190,7 @@ CommonKey3:CommonKey4=IniValue6";
             return config.Aggregate(0, (acc, src) => acc + (src as BaseConfigurationSource).Data.Count);
         }
 
-        private void ConfigFilesSetUp()
-        {
-            _iniConfigFilePath = Path.GetTempFileName();
-            _xmlConfigFilePath = Path.GetTempFileName();
-            _jsonConfigFilePath = Path.GetTempFileName();
-
-            File.WriteAllText(_iniConfigFilePath, _iniConfigFileContent);
-            File.WriteAllText(_xmlConfigFilePath, _xmlConfigFileContent);
-            File.WriteAllText(_jsonConfigFilePath, _jsonConfigFileContent);
-        }
-
-        private void ConfigFilesTearDown()
+        public void Dispose()
         {
             File.Delete(_iniConfigFilePath);
             File.Delete(_xmlConfigFilePath);
