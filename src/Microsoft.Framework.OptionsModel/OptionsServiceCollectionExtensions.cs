@@ -63,8 +63,7 @@ namespace Microsoft.Framework.DependencyInjection
             return services.SetupOptions(setupAction, order: OptionsConstants.DefaultOrder);
         }
 
-        // Consider do we want an overload that takes config, and also a setupAction?
-        public static IServiceCollection SetupConfigOptions<TOptions>([NotNull]this IServiceCollection services,
+        public static IServiceCollection SetupOptions<TOptions>([NotNull]this IServiceCollection services,
             IConfiguration config,
             int order)
         {
@@ -72,11 +71,10 @@ namespace Microsoft.Framework.DependencyInjection
             return services;
         }
 
-        public static IServiceCollection SetupConfigOptions<TOptions>([NotNull]this IServiceCollection services,
+        public static IServiceCollection SetupOptions<TOptions>([NotNull]this IServiceCollection services,
             IConfiguration config)
         {
-            return services.SetupConfigOptions<TOptions>(config, OptionsConstants.ConfigurationOrder);
+            return services.SetupOptions<TOptions>(config, OptionsConstants.ConfigurationOrder);
         }
-
     }
 }

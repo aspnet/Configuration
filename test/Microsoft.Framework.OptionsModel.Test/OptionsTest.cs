@@ -111,6 +111,13 @@ namespace Microsoft.Framework.OptionsModel.Tests
         public void SetupCallsSortedInOrder()
         {
             var services = new ServiceCollection { OptionsServices.GetDefaultServices() };
+            var dic = new Dictionary<string, string>
+            {
+                {"Message", "!"},
+            };
+            var config = new Configuration { new MemoryConfigurationSource(dic) };
+            services.SetupOptions<FakeOptions>(o => o.Message += "Igetstomped", -100000);
+            services.SetupOptions<FakeOptions>(config);
             services.SetupOptions<FakeOptions>(o => o.Message += "a", -100);
             services.AddSetup<FakeOptionsSetupC>();
             services.AddSetup(new FakeOptionsSetupB());
@@ -121,7 +128,7 @@ namespace Microsoft.Framework.OptionsModel.Tests
             Assert.NotNull(service);
             var options = service.Options;
             Assert.NotNull(options);
-            Assert.Equal("aABCz", options.Message);
+            Assert.Equal("!aABCz", options.Message);
         }
     }
 }
