@@ -21,25 +21,28 @@ namespace Microsoft.Framework.OptionsModel
         {
             get
             {
-                lock (_lock)
+                if (_options == null)
                 {
-                    if (_options == null)
+                    lock (_lock)
                     {
-                        if (_setups == null)
+                        if (_options == null)
                         {
-                            _options = new TOptions();
-                        }
-                        else
-                        {
-                            _options = _setups
-                                .OrderBy(setup => setup.Order)
-                                .Aggregate(
-                                    new TOptions(),
-                                    (options, setup) =>
-                                    {
-                                        setup.Setup(options);
-                                        return options;
-                                    });
+                            if (_setups == null)
+                            {
+                                _options = new TOptions();
+                            }
+                            else
+                            {
+                                _options = _setups
+                                    .OrderBy(setup => setup.Order)
+                                    .Aggregate(
+                                        new TOptions(),
+                                        (options, setup) =>
+                                        {
+                                            setup.Setup(options);
+                                            return options;
+                                        });
+                            }
                         }
                     }
                 }
