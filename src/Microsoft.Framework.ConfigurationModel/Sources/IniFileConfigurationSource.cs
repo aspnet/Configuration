@@ -161,17 +161,18 @@ namespace Microsoft.Framework.ConfigurationModel
             var processedKeys = new HashSet<string>();
             var outputWriter = new StreamWriter(outputStream);
 
+            var lineEnd = string.Empty;
+            var sectionPrefix = string.Empty;
+
             using (var inputReader = new StreamReader(inputStream))
             {
-                var sectionPrefix = string.Empty;
-
                 while (inputReader.Peek() != -1)
                 {
                     var rawLine = inputReader.ReadLine();
                     var line = rawLine.Trim();
 
                     // Is this the last line?
-                    var lineEnd = inputReader.Peek() == -1 ? string.Empty : Environment.NewLine;
+                    lineEnd = inputReader.Peek() == -1 ? string.Empty : Environment.NewLine;
 
                     // Ignore blank lines
                     if (string.IsNullOrWhiteSpace(line))
@@ -228,13 +229,36 @@ namespace Microsoft.Framework.ConfigurationModel
                     processedKeys.Add(key);
                 }
 
+                // Flush to make sure the later logic can detect whether there is at least one line in this file
                 outputWriter.Flush();
             }
 
-            if (Data.Count() != processedKeys.Count())
+            // If some new keys were added into this config source,
+            // append those new key-value pair at the end of file
+            if (Data.Count() > processedKeys.Count())
             {
-                var missingKeys = string.Join(", ", Data.Keys.Except(processedKeys));
-                throw new InvalidOperationException(Resources.FormatError_CommitWhenKeyMissing(missingKeys));
+                // If there is at least one line in this file and
+                // the last line doens't have a new line at the end
+                if (outputStream.Length > 0 && string.IsNullOrEmpty(lineEnd))
+                {
+                    outputWriter.WriteLine();
+                }
+
+                // If there is a section header whose effect is still ongoing
+                if (!string.IsNullOrEmpty(sectionPrefix))
+                {
+                    // Output an empty header to cancel the effect of last header
+                    outputWriter.WriteLine("[]");
+                }
+
+                // Output all newly added key-value pairs
+                var addedKeys = Data.Keys.Except(processedKeys);
+                foreach (var key in addedKeys)
+                {
+                    outputWriter.WriteLine("{0}={1}", key, Data[key]);
+                }
+
+                outputWriter.Flush();
             }
         }
 

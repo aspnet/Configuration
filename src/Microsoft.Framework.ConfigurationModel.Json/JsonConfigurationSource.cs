@@ -102,7 +102,8 @@ namespace Microsoft.Framework.ConfigurationModel
 
                 SkipComments(reader);
 
-                if (reader.TokenType != JsonToken.StartObject)
+                if (reader.TokenType != JsonToken.StartObject &&
+                    reader.TokenType != JsonToken.None)
                 {
                     throw new FormatException(Resources.FormatError_RootMustBeAnObject(reader.Path,
                         reader.LineNumber, reader.LinePosition));
@@ -145,8 +146,13 @@ namespace Microsoft.Framework.ConfigurationModel
                         // End of file
                         case JsonToken.None:
                             {
-                                throw new FormatException(Resources.FormatError_UnexpectedEnd(reader.Path,
+                                // If it is an unexpected EOF
+                                if (startObjectCount > 0)
+                                {
+                                    throw new FormatException(Resources.FormatError_UnexpectedEnd(reader.Path,
                                     reader.LineNumber, reader.LinePosition));
+                                }
+                                break;
                             }
 
                         default:
@@ -172,6 +178,7 @@ namespace Microsoft.Framework.ConfigurationModel
             var processedKeys = new HashSet<string>();
             var outputWriter = new JsonTextWriter(new StreamWriter(outputStream));
             outputWriter.Formatting = Formatting.Indented;
+            var hasStartObjectToken = false;
 
             using (var inputReader = new JsonTextReader(new StreamReader(inputStream)))
             {
@@ -185,7 +192,8 @@ namespace Microsoft.Framework.ConfigurationModel
 
                 CopyComments(inputReader, outputWriter);
 
-                if (inputReader.TokenType != JsonToken.StartObject)
+                if (inputReader.TokenType != JsonToken.StartObject &&
+                    inputReader.TokenType != JsonToken.None)
                 {
                     throw new FormatException(Resources.FormatError_RootMustBeAnObject(inputReader.Path,
                         inputReader.LineNumber, inputReader.LinePosition));
@@ -198,12 +206,18 @@ namespace Microsoft.Framework.ConfigurationModel
                     switch (inputReader.TokenType)
                     {
                         case JsonToken.StartObject:
+                            hasStartObjectToken = true;
                             outputWriter.WriteStartObject();
                             startObjectCount++;
                             break;
 
                         case JsonToken.EndObject:
-                            outputWriter.WriteEndObject();
+                            // We hold the last EndObject token because some newly added key-value pairs
+                            // might need to be inserted into this object
+                            if (startObjectCount > 1)
+                            {
+                                outputWriter.WriteEndObject();
+                            }
                             startObjectCount--;
                             break;
 
@@ -232,8 +246,13 @@ namespace Microsoft.Framework.ConfigurationModel
                         // End of file
                         case JsonToken.None:
                             {
-                                throw new FormatException(Resources.FormatError_UnexpectedEnd(inputReader.Path,
+                                // If it is an unexpected EOF
+                                if (startObjectCount > 0)
+                                {
+                                    throw new FormatException(Resources.FormatError_UnexpectedEnd(inputReader.Path,
                                     inputReader.LineNumber, inputReader.LinePosition));
+                                }
+                                break;
                             }
 
                         default:
@@ -250,14 +269,29 @@ namespace Microsoft.Framework.ConfigurationModel
                 } while (startObjectCount > 0);
 
                 CopyComments(inputReader, outputWriter);
-                outputWriter.Flush();
             }
 
-            if (Data.Count() != processedKeys.Count())
+            // If some new keys were added into this config source,
+            // append those new key-value pair at the end of file
+            if (Data.Count() > processedKeys.Count())
             {
-                var missingKeys = string.Join(", ", Data.Keys.Except(processedKeys));
-                throw new InvalidOperationException(Resources.FormatError_CommitWhenKeyMissing(missingKeys));
+                // If this file contains nothing but comments/whitespaces
+                if (!hasStartObjectToken)
+                {
+                    outputWriter.WriteStartObject();
+                }
+
+                // Output all newly added key-value pairs
+                var addedKeys = Data.Keys.Except(processedKeys);
+                foreach (var key in addedKeys)
+                {
+                    outputWriter.WritePropertyName(key);
+                    outputWriter.WriteValue(Data[key]);
+                }
             }
+
+            outputWriter.WriteEndObject();
+            outputWriter.Flush();
         }
 
         // Write the contents of newly created config file to given stream

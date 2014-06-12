@@ -209,7 +209,7 @@ namespace Microsoft.Framework.ConfigurationModel
         }
 
         [Fact]
-        public void CommitOperationThrowsExceptionWhenFindNewlyAddedKeyAfterLoadOperation()
+        public void CommitOperationThrowsExceptionWhenFindNewlyAddedKeyInOriginalFile()
         {
             var json = @"{
   ""name"": ""test"",
@@ -237,7 +237,7 @@ namespace Microsoft.Framework.ConfigurationModel
         }
 
         [Fact]
-        public void CommitOperationThrowsExceptionWhenKeysAreMissingInConfigFile()
+        public void CommitOperationAppendsNewKeyValuePairsAtTheEndOfFile()
         {
             var json = @"{
   ""name"": ""test"",
@@ -246,15 +246,62 @@ namespace Microsoft.Framework.ConfigurationModel
     ""zipcode"": ""12345""
   }
 }";
+
+            var expectedResult = @"{
+  ""name"": ""test"",
+  ""address"": {
+    ""street"": ""Something street"",
+    ""zipcode"": ""12345""
+  },
+  ""NewKey"": ""NewValue""
+}";
             var jsonConfigSrc = new JsonConfigurationSource(ArbitraryFilePath);
             var outputCacheStream = new MemoryStream();
             jsonConfigSrc.Load(StringToStream(json));
-            json = json.Replace(@"""name"": ""test"",", string.Empty);
+            jsonConfigSrc.Set("NewKey", "NewValue");  // Add a new key-value pair
 
-            var exception = Assert.Throws<InvalidOperationException>(
-                () => jsonConfigSrc.Commit(StringToStream(json), outputCacheStream));
+            jsonConfigSrc.Commit(StringToStream(json), outputCacheStream);
 
-            Assert.Equal(Resources.FormatError_CommitWhenKeyMissing("name"), exception.Message);
+            var newContents = StreamToString(outputCacheStream);
+            Assert.Equal(expectedResult, newContents);
+        }
+
+        [Fact]
+        public void CommitOperationAppendsNewKeyValuePairsAtTheEndOfFileThatContainsOnlyComments()
+        {
+            var json = @"/*This is the first line*/";
+
+            var expectedResult = @"/*This is the first line*/{
+  ""NewKey"": ""NewValue""
+}";
+            var jsonConfigSrc = new JsonConfigurationSource(ArbitraryFilePath);
+            var outputCacheStream = new MemoryStream();
+            jsonConfigSrc.Load(StringToStream(json));
+            jsonConfigSrc.Set("NewKey", "NewValue");  // Add a new key-value pair
+
+            jsonConfigSrc.Commit(StringToStream(json), outputCacheStream);
+
+            var newContents = StreamToString(outputCacheStream);
+            Assert.Equal(expectedResult, newContents);
+        }
+
+        [Fact]
+        public void CommitOperationAppendsNewKeyValuePairsAtTheEndOfEmptyFile()
+        {
+            var json = @"";
+
+            var expectedResult = @"{
+  ""NewKey"": ""NewValue""
+}";
+            var jsonConfigSrc = new JsonConfigurationSource(ArbitraryFilePath);
+            var outputCacheStream = new MemoryStream();
+            jsonConfigSrc.Load(StringToStream(json));
+            jsonConfigSrc.Set("NewKey", "NewValue");  // Add a new key-value pair
+
+            jsonConfigSrc.Commit(StringToStream(json), outputCacheStream);
+
+            var newContents = StreamToString(outputCacheStream);
+            Assert.Equal(expectedResult, newContents);
         }
 
         [Fact]

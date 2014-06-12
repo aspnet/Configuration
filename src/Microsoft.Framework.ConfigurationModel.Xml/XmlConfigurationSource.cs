@@ -259,17 +259,22 @@ namespace Microsoft.Framework.ConfigurationModel
                                 GetLineInfo(inputReader)));
                     }
                 }
-
-                // Close the root element
-                outputWriter.WriteEndElement();
-                outputWriter.Flush();
             }
 
+            // If some new keys were added into this config source,
+            // append those new key-value pair at the end of file
             if (dataCopy.Any())
             {
-                var missingKeys = string.Join(", ", dataCopy.Keys);
-                throw new InvalidOperationException(Resources.FormatError_CommitWhenKeyMissing(missingKeys));
+                foreach (var entry in dataCopy)
+                {
+                    OutputNewKeyValuePair(entry, outputWriter);
+                    outputWriter.WriteWhitespace(Environment.NewLine);
+                }
             }
+
+            // Close the root element
+            outputWriter.WriteEndElement();
+            outputWriter.Flush();
         }
 
         // Write the contents of newly created config file to given stream
@@ -288,26 +293,31 @@ namespace Microsoft.Framework.ConfigurationModel
 
             foreach (var entry in Data)
             {
-                var separator = entry.Key.IndexOf(Constants.KeyDelimiter);
-                if (separator < 0)
-                {
-                    // For key-value pairs like "A = B", we generate
-                    // <A> B </A>
-                    outputWriter.WriteElementString(entry.Key, entry.Value);
-                }
-                else
-                {
-                    // For key value pairs like "A:B:C = D", we generate
-                    // <A Name="B:C"> D </A>
-                    outputWriter.WriteStartElement(entry.Key.Substring(0, separator));
-                    outputWriter.WriteAttributeString(NameAttributeKey, entry.Key.Substring(separator + 1));
-                    outputWriter.WriteValue(entry.Value);
-                    outputWriter.WriteEndElement();
-                }
+                OutputNewKeyValuePair(entry, outputWriter);
             }
 
             outputWriter.WriteEndElement();
             outputWriter.Flush();
+        }
+
+        private void OutputNewKeyValuePair(KeyValuePair<string, string> pair, XmlWriter outputWriter)
+        {
+            var separator = pair.Key.IndexOf(Constants.KeyDelimiter);
+            if (separator < 0)
+            {
+                // For key-value pairs like "A = B", we generate
+                // <A> B </A>
+                outputWriter.WriteElementString(pair.Key, pair.Value);
+            }
+            else
+            {
+                // For key value pairs like "A:B:C = D", we generate
+                // <A Name="B:C"> D </A>
+                outputWriter.WriteStartElement(pair.Key.Substring(0, separator));
+                outputWriter.WriteAttributeString(NameAttributeKey, pair.Key.Substring(separator + 1));
+                outputWriter.WriteValue(pair.Value);
+                outputWriter.WriteEndElement();
+            }
         }
 
         private void SkipUntilRootElement(XmlReader reader)
