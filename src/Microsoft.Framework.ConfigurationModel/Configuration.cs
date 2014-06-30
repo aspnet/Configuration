@@ -61,6 +61,11 @@ namespace Microsoft.Framework.ConfigurationModel
             if (key == null) throw new ArgumentNullException("key");
             if (value == null) throw new ArgumentNullException("value");
 
+            if (!_sources.Any())
+            {
+                throw new InvalidOperationException(Resources.Error_NoSource);
+            }
+
             foreach (var src in _sources)
             {
                 src.Set(key, value);
