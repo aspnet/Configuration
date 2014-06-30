@@ -311,6 +311,25 @@ namespace Microsoft.Framework.ConfigurationModel
             Assert.Equal(3, srcCount);
         }
 
+        [Fact]
+        public void SetOnEmptyConfigurationThrows()
+        {
+            var config = new Configuration();
+
+            var exception = Assert.Throws<InvalidOperationException>(() => config.Set("NewKey", "NewValue"));
+            Assert.Equal(0, config.Count());
+            Assert.Equal(Resources.Error_NoSource, exception.Message);
+        }
+
+        [Fact]
+        public void GetOnEmptyConfigurationAlwaysReturnNull()
+        {
+            var config = new Configuration();
+
+            Assert.Equal(0, config.Count());
+            Assert.Null(config.Get("Whatever"));
+        }
+
         private static int CountAllEntries(Configuration config)
         {
             return config.Aggregate(0, (acc, src) => acc + (src as BaseConfigurationSource).Data.Count);
