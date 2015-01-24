@@ -1,18 +1,18 @@
 {
   "dependencies": {
-    "Microsoft.Framework.ConfigurationModel": "1.0.0-*",
-    "Xunit.KRunner": "1.0.0-*"
+    "Microsoft.Framework.ConfigurationModel": "1.0.0-beta2",
+    "xunit.runner.kre": "1.0.0-*"
   },
   "frameworks": {
     "aspnet50": {
     },
     "aspnetcore50": {
       "dependencies": {
-        "System.Collections.NonGeneric": "4.0.0-beta-*"
+        "System.Collections.NonGeneric": "4.0.0-beta-22416"
       }
     }
   },
   "commands": {
-    "test": "Xunit.KRunner"
+    "test": "xunit.runner.kre"
   }
 }
