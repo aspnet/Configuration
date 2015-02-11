@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-#if NET45 || ASPNET50 || ASPNETCORE50
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,7 +40,7 @@ namespace Microsoft.Framework.ConfigurationModel
                 Load(stream);
             }
         }
-        
+
         public virtual void Commit()
         {
             // If the config file is not found in given path
@@ -118,7 +117,7 @@ namespace Microsoft.Framework.ConfigurationModel
                     {
                         continue;
                     }
-                    // [Section:header] 
+                    // [Section:header]
                     if (line[0] == '[' && line[line.Length - 1] == ']')
                     {
                         // remove the brackets
@@ -185,7 +184,7 @@ namespace Microsoft.Framework.ConfigurationModel
                         outputWriter.Write(rawLine + lineEnd);
                         continue;
                     }
-                    // [Section:header] 
+                    // [Section:header]
                     if (line[0] == '[' && line[line.Length - 1] == ']')
                     {
                         outputWriter.Write(rawLine + lineEnd);
@@ -259,4 +258,3 @@ namespace Microsoft.Framework.ConfigurationModel
         }
     }
 }
-#endif

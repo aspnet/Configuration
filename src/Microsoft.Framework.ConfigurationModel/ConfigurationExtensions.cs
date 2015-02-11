@@ -8,21 +8,16 @@ namespace Microsoft.Framework.ConfigurationModel
 {
     public static class ConfigurationExtensions
     {
-#if NET45 || ASPNET50 || ASPNETCORE50
         public static T Get<T>(this IConfiguration configuration, string key)
         {
             return (T)Convert.ChangeType(configuration.Get(key), typeof(T));
         }
-#endif
 
-
-#if NET45 || ASPNET50 || ASPNETCORE50
         public static IConfigurationSourceContainer AddIniFile(this IConfigurationSourceContainer configuration, string path)
         {
             configuration.Add(new IniFileConfigurationSource(path));
             return configuration;
         }
-#endif
 
         public static IConfigurationSourceContainer AddCommandLine(this IConfigurationSourceContainer configuration, string[] args)
         {
