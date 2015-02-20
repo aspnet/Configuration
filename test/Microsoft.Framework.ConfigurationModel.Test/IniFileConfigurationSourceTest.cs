@@ -283,7 +283,7 @@ Provider=SqlClient";
         }
 
         [Fact]
-        public void CommitOperationThrowsExceptionWhenFindNewlyAddedKeyAfterLoadOperation()
+        public void CommitOperationThrowsExceptionWhenFindNewlyAddedKeyInOriginalFile()
         {
             var ini = @"
             ; Comments
@@ -305,7 +305,7 @@ Provider=SqlClient";
         }
 
         [Fact]
-        public void CommitOperationThrowsExceptionWhenKeysAreMissingInConfigFile()
+        public void CommitOperationAppendsNewKeyValuePairsAtTheEndOfFile()
         {
             var ini = @"
             ; Comments
@@ -314,16 +314,62 @@ Provider=SqlClient";
             ConnectionString=TestConnectionString
             / Comments
             Provider=SqlClient";
-            var modifiedIni = ini.Replace("Provider=SqlClient", string.Empty);
+            var expectedResult = @"
+            ; Comments
+            [Data:DefaultConnection]
+            # Comments
+            ConnectionString=TestConnectionString
+            / Comments
+            Provider=SqlClient
+[]
+NewKey=NewValue
+";
             var iniConfigSrc = new IniFileConfigurationSource(ArbitraryFilePath);
             var outputCacheStream = new MemoryStream();
             iniConfigSrc.Load(StringToStream(ini));
+            iniConfigSrc.Set("NewKey", "NewValue");  // Add a new key-value pair
 
-            var exception = Assert.Throws<InvalidOperationException>(
-                () => iniConfigSrc.Commit(StringToStream(modifiedIni), outputCacheStream));
+            iniConfigSrc.Commit(StringToStream(ini), outputCacheStream);
 
-            Assert.Equal(Resources.FormatError_CommitWhenKeyMissing("Data:DefaultConnection:Provider"),
-                exception.Message);
+            var newContents = StreamToString(outputCacheStream);
+            Assert.Equal(expectedResult, newContents);
+        }
+
+        [Fact]
+        public void CommitOperationAppendsNewKeyValuePairsAtTheEndOfFileThatContainsOnlyComments()
+        {
+            var ini = @"
+            ; Comments";
+            var expectedResult = @"
+            ; Comments
+NewKey=NewValue
+";
+            var iniConfigSrc = new IniFileConfigurationSource(ArbitraryFilePath);
+            var outputCacheStream = new MemoryStream();
+            iniConfigSrc.Load(StringToStream(ini));
+            iniConfigSrc.Set("NewKey", "NewValue");  // Add a new key-value pair
+
+            iniConfigSrc.Commit(StringToStream(ini), outputCacheStream);
+
+            var newContents = StreamToString(outputCacheStream);
+            Assert.Equal(expectedResult, newContents);
+        }
+
+        [Fact]
+        public void CommitOperationAppendsNewKeyValuePairsAtTheEndOfEmptyFile()
+        {
+            var ini = @"";
+            var expectedResult = @"NewKey=NewValue
+";
+            var iniConfigSrc = new IniFileConfigurationSource(ArbitraryFilePath);
+            var outputCacheStream = new MemoryStream();
+            iniConfigSrc.Load(StringToStream(ini));
+            iniConfigSrc.Set("NewKey", "NewValue");  // Add a new key-value pair
+
+            iniConfigSrc.Commit(StringToStream(ini), outputCacheStream);
+
+            var newContents = StreamToString(outputCacheStream);
+            Assert.Equal(expectedResult, newContents);
         }
 
         [Fact]

@@ -519,7 +519,7 @@ namespace Microsoft.Framework.ConfigurationModel
         }
 
         [Fact]
-        public void CommitOperationThrowsExceptionWhenFindNewlyAddedKeyAfterLoadOperation()
+        public void CommitOperationThrowsExceptionWhenFindNewlyAddedKeyInOriginalFile()
         {
             var xml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <?xml-stylesheet type=""text/xsl"" href=""style1.xsl""?>
@@ -564,7 +564,7 @@ namespace Microsoft.Framework.ConfigurationModel
         }
 
         [Fact]
-        public void CommitOperationThrowsExceptionWhenKeysAreMissingInConfigFile()
+        public void CommitOperationAppendsNewKeyValuePairsAtTheEndOfFile()
         {
             var xml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <?xml-stylesheet type=""text/xsl"" href=""style1.xsl""?>
@@ -581,30 +581,34 @@ namespace Microsoft.Framework.ConfigurationModel
         </Inventory>
     </Data>
 </settings>";
-            var modifiedXml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+            var expectedResult = @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <?xml-stylesheet type=""text/xsl"" href=""style1.xsl""?>
 <settings>
     <?xml-stylesheet type=""text/xsl"" href=""style2.xsl""?>
     <Data>
         <DefaultConnection>
             <ConnectionString>TestConnectionString</ConnectionString>
+            <Provider>SqlClient</Provider>
         </DefaultConnection>
         <Inventory>
+            <ConnectionString>AnotherTestConnectionString</ConnectionString>
             <Provider>MySql</Provider>
         </Inventory>
     </Data>
+<NewKey1>NewValue1</NewKey1>
+<NewKey2 Name=""NewKey3"">NewValue2</NewKey2>
 </settings>";
             var xmlConfigSrc = new XmlConfigurationSource(ArbitraryFilePath);
             var outputCacheStream = new MemoryStream();
             xmlConfigSrc.Load(StringToStream(xml));
+            // Add new key-value pairs
+            xmlConfigSrc.Set("NewKey1", "NewValue1");
+            xmlConfigSrc.Set("NewKey2:NewKey3", "NewValue2");
 
-            var exception = Assert.Throws<InvalidOperationException>(
-                () => xmlConfigSrc.Commit(StringToStream(modifiedXml), outputCacheStream));
+            xmlConfigSrc.Commit(StringToStream(xml), outputCacheStream);
 
-            Assert.Equal(
-                Resources.
-                FormatError_CommitWhenKeyMissing("Data:DefaultConnection:Provider, Data:Inventory:ConnectionString"),
-                exception.Message);
+            var newContents = StreamToString(outputCacheStream);
+            Assert.Equal(expectedResult, newContents);
         }
 
         [Fact]
