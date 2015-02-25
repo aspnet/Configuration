@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-#if ASPNET50 || ASPNETCORE50 || NET45
 using System;
 using System.IO;
 
@@ -24,7 +23,7 @@ namespace Microsoft.Framework.ConfigurationModel
                 var appEnv = (IApplicationEnvironment)locator.ServiceProvider.GetService(typeof(IApplicationEnvironment));
                 return appEnv.ApplicationBasePath;
 
-#elif NET45
+#else
                 return AppDomain.CurrentDomain.BaseDirectory;
 #endif
             }
@@ -36,4 +35,3 @@ namespace Microsoft.Framework.ConfigurationModel
         }
     }
 }
-#endif

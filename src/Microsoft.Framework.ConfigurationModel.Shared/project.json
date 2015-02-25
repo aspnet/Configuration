@@ -8,11 +8,6 @@
             "dependencies": {
                 "System.Runtime": "4.0.20-beta-*"
             }
-        },
-        ".NETPortable,Version=v4.6,Profile=Profile151": {
-            "frameworkAssemblies": {
-                "System.Runtime": ""
-            }
         }
     }
 }
