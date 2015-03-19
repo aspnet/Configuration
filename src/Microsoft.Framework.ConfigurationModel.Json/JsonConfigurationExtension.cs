@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using Microsoft.Framework.ConfigurationModel.Helper;
 using Microsoft.Framework.ConfigurationModel.Json;
 
 namespace Microsoft.Framework.ConfigurationModel
@@ -21,11 +22,11 @@ namespace Microsoft.Framework.ConfigurationModel
                 throw new ArgumentException(Resources.Error_InvalidFilePath, "path");
             }
 
-            var fullPath = PathResolver.ResolveAppRelativePath(path);
+            path = ConfigurationHelper.ResolveConfigurationFilePath(configuration, path);
 
-            if (!optional && !File.Exists(fullPath))
+            if (!optional && !File.Exists(path))
             {
-                throw new FileNotFoundException(Resources.Error_FileNotFound, fullPath);
+                throw new FileNotFoundException(Resources.Error_FileNotFound, path);
             }
 
             configuration.Add(new JsonConfigurationSource(path, optional: optional));

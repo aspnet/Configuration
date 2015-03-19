@@ -91,6 +91,38 @@ namespace Microsoft.Framework.ConfigurationModel
         }
 
         /// <summary>
+        /// Configuration file does not exist: '{0}'.
+        /// </summary>
+        internal static string Error_ConfigurationFileNotExist
+        {
+            get { return GetString("Error_ConfigurationFileNotExist"); }
+        }
+
+        /// <summary>
+        /// Configuration file does not exist: '{0}'.
+        /// </summary>
+        internal static string FormatError_ConfigurationFileNotExist()
+        {
+            return GetString("Error_ConfigurationFileNotExist");
+        }
+
+        /// <summary>
+        /// Unable to resolve path '{0}'; construct this {2} with a non-null {1}.
+        /// </summary>
+        internal static string Error_MissingBasePath
+        {
+            get { return GetString("Error_MissingBasePath"); }
+        }
+
+        /// <summary>
+        /// Unable to resolve path '{0}'; construct this {2} with a non-null {1}.
+        /// </summary>
+        internal static string FormatError_MissingBasePath()
+        {
+            return GetString("Error_MissingBasePath");
+        }
+
+        /// <summary>
         /// The switch mappings contain an invalid switch '{0}'.
         /// </summary>
         internal static string Error_InvalidSwitchMapping
