@@ -123,6 +123,9 @@
   <data name="Error_CommitWhenNewKeyFound" xml:space="preserve">
     <value>Unable to commit because a new key was added to the configuration file after last load operation. The newly added key is '{0}'.</value>
   </data>
+  <data name="Error_ConfigurationFileNotExist" xml:space="preserve">
+    <value>Configuration file does not exist: '{0}'.</value>
+  </data>
   <data name="Error_DuplicatedKeyInSwitchMappings" xml:space="preserve">
     <value>Keys in switch mappings are case-insensitive. A duplicated key '{0}' was found.</value>
   </data>
@@ -137,6 +140,9 @@
   </data>
   <data name="Error_KeyIsDuplicated" xml:space="preserve">
     <value>A duplicate key '{0}' was found.</value>
+  </data>
+  <data name="Error_MissingBasePath" xml:space="preserve">
+    <value>Unable to resolve path '{0}'; construct this {1} with a non-null {2}.</value>
   </data>
   <data name="Error_NoCommitableSource" xml:space="preserve">
     <value>No registered configuration source is capable of committing changes.</value>
