@@ -3,12 +3,130 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Xunit;
 
 namespace Microsoft.Framework.ConfigurationModel.Test
 {
-    public class ConfigurationBinderExceptionTests
+    public class ConfigurationBinderTests
     {
+        public class ComplexOptions
+        {
+            public ComplexOptions()
+            {
+                Nested = new NestedOptions();
+                Virtual = "complex";
+            }
+            public NestedOptions Nested { get; set; }
+            public int Integer { get; set; }
+            public bool Boolean { get; set; }
+            public virtual string Virtual { get; set; }
+
+            public string PrivateSetter { get; private set; }
+            public string ProtectedSetter { get; protected set; }
+            public string InternalSetter { get; internal set; }
+            public static string StaticProperty { get; set; }
+
+            public string ReadOnly
+            {
+                get { return null; }
+            }
+        }
+
+        public class NestedOptions
+        {
+            public int Integer { get; set; }
+        }
+
+        public class DerivedOptions : ComplexOptions
+        {
+            public override string Virtual
+            {
+                get
+                {
+                    return base.Virtual;
+                }
+                set
+                {
+                    base.Virtual = "Derived:" + value;
+                }
+            }
+        }
+
+        public class NullableOptions
+        {
+            public bool? MyNullableBool { get; set; }
+            public int? MyNullableInt { get; set; }
+            public DateTime? MyNullableDateTime { get; set; }
+        }
+
+        public class EnumOptions
+        {
+            public UriKind UriKind { get; set; }
+        }
+
+        [Fact]
+        public void CanReadComplexProperties()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                {"Integer", "-2"},
+                {"Boolean", "TRUe"},
+                {"Nested:Integer", "11"}
+            };
+            var config = new Configuration(new MemoryConfigurationSource(dic));
+            var options = ConfigurationBinder.Bind<ComplexOptions>(config);
+            Assert.True(options.Boolean);
+            Assert.Equal(-2, options.Integer);
+            Assert.Equal(11, options.Nested.Integer);
+        }
+
+        [Fact]
+        public void CanReadInheritedProperties()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                {"Integer", "-2"},
+                {"Boolean", "TRUe"},
+                {"Nested:Integer", "11"},
+                {"Virtual","Sup"}
+            };
+            var config = new Configuration(new MemoryConfigurationSource(dic));
+            var options = ConfigurationBinder.Bind<DerivedOptions>(config);
+            Assert.True(options.Boolean);
+            Assert.Equal(-2, options.Integer);
+            Assert.Equal(11, options.Nested.Integer);
+            Assert.Equal("Derived:Sup", options.Virtual);
+        }
+
+        [Fact]
+        public void CanReadStaticProperty()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                {"StaticProperty", "stuff"},
+            };
+            var config = new Configuration(new MemoryConfigurationSource(dic));
+            var options = ConfigurationBinder.Bind<ComplexOptions>(config);
+            Assert.Equal("stuff", ComplexOptions.StaticProperty);
+        }
+
+        [Theory]
+        [InlineData("ReadOnly")]
+        [InlineData("PrivateSetter")]
+        [InlineData("ProtectedSetter")]
+        [InlineData("InternalSetter")]
+        public void ShouldBeIgnoredTests(string property)
+        {
+            var dic = new Dictionary<string, string>
+            {
+                {property, "stuff"},
+            };
+            var config = new Configuration(new MemoryConfigurationSource(dic));
+            var options = ConfigurationBinder.Bind<ComplexOptions>(config);
+            Assert.Null(options.GetType().GetTypeInfo().GetDeclaredProperty(property).GetValue(options));
+        }
+
         [Fact]
         public void ExceptionWhenTryingToBindToInterface()
         {
@@ -117,7 +235,7 @@ namespace Microsoft.Framework.ConfigurationModel.Test
             }
         }
 
-        private class NestedOptions
+        private class NestedOptions1
         {
             public NestedOptions2 NestedOptions2Property { get; set; }
         }
@@ -137,7 +255,7 @@ namespace Microsoft.Framework.ConfigurationModel.Test
 
             public ThrowsWhenActivated ThrowsWhenActivatedProperty { get; set; }
 
-            public NestedOptions NestedOptionsProperty { get; set; }
+            public NestedOptions1 NestedOptionsProperty { get; set; }
         }
     }
 }
