@@ -57,7 +57,7 @@ namespace Microsoft.Framework.ConfigurationModel
 
         public string Get(string key)
         {
-            if (key == null) throw new ArgumentNullException("key");
+            if (key == null) throw new ArgumentNullException(nameof(key));
 
             string value;
             return TryGet(key, out value) ? value : null;
@@ -65,7 +65,7 @@ namespace Microsoft.Framework.ConfigurationModel
 
         public bool TryGet(string key, out string value)
         {
-            if (key == null) throw new ArgumentNullException("key");
+            if (key == null) throw new ArgumentNullException(nameof(key));
 
             // If a key in the newly added configuration source is identical to a key in a 
             // formerly added configuration source, the new one overrides the former one.
@@ -84,8 +84,8 @@ namespace Microsoft.Framework.ConfigurationModel
 
         public void Set(string key, string value)
         {
-            if (key == null) throw new ArgumentNullException("key");
-            if (value == null) throw new ArgumentNullException("value");
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (value == null) throw new ArgumentNullException(nameof(value));
 
             foreach (var src in _sources)
             {
@@ -113,7 +113,7 @@ namespace Microsoft.Framework.ConfigurationModel
 
         public IEnumerable<KeyValuePair<string, IConfiguration>> GetSubKeys(string key)
         {
-            if (key == null) throw new ArgumentNullException("key");
+            if (key == null) throw new ArgumentNullException(nameof(key));
 
             return GetSubKeysImplementation(key + Constants.KeyDelimiter);
         }
