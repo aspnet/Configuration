@@ -1,12 +1,12 @@
 {
-    "version": "1.0.0-*",
+    "version": "1.0.0-beta4",
     "shared": "*.cs",
     "frameworks": {
         "net45": { },
         "dnx451": { },
         "dnxcore50": {
             "dependencies": {
-                "System.Runtime": "4.0.20-beta-*"
+                "System.Runtime": "4.0.20-beta-22816"
             }
         },
         ".NETPortable,Version=v4.6,Profile=Profile151": {

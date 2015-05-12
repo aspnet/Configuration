@@ -1,9 +1,9 @@
 {
-    "version": "1.0.0-*",
+    "version": "1.0.0-beta4",
     "description": "XML configuration source for the ConfigurationModel package.",
     "dependencies": {
-        "Microsoft.Framework.ConfigurationModel": "1.0.0-*",
-        "Microsoft.Framework.ConfigurationModel.Shared": { "version": "1.0.0-*", "type": "build" }
+        "Microsoft.Framework.ConfigurationModel": "1.0.0-beta4",
+        "Microsoft.Framework.ConfigurationModel.Shared": { "version": "1.0.0-beta4", "type": "build" }
     },
     "frameworks": {
         "net45": {
@@ -20,8 +20,8 @@
         },
         "dnxcore50": {
             "dependencies": {
-                "System.Xml.XmlDocument": "4.0.0-beta-*",
-                "System.Xml.XmlSerializer": "4.0.10-beta-*"
+                "System.Xml.XmlDocument": "4.0.0-beta-22816",
+                "System.Xml.XmlSerializer": "4.0.10-beta-22816"
             }
         }
     }

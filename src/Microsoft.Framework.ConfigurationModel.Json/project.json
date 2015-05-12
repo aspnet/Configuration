@@ -1,10 +1,10 @@
 {
-    "version": "1.0.0-*",
+    "version": "1.0.0-beta4",
     "description": "JSON configuration source for the ConfigurationModel package.",
     "dependencies": {
         "Newtonsoft.Json": "6.0.6",
-        "Microsoft.Framework.ConfigurationModel": "1.0.0-*",
-        "Microsoft.Framework.ConfigurationModel.Shared": { "version": "1.0.0-*", "type": "build" }
+        "Microsoft.Framework.ConfigurationModel": "1.0.0-beta4",
+        "Microsoft.Framework.ConfigurationModel.Shared": { "version": "1.0.0-beta4", "type": "build" }
     },
     "frameworks": {
         "net45": { },
