@@ -26,11 +26,12 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             public string ProtectedSetter { get; protected set; }
             public string InternalSetter { get; internal set; }
             public static string StaticProperty { get; set; }
-
             public string ReadOnly
             {
                 get { return null; }
-            }
+            }            
+            public TimeSpan TimeSpan { get; set; }
+            public DateTimeOffset DateTimeOffset { get; set; }
         }
 
         public class NestedOptions
@@ -129,6 +130,36 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             var config = builder.Build();
             var options = ConfigurationBinder.Bind<ComplexOptions>(config);
             Assert.Null(options.GetType().GetTypeInfo().GetDeclaredProperty(property).GetValue(options));
+        }
+
+        [Fact]
+        public void CanReadTimeSpanProperties()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                {"TimeSpan", "356.23:59:59.999999"}
+            };
+            var builder = new ConfigurationBuilder(new MemoryConfigurationSource(dic));
+            var config = builder.Build();
+            var options = ConfigurationBinder.Bind<ComplexOptions>(config);
+            Assert.Equal(356, options.TimeSpan.Days);
+            Assert.Equal(999, options.TimeSpan.Milliseconds);
+        }
+        
+        [Fact]
+        public void CanReadDateTimeOffsetProperties()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                {"DateTimeOffset", "05/22/2015 22:55:22 +02:00"}
+            };
+            var builder = new ConfigurationBuilder(new MemoryConfigurationSource(dic));
+            var config = builder.Build();
+            var options = ConfigurationBinder.Bind<ComplexOptions>(config);
+            Assert.Equal(2, options.DateTimeOffset.Offset.Hours);
+            Assert.Equal(5, options.DateTimeOffset.Month);
+            Assert.Equal(22, options.DateTimeOffset.Day);
+            Assert.Equal(2015, options.DateTimeOffset.Year);
         }
 
         [Fact]

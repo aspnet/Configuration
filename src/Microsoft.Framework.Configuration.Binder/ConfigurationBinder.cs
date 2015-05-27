@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Framework.Configuration.Binder;
+using System.Globalization;
 
 namespace Microsoft.Framework.Configuration
 {
@@ -211,6 +212,14 @@ namespace Microsoft.Framework.Configuration
                 if (typeInfo.IsEnum)
                 {
                     return Enum.Parse(type, configurationValue);
+                }
+                else if(type == typeof(TimeSpan))
+                {
+                    return TimeSpan.Parse(configurationValue, CultureInfo.InvariantCulture);
+                }
+                else if(type == typeof(DateTimeOffset))
+                {
+                    return DateTimeOffset.Parse(configurationValue, CultureInfo.InvariantCulture);
                 }
                 else
                 {
