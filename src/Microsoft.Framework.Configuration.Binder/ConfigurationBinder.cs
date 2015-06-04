@@ -3,10 +3,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Framework.Configuration.Binder;
-using System.Globalization;
 
 namespace Microsoft.Framework.Configuration
 {

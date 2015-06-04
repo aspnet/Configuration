@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using Microsoft.AspNet.Testing;
 using Microsoft.Framework.Configuration.Test;
 using Xunit;
 
@@ -102,6 +103,7 @@ namespace Microsoft.Framework.Configuration.EnvironmentVariables.Test
         }
 
         [Fact]
+        [ReplaceCulture]
         public void ThrowExceptionWhenKeyIsDuplicatedInAzureEnvironment()
         {
             var dict = new Hashtable()

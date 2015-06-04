@@ -3,7 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
+using Microsoft.AspNet.Testing;
 using Xunit;
 
 namespace Microsoft.Framework.Configuration.Binder.Test
@@ -132,34 +134,67 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             Assert.Null(options.GetType().GetTypeInfo().GetDeclaredProperty(property).GetValue(options));
         }
 
-        [Fact]
-        public void CanReadTimeSpanProperties()
+        [Theory]
+        [InlineData("en-GB")]
+        [InlineData("de-DE")]
+        [InlineData("zh-CN")]
+        public void CanReadTimeSpanProperties(string culture)
         {
-            var dic = new Dictionary<string, string>
+            var values = new string[]
             {
-                {"TimeSpan", "356.23:59:59.999999"}
+                "00:00:00",
+                "-14.00:00:00",
+                "01:02:03",
+                "00:00:00.2500000",
+                "99.23:59:59.9990000"
             };
-            var builder = new ConfigurationBuilder(new MemoryConfigurationSource(dic));
-            var config = builder.Build();
-            var options = ConfigurationBinder.Bind<ComplexOptions>(config);
-            Assert.Equal(356, options.TimeSpan.Days);
-            Assert.Equal(999, options.TimeSpan.Milliseconds);
+
+            using (new CultureReplacer(culture, culture))
+            {
+                foreach (var value in values)
+                {
+                    var dic = new Dictionary<string, string>
+                    {
+                        {"TimeSpan", value}
+                    };
+                    var builder = new ConfigurationBuilder(new MemoryConfigurationSource(dic));
+                    var config = builder.Build();
+                    var options = ConfigurationBinder.Bind<ComplexOptions>(config);
+                    Assert.Equal(value, options.TimeSpan.ToString());
+                }
+            }
         }
-        
-        [Fact]
-        public void CanReadDateTimeOffsetProperties()
+
+        [Theory]
+        [InlineData("en-GB")]
+        [InlineData("de-DE")]
+        [InlineData("zh-CN")]
+        public void CanReadDateTimeOffsetProperties(string culture)
         {
-            var dic = new Dictionary<string, string>
+            var values = new string[]
             {
-                {"DateTimeOffset", "05/22/2015 22:55:22 +02:00"}
+                "05/22/2015 22:55:22 +02:00",
+                "03-12-07",
+                "09/15/14 08:45:00 +1:00",
+                "Thu May 01, 2008 1:00:00 +1:00"
             };
-            var builder = new ConfigurationBuilder(new MemoryConfigurationSource(dic));
-            var config = builder.Build();
-            var options = ConfigurationBinder.Bind<ComplexOptions>(config);
-            Assert.Equal(2, options.DateTimeOffset.Offset.Hours);
-            Assert.Equal(5, options.DateTimeOffset.Month);
-            Assert.Equal(22, options.DateTimeOffset.Day);
-            Assert.Equal(2015, options.DateTimeOffset.Year);
+
+            using (new CultureReplacer(culture, culture))
+            {
+                foreach (var value in values)
+                {
+                    var dic = new Dictionary<string, string>
+                    {
+                        {"DateTimeOffset", value}
+                    };
+                    var builder = new ConfigurationBuilder(new MemoryConfigurationSource(dic));
+                    var config = builder.Build();
+                    var options = ConfigurationBinder.Bind<ComplexOptions>(config);
+
+                    // Also verifies the binder always parses with invariant culture only
+                    Assert.Equal(DateTimeOffset.Parse(value, CultureInfo.InvariantCulture), options.DateTimeOffset);
+                }
+            }
         }
 
         [Fact]
@@ -216,6 +251,48 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             Assert.NotNull(exception.InnerException);
             Assert.Equal(
                 Resources.FormatError_FailedBinding(IncorrectValue, typeof(int)),
+                exception.Message);
+        }
+        
+        [Fact]
+        public void ExceptionWhenTryingToBindTimeSpanFromBadInput()
+        {
+            const string IncorrectValue = "This is not a TimeSpan";
+
+            var input = new Dictionary<string, string>
+            {
+                {"TimeSpan", IncorrectValue}
+            };
+
+            var builder = new ConfigurationBuilder(new MemoryConfigurationSource(input));
+            var config = builder.Build();
+
+            var exception = Assert.Throws<InvalidOperationException>(
+                () => ConfigurationBinder.Bind<ComplexOptions>(config));
+            Assert.NotNull(exception.InnerException);
+            Assert.Equal(
+                Resources.FormatError_FailedBinding(IncorrectValue, typeof(TimeSpan)),
+                exception.Message);
+        }
+
+        [Fact]
+        public void ExceptionWhenTryingToBindDateTimeOffsetFromBadInput()
+        {
+            const string IncorrectValue = "This is not a DateTimeOffset";
+
+            var input = new Dictionary<string, string>
+            {
+                {"DateTimeOffset", IncorrectValue}
+            };
+
+            var builder = new ConfigurationBuilder(new MemoryConfigurationSource(input));
+            var config = builder.Build();
+
+            var exception = Assert.Throws<InvalidOperationException>(
+                () => ConfigurationBinder.Bind<ComplexOptions>(config));
+            Assert.NotNull(exception.InnerException);
+            Assert.Equal(
+                Resources.FormatError_FailedBinding(IncorrectValue, typeof(DateTimeOffset)),
                 exception.Message);
         }
 
