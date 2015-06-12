@@ -44,7 +44,7 @@ namespace Microsoft.Framework.Configuration.EnvironmentVariables
                 .ToDictionary(
                     entry => ((string)entry.Key).Substring(_prefix.Length),
                     entry => (string)entry.Value,
-                    StringComparer.OrdinalIgnoreCase);
+                    StringComparer.Ordinal);
         }
 
         private static IEnumerable<DictionaryEntry> AzureEnvToAppEnv(DictionaryEntry entry)
