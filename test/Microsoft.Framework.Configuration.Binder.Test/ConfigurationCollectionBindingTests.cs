@@ -165,6 +165,37 @@ namespace Microsoft.Framework.Configuration.Binder.Test
         }
 
         [Fact]
+        public void TimeSpanListBinding()
+        {
+            var timeSpans = new TimeSpan[]
+            {
+                new TimeSpan(356, 23, 59, 59, 999),
+                new TimeSpan(2, 1, 3),
+                new TimeSpan(12, 34, 56)
+            };
+
+            var input = new Dictionary<string, string>
+            {
+                {"TimeSpanList:0", timeSpans[0].ToString()},
+                {"TimeSpanList:1", timeSpans[1].ToString()},
+                {"TimeSpanList:2", timeSpans[2].ToString()}
+            };
+
+            var builder = new ConfigurationBuilder(new MemoryConfigurationSource(input));
+            var config = builder.Build();
+
+            var options = ConfigurationBinder.Bind<OptionsWithLists>(config);
+
+            var list = options.TimeSpanList;
+
+            Assert.Equal(3, list.Count);
+
+            Assert.Equal(timeSpans[0], list[0]);
+            Assert.Equal(timeSpans[1], list[1]);
+            Assert.Equal(timeSpans[2], list[2]);
+        }
+
+        [Fact]
         public void StringDictionaryBinding()
         {
             var input = new Dictionary<string, string>
@@ -346,6 +377,8 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             public List<string> AlreadyInitializedList { get; set; }
 
             public List<NestedOptions> ObjectList { get; set; }
+
+            public List<TimeSpan> TimeSpanList { get; set; }
         }
 
         private class OptionsWithDictionary

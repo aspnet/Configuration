@@ -1,7 +1,8 @@
-﻿{
+{
   "dependencies": {
     "Microsoft.Framework.Configuration.Binder": "1.0.0-*",
     "Microsoft.Framework.Configuration.Test.Common": "1.0.0-*",
+    "Microsoft.AspNet.Testing": "1.0.0-*",
     "xunit.runner.aspnet": "2.0.0-aspnet-*"
   },
   "frameworks": {
@@ -12,3 +13,4 @@
     "test": "xunit.runner.aspnet"
   }
 }
+
