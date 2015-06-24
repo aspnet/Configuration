@@ -13,6 +13,8 @@ namespace Microsoft.Framework.Configuration
     /// </summary>
     public class JsonConfigurationSource : ConfigurationSource
     {
+        private const string _exceptionMessageSplitString = "Path";
+
         /// <summary>
         /// Initializes a new instance of <see cref="JsonConfigurationSource"/>.
         /// </summary>
@@ -78,7 +80,20 @@ namespace Microsoft.Framework.Configuration
         internal void Load(Stream stream)
         {
             JsonConfigurationFileParser parser = new JsonConfigurationFileParser();
-            Data = parser.Parse(stream);
+            try
+            {
+                Data = parser.Parse(stream);
+            }
+            catch(Exception e)
+            {
+                var splitErrorMessageArray = e.Message.Split(
+                    new string[] { _exceptionMessageSplitString },
+                    StringSplitOptions.None);
+                var lineInfoArray = splitErrorMessageArray[1].Split(',');
+
+                throw new FormatException("Could not parse the json file. Error on" + lineInfoArray[1] +
+                    ": " + splitErrorMessageArray[0] + e.GetType() + ": " + e.Message);
+            }
         }
     }
 }
