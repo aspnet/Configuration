@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Framework.Configuration.Json;
+using Newtonsoft.Json;
 
 namespace Microsoft.Framework.Configuration
 {
@@ -13,8 +14,6 @@ namespace Microsoft.Framework.Configuration
     /// </summary>
     public class JsonConfigurationSource : ConfigurationSource
     {
-        private const string _exceptionMessageSplitString = "Path";
-
         /// <summary>
         /// Initializes a new instance of <see cref="JsonConfigurationSource"/>.
         /// </summary>
@@ -84,15 +83,14 @@ namespace Microsoft.Framework.Configuration
             {
                 Data = parser.Parse(stream);
             }
-            catch(Exception e)
+            catch(JsonReaderException e)
             {
-                var splitErrorMessageArray = e.Message.Split(
-                    new string[] { _exceptionMessageSplitString },
-                    StringSplitOptions.None);
-                var lineInfoArray = splitErrorMessageArray[1].Split(',');
+                var splitErrorMessageArray = e.Message.Split(new string[] { e.Path }, StringSplitOptions.None);
 
-                throw new FormatException("Could not parse the json file. Error on" + lineInfoArray[1] +
-                    ": " + splitErrorMessageArray[0] + e.GetType() + ": " + e.Message);
+                var errorMessage = splitErrorMessageArray[0].Substring(0, splitErrorMessageArray[0].LastIndexOf('.'));
+
+                throw new FormatException("Could not parse the json file. Error on line number " + e.LineNumber +
+                    ": " + errorMessage + ".", e);
             }
         }
     }
