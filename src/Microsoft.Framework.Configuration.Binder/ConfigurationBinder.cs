@@ -213,11 +213,11 @@ namespace Microsoft.Framework.Configuration
                 {
                     return Enum.Parse(type, configurationValue);
                 }
-                else if(type == typeof(TimeSpan))
+                else if (type == typeof(TimeSpan))
                 {
                     return TimeSpan.Parse(configurationValue, CultureInfo.InvariantCulture);
                 }
-                else if(type == typeof(DateTimeOffset))
+                else if (type == typeof(DateTimeOffset))
                 {
                     return DateTimeOffset.Parse(configurationValue, CultureInfo.InvariantCulture);
                 }
