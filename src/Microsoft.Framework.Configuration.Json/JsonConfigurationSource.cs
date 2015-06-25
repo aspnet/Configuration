@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.Framework.Configuration.Json;
 using Newtonsoft.Json;
 
@@ -85,16 +86,14 @@ namespace Microsoft.Framework.Configuration
             }
             catch(JsonReaderException e)
             {
-                // We are splitting error message based on e.Path and then getting substring of the error message
-                // before the last period(.)
-                // Sample e.Message : Unexpected end of content while loading JObject. Path 'address', line 7, 
-                // position 44.
-                // e.Path for above Message : address
-                var splitErrorMessageArray = e.Message.Split(new string[] { e.Path }, StringSplitOptions.None);
+                string errorLine = string.Empty;
+                if (File.Exists(Path))
+                {
+                    // Read the JSON file and get the line content where the error occurred.
+                    errorLine = File.ReadLines(Path).Skip(e.LineNumber - 2).FirstOrDefault().Trim();
+                }
 
-                var errorMessage = splitErrorMessageArray[0].Substring(0, splitErrorMessageArray[0].LastIndexOf('.'));
-
-                throw new FormatException(Resources.FormatError_JSONParseError(e.LineNumber, errorMessage), e);
+                throw new FormatException(Resources.FormatError_JSONParseError(e.LineNumber, errorLine), e);
             }
         }
     }
