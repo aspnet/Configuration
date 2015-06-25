@@ -85,12 +85,16 @@ namespace Microsoft.Framework.Configuration
             }
             catch(JsonReaderException e)
             {
+                // We are splitting error message based on e.Path and then getting substring of the error message
+                // before the last period(.)
+                // Sample e.Message : Unexpected end of content while loading JObject. Path 'address', line 7, 
+                // position 44.
+                // e.Path for above Message : address
                 var splitErrorMessageArray = e.Message.Split(new string[] { e.Path }, StringSplitOptions.None);
 
                 var errorMessage = splitErrorMessageArray[0].Substring(0, splitErrorMessageArray[0].LastIndexOf('.'));
 
-                throw new FormatException("Could not parse the json file. Error on line number " + e.LineNumber +
-                    ": " + errorMessage + ".", e);
+                throw new FormatException(Resources.FormatError_JSONParseError(e.LineNumber, errorMessage), e);
             }
         }
     }
