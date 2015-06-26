@@ -90,7 +90,17 @@ namespace Microsoft.Framework.Configuration
                 if (File.Exists(Path))
                 {
                     // Read the JSON file and get the line content where the error occurred.
-                    errorLine = File.ReadLines(Path).Skip(e.LineNumber - 2).FirstOrDefault().Trim();
+                    List<string> fileContent;
+                    if (e.LineNumber > 1)
+                    {
+                        fileContent = File.ReadLines(Path).Skip(e.LineNumber - 2).Take(2).ToList();
+                        errorLine = fileContent[0].Trim() + Environment.NewLine + fileContent[1].Trim();
+                    }
+                    else
+                    {
+                        fileContent = File.ReadLines(Path).Skip(e.LineNumber - 1).Take(1).ToList();
+                        errorLine = fileContent[0].Trim();
+                    }
                 }
 
                 throw new FormatException(Resources.FormatError_JSONParseError(e.LineNumber, errorLine), e);
