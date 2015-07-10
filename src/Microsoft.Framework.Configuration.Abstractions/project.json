@@ -1,5 +1,5 @@
 {
-    "version": "1.0.0-*",
+    "version": "1.0.0-beta5",
     "description": "Abstractions of key-value pair based configuration. Includes configuration sources for INI, command line, and environment variables.",
     "dependencies": { },
     "frameworks": {
@@ -7,7 +7,7 @@
         "dnx451": { },
         "dotnet": {
             "dependencies": {
-                "System.Linq": "4.0.0-beta-*"
+                "System.Linq": "4.0.0-beta-23019"
             }
         }
     }

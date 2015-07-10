@@ -1,9 +1,9 @@
 {
-    "version": "1.0.0-*",
+    "version": "1.0.0-beta5",
     "description": "XML configuration source for the Configuration package.",
     "dependencies": {
-        "Microsoft.Framework.Configuration": "1.0.0-*",
-        "Microsoft.Framework.NotNullAttribute.Sources": { "type": "build", "version": "1.0.0-*" }
+        "Microsoft.Framework.Configuration": "1.0.0-beta5",
+        "Microsoft.Framework.NotNullAttribute.Sources": { "type": "build", "version": "1.0.0-beta5" }
     },
     "frameworks": {
         "net45": {
@@ -20,8 +20,8 @@
         },
         "dotnet": {
             "dependencies": {
-                "System.Xml.XmlDocument": "4.0.0-beta-*",
-                "System.Xml.XmlSerializer": "4.0.10-beta-*"
+                "System.Xml.XmlDocument": "4.0.0-beta-23019",
+                "System.Xml.XmlSerializer": "4.0.10-beta-23019"
             }
         }
     }

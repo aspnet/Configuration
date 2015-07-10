@@ -1,9 +1,9 @@
-﻿{
-  "version": "1.0.0-*",
+{
+  "version": "1.0.0-beta5",
   "description": "Environment variables configuration source for the Configuration package.",
   "dependencies": {
-    "Microsoft.Framework.Configuration": "1.0.0-*",
-    "Microsoft.Framework.NotNullAttribute.Sources": { "type": "build", "version": "1.0.0-*" }
+    "Microsoft.Framework.Configuration": "1.0.0-beta5",
+    "Microsoft.Framework.NotNullAttribute.Sources": { "type": "build", "version": "1.0.0-beta5" }
   },
   "frameworks": {
     "net45": { },
