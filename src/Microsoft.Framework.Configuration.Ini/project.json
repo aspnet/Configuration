@@ -1,17 +1,20 @@
-﻿{
-    "version": "1.0.0-*",
+{
+    "version": "1.0.0-beta6",
     "description": "Ini configuration source for the Configuration package.",
     "repository": {
         "type": "git",
         "url": "https://github.com/aspnet/configuration"
     },
     "dependencies": {
-        "Microsoft.Framework.Configuration": "1.0.0-*",
-        "Microsoft.Framework.NotNullAttribute.Sources": { "type": "build", "version": "1.0.0-*" }
+        "Microsoft.Framework.Configuration": "1.0.0-beta6",
+        "Microsoft.Framework.NotNullAttribute.Sources": {
+            "type": "build",
+            "version": "1.0.0-beta6"
+        }
     },
     "frameworks": {
-    "net45": { },
-    "dnx451": { },
-    "dotnet": { }
+        "net45": {},
+        "dnx451": {},
+        "dotnet": {}
     }
 }
