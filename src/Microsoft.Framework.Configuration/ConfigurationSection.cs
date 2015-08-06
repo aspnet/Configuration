@@ -9,9 +9,11 @@ using Microsoft.Framework.Internal;
 
 namespace Microsoft.Framework.Configuration
 {
-    public class ConfigurationSection : IConfiguration
+    public class ConfigurationSection : IConfigurationSection
     {
         private readonly IList<IConfigurationSource> _sources = new List<IConfigurationSource>();
+        private string _key { get; set; }
+        private string _value { get; set; }
 
         public ConfigurationSection(IList<IConfigurationSource> sources)
         {
@@ -22,7 +24,8 @@ namespace Microsoft.Framework.Configuration
         {
             get
             {
-                return Get(key);
+                _value = Get(key);
+                return _value;
             }
             set
             {
@@ -38,64 +41,79 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        public string Get([NotNull] string key)
+        public string Key
         {
-            string value;
-            return TryGet(key, out value) ? value : null;
+            get
+            {
+                return _key;
+            }
         }
 
-        public bool TryGet([NotNull] string key, out string value)
+        public string Value
+        {
+            get
+            {
+                if (_value != null)
+                {
+                    return _value;
+                }
+                else
+                {
+                    _value = Get(_key);
+                    return _value;
+                }
+            }
+
+            set
+            {
+                Set(_key, value);
+            }
+        }
+
+        public IConfigurationSection GetSection(string key)
+        {
+            return new ConfigurationFocus(this, key + Constants.KeyDelimiter);
+        }
+
+        public IEnumerable<IConfigurationSection> GetChildren()
+        {
+            return GetChildrenImplementation(_key + Constants.KeyDelimiter);
+        }
+
+        private string Get([NotNull] string key)
         {
             // If a key in the newly added configuration source is identical to a key in a 
             // formerly added configuration source, the new one overrides the former one.
             // So we search in reverse order, starting with latest configuration source.
             foreach (var src in _sources.Reverse())
             {
+                string value = null;
                 if (src.TryGet(key, out value))
                 {
-                    return true;
+                    return value;
                 }
             }
-            value = null;
-            return false;
+
+            return null;
         }
 
-        public void Set([NotNull] string key, [NotNull] string value)
+        private void Set([NotNull] string key, [NotNull] string value)
         {
             if (!_sources.Any())
             {
                 throw new InvalidOperationException(Resources.Error_NoSources);
             }
+
+            _key = key;
+            _value = value;
+
             foreach (var src in _sources)
             {
                 src.Set(key, value);
             }
         }
 
-        public void Reload()
-        {
-            foreach (var src in _sources)
-            {
-                src.Load();
-            }
-        }
-
-        public IConfiguration GetConfigurationSection(string key)
-        {
-            return new ConfigurationFocus(this, key + Constants.KeyDelimiter);
-        }
-
-        public IEnumerable<KeyValuePair<string, IConfiguration>> GetConfigurationSections()
-        {
-            return GetConfigurationSectionsImplementation(string.Empty);
-        }
-
-        public IEnumerable<KeyValuePair<string, IConfiguration>> GetConfigurationSections([NotNull] string key)
-        {
-            return GetConfigurationSectionsImplementation(key + Constants.KeyDelimiter);
-        }
-
-        private IEnumerable<KeyValuePair<string, IConfiguration>> GetConfigurationSectionsImplementation(string prefix)
+        private IEnumerable<IConfigurationSection> GetChildrenImplementation(string prefix)
         {
             var segments = _sources.Aggregate(
                 Enumerable.Empty<string>(),
@@ -106,11 +124,9 @@ namespace Microsoft.Framework.Configuration
             return distinctSegments.Select(segment => CreateConfigurationFocus(prefix, segment));
         }
 
-        private KeyValuePair<string, IConfiguration> CreateConfigurationFocus(string prefix, string segment)
+        private IConfigurationSection CreateConfigurationFocus(string prefix, string segment)
         {
-            return new KeyValuePair<string, IConfiguration>(
-                segment,
-                new ConfigurationFocus(this, prefix + segment + Constants.KeyDelimiter));
+            return new ConfigurationFocus(this, prefix + segment + Constants.KeyDelimiter, segment);
         }
     }
 }

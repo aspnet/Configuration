@@ -39,7 +39,7 @@ namespace Microsoft.Framework.Configuration
 
         private static void BindProperty(PropertyInfo property, object propertyOwner, IConfiguration configuration)
         {
-            configuration = configuration.GetConfigurationSection(property.Name);
+            configuration = configuration.GetSection(property.Name);
 
             if (property.GetMethod == null || !property.GetMethod.IsPublic)
             {
@@ -70,7 +70,7 @@ namespace Microsoft.Framework.Configuration
 
         private static object BindType(Type type, object typeInstance, IConfiguration configuration)
         {
-            var configValue = configuration.Get(null);
+            var configValue = configuration[null];
             var typeInfo = type.GetTypeInfo();
 
             if (configValue != null)
@@ -80,7 +80,7 @@ namespace Microsoft.Framework.Configuration
             }
             else
             {
-                var subkeys = configuration.GetConfigurationSections();
+                var subkeys = configuration.GetChildren();
                 if (subkeys.Count() != 0)
                 {
                     if (typeInstance == null)
@@ -147,16 +147,14 @@ namespace Microsoft.Framework.Configuration
             }
 
             var addMethod = iDictionaryTypeInfo.GetDeclaredMethod("Add");
-            var subkeys = configuration.GetConfigurationSections().ToList();
+            var subkeys = configuration.GetChildren();
 
             foreach (var keyProperty in subkeys)
             {
-                var keyConfiguration = keyProperty.Value;
-
                 var item = BindType(
                     type: valueType,
                     typeInstance: null,
-                    configuration: keyConfiguration);
+                    configuration: keyProperty);
                 if (item != null)
                 {
                     addMethod.Invoke(dictionary, new[] { keyProperty.Key, item });
@@ -173,18 +171,16 @@ namespace Microsoft.Framework.Configuration
             var itemType = iCollectionTypeInfo.GenericTypeArguments[0];
 
             var addMethod = iCollectionTypeInfo.GetDeclaredMethod("Add");
-            var subkeys = configuration.GetConfigurationSections().ToList();
+            var subkeys = configuration.GetChildren().ToList();
 
             foreach (var keyProperty in subkeys)
             {
-                var keyConfiguration = keyProperty.Value;
-
                 try
                 {
                     var item = BindType(
                         type: itemType,
                         typeInstance: null,
-                        configuration: keyConfiguration);
+                        configuration: keyProperty);
                     if (item != null)
                     {
                         addMethod.Invoke(collection, new[] { item });
@@ -205,7 +201,7 @@ namespace Microsoft.Framework.Configuration
                 return CreateValueFromConfiguration(Nullable.GetUnderlyingType(type), value, configuration);
             }
 
-            var configurationValue = configuration.Get(key: null);
+            var configurationValue = configuration[key: null];
 
             try
             {

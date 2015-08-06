@@ -6,15 +6,52 @@ using System.Collections.Generic;
 
 namespace Microsoft.Framework.Configuration.Internal
 {
-    public class ConfigurationFocus : IConfiguration
+    public class ConfigurationFocus : IConfigurationSection
     {
-        private readonly string _prefix;
-        private readonly IConfiguration _root;
+        private string _key { get; set; }
+        private string _value { get; set; }
 
-        public ConfigurationFocus(IConfiguration root, string prefix)
+        private readonly string _prefix;
+        private readonly IConfigurationSection _root;
+
+        public string Key
+        {
+            get
+            {
+                return _key;
+            }
+        }
+
+        public string Value
+        {
+            get
+            {
+                if (_value != null)
+                {
+                    return _value;
+                }
+                else
+                {
+                    return Get(_key);
+                }
+            }
+
+            set
+            {
+                Set(_key, value);
+            }
+        }
+
+        public ConfigurationFocus(IConfigurationSection root, string prefix)
+            : this(root, prefix, null)
+        {
+        }
+
+        public ConfigurationFocus(IConfigurationSection root, string prefix, string key)
         {
             _prefix = prefix;
             _root = root;
+            _key = key;
         }
 
         public string this[string key]
@@ -29,54 +66,35 @@ namespace Microsoft.Framework.Configuration.Internal
             }
         }
 
-        public string Get(string key)
+        public IConfigurationSection GetSection(string key)
+        {
+            return _root.GetSection(_prefix + key);
+        }
+
+        public IEnumerable<IConfigurationSection> GetChildren()
+        {
+            _root[_prefix.Substring(0, _prefix.Length - 1)] = string.Empty;
+            return _root.GetChildren();
+        }
+
+        private string Get(string key)
         {
             // Null key indicates that the prefix passed to ctor should be used as a key
             if (key == null)
             {
                 // Strip off the trailing colon to get a valid key
                 var defaultKey = _prefix.Substring(0, _prefix.Length - 1);
-                return _root.Get(defaultKey);
+                return _root[defaultKey];
             }
 
-            return _root.Get(_prefix + key);
+            return _root[_prefix + key];
         }
 
-        public bool TryGet(string key, out string value)
+        private void Set(string key, string value)
         {
-            // Null key indicates that the prefix passed to ctor should be used as a key
-            if (key == null)
-            {
-                // Strip off the trailing colon to get a valid key
-                var defaultKey = _prefix.Substring(0, _prefix.Length - 1);
-                return _root.TryGet(defaultKey, out value);
-            }
-            return _root.TryGet(_prefix + key, out value);
-        }
-
-        public IConfiguration GetConfigurationSection(string key)
-        {
-            return _root.GetConfigurationSection(_prefix + key);
-        }
-
-        public void Set(string key, string value)
-        {
-            _root.Set(_prefix + key, value);
-        }
-
-        public IEnumerable<KeyValuePair<string, IConfiguration>> GetConfigurationSections()
-        {
-            return _root.GetConfigurationSections(_prefix.Substring(0, _prefix.Length - 1));
-        }
-
-        public IEnumerable<KeyValuePair<string, IConfiguration>> GetConfigurationSections(string key)
-        {
-            return _root.GetConfigurationSections(_prefix + key);
-        }
-
-        public void Reload()
-        {
-            throw new InvalidOperationException(Resources.Error_InvalidReload);
+            _key = key;
+            _value = value;
+            _root[_prefix + key] = value;
         }
     }
 }

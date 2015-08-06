@@ -106,10 +106,10 @@ namespace Microsoft.Framework.Configuration.Json.Test
             builder.Add(jsonConfigSource2, load: false);
             var config = builder.Build();
 
-            Assert.Equal(3, config.GetConfigurationSections("ip").Count());
-            Assert.Equal("15.16.17.18", config.Get("ip:0"));
-            Assert.Equal("7.8.9.10", config.Get("ip:1"));
-            Assert.Equal("11.12.13.14", config.Get("ip:2"));
+            Assert.Equal(3, config.GetSection("ip").GetChildren().Count());
+            Assert.Equal("15.16.17.18", config["ip:0"]);
+            Assert.Equal("7.8.9.10", config["ip:1"]);
+            Assert.Equal("11.12.13.14", config["ip:2"]);
         }
 
         [Fact]
@@ -140,10 +140,10 @@ namespace Microsoft.Framework.Configuration.Json.Test
             builder.Add(jsonConfigSource2, load: false);
             var config = builder.Build();
 
-            Assert.Equal(3, config.GetConfigurationSections("ip").Count());
-            Assert.Equal("1.2.3.4", config.Get("ip:0"));
-            Assert.Equal("15.16.17.18", config.Get("ip:1"));
-            Assert.Equal("11.12.13.14", config.Get("ip:2"));
+            Assert.Equal(3, config.GetSection("ip").GetChildren().Count());
+            Assert.Equal("1.2.3.4", config["ip:0"]);
+            Assert.Equal("15.16.17.18", config["ip:1"]);
+            Assert.Equal("11.12.13.14", config["ip:2"]);
         }
 
         [Fact]
@@ -174,11 +174,11 @@ namespace Microsoft.Framework.Configuration.Json.Test
             builder.Add(jsonConfigSource2, load: false);
             var config = builder.Build();
 
-            Assert.Equal(4, config.GetConfigurationSections("ip").Count());
-            Assert.Equal("1.2.3.4", config.Get("ip:0"));
-            Assert.Equal("7.8.9.10", config.Get("ip:1"));
-            Assert.Equal("11.12.13.14", config.Get("ip:2"));
-            Assert.Equal("15.16.17.18", config.Get("ip:3"));
+            Assert.Equal(4, config.GetSection("ip").GetChildren().Count());
+            Assert.Equal("1.2.3.4", config["ip:0"]);
+            Assert.Equal("7.8.9.10", config["ip:1"]);
+            Assert.Equal("11.12.13.14", config["ip:2"]);
+            Assert.Equal("15.16.17.18", config["ip:3"]);
         }
 
         [Fact]
@@ -199,13 +199,13 @@ namespace Microsoft.Framework.Configuration.Json.Test
             builder.Add(jsonConfigSource, load: false);
             var config = builder.Build();
 
-            var configurationSection = config.GetConfigurationSection("setting");
-            var indexConfigurationSections = configurationSection.GetConfigurationSections().ToArray();
+            var configurationSection = config.GetSection("setting");
+            var indexConfigurationSections = configurationSection.GetChildren().ToArray();
 
             Assert.Equal(3, indexConfigurationSections.Count());
-            Assert.Equal("b", indexConfigurationSections[0].Value.Get(null));
-            Assert.Equal("a", indexConfigurationSections[1].Value.Get(null));
-            Assert.Equal("2", indexConfigurationSections[2].Value.Get(null));
+            Assert.Equal("b", indexConfigurationSections[0][null]);
+            Assert.Equal("a", indexConfigurationSections[1][null]);
+            Assert.Equal("2", indexConfigurationSections[2][null]);
         }
 
         [Fact]
@@ -229,8 +229,8 @@ namespace Microsoft.Framework.Configuration.Json.Test
             builder.Add(jsonConfigSource, load: false);
             var config = builder.Build();
 
-            var configurationSection = config.GetConfigurationSection("setting");
-            var indexConfigurationSections = configurationSection.GetConfigurationSections().ToArray();
+            var configurationSection = config.GetSection("setting");
+            var indexConfigurationSections = configurationSection.GetChildren().ToArray();
 
             Assert.Equal(6, indexConfigurationSections.Count());
             Assert.Equal("4", indexConfigurationSections[0].Key);
