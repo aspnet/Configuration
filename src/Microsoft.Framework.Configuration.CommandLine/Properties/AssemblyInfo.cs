@@ -4,5 +4,5 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Microsoft.Framework.Configuration.CommandLine.Test")]
+[assembly: InternalsVisibleTo("Microsoft.Framework.Configuration.CommandLine.Tests")]
 [assembly: AssemblyMetadata("Serviceable", "True")]

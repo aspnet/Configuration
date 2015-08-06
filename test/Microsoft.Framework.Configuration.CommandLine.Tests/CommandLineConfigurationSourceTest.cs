@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Microsoft.Framework.Configuration.Test;
 using Xunit;
 
-namespace Microsoft.Framework.Configuration.CommandLine.Test
+namespace Microsoft.Framework.Configuration.CommandLine.Tests
 {
     public class CommandLineConfigurationSourceTest
     {
