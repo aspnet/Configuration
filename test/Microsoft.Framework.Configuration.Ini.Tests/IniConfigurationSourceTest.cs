@@ -3,7 +3,7 @@
 
 using System;
 using System.IO;
-using Microsoft.Framework.Configuration.Test;
+using Microsoft.Framework.Configuration.Tests;
 using Xunit;
 
 namespace Microsoft.Framework.Configuration.Ini.Tests

@@ -8,7 +8,7 @@ using System.Linq;
 using Microsoft.Framework.Configuration.Memory;
 using Xunit;
 
-namespace Microsoft.Framework.Configuration.Test
+namespace Microsoft.Framework.Configuration.Tests
 {
     public class ConfigurationTest
     {
