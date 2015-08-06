@@ -6,7 +6,7 @@ using System.IO;
 using Microsoft.Framework.Configuration.Test;
 using Xunit;
 
-namespace Microsoft.Framework.Configuration.Ini.Test
+namespace Microsoft.Framework.Configuration.Ini.Tests
 {
     public class IniConfigurationSourceTest
     {

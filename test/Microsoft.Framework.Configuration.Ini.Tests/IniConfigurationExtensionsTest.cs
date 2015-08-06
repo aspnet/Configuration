@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using Xunit;
 
-namespace Microsoft.Framework.Configuration.Ini.Test
+namespace Microsoft.Framework.Configuration.Ini.Tests
 {
     public class IniConfigurationExtensionsTest
     {
