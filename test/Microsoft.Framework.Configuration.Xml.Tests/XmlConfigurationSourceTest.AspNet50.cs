@@ -12,7 +12,7 @@ using Microsoft.AspNet.Testing.xunit;
 using Microsoft.Framework.Configuration.Tests;
 using Xunit;
 
-namespace Microsoft.Framework.Configuration.Xml.Test
+namespace Microsoft.Framework.Configuration.Xml.Tests
 {
     public partial class XmlConfigurationSourceTest
     {

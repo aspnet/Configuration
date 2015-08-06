@@ -4,5 +4,5 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Microsoft.Framework.Configuration.Xml.Test")]
+[assembly: InternalsVisibleTo("Microsoft.Framework.Configuration.Xml.Tests")]
 [assembly: AssemblyMetadata("Serviceable", "True")]
