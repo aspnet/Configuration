@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
-namespace Microsoft.Framework.Configuration.Test
+namespace Microsoft.Framework.Configuration.Tests
 {
     public class ConfigurationTests : IDisposable
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Microsoft.Framework.Configuration.Test
+namespace Microsoft.Framework.Configuration.Tests
 {
     public class ConfigurationPathComparerTest
     {

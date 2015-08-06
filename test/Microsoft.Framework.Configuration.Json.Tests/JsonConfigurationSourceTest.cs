@@ -4,7 +4,7 @@
 using System;
 using System.IO;
 using Microsoft.Framework.Configuration.Json;
-using Microsoft.Framework.Configuration.Test;
+using Microsoft.Framework.Configuration.Tests;
 using Newtonsoft.Json;
 using Xunit;
 
