@@ -6,7 +6,7 @@ using System.Collections;
 using Microsoft.Framework.Configuration.Test;
 using Xunit;
 
-namespace Microsoft.Framework.Configuration.EnvironmentVariables.Test
+namespace Microsoft.Framework.Configuration.EnvironmentVariables.Tests
 {
     public class EnvironmentVariablesConfigurationSourceTest
     {
