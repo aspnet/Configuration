@@ -5,7 +5,7 @@ using System.Linq;
 using Microsoft.Framework.Configuration.Test;
 using Xunit;
 
-namespace Microsoft.Framework.Configuration.Json.Test
+namespace Microsoft.Framework.Configuration.Json.Tests
 {
     public class ArrayTest
     {

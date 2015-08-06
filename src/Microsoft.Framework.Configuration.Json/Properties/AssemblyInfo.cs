@@ -4,5 +4,5 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Microsoft.Framework.Configuration.Json.Test")]
+[assembly: InternalsVisibleTo("Microsoft.Framework.Configuration.Json.Tests")]
 [assembly: AssemblyMetadata("Serviceable", "True")]
