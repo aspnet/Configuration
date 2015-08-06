@@ -4,5 +4,5 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Microsoft.Framework.Configuration.Binder.Test")]
+[assembly: InternalsVisibleTo("Microsoft.Framework.Configuration.Binder.Tests")]
 [assembly: AssemblyMetadata("Serviceable", "True")]

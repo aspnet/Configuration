@@ -8,7 +8,7 @@ using System.Reflection;
 using Microsoft.Framework.Configuration.Memory;
 using Xunit;
 
-namespace Microsoft.Framework.Configuration.Binder.Test
+namespace Microsoft.Framework.Configuration.Binder.Tests
 {
     public class ConfigurationBinderTests
     {
