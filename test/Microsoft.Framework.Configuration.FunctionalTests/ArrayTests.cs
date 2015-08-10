@@ -62,14 +62,14 @@ i=ini_i.i.i.i
             var indexConfigurationSections = configurationSection.GetChildren().ToArray();
 
             Assert.Equal(8, indexConfigurationSections.Length);
-            Assert.Equal("0", indexConfigurationSections[0].Key);
-            Assert.Equal("1", indexConfigurationSections[1].Key);
-            Assert.Equal("2", indexConfigurationSections[2].Key);
-            Assert.Equal("3", indexConfigurationSections[3].Key);
-            Assert.Equal("4", indexConfigurationSections[4].Key);
-            Assert.Equal("i", indexConfigurationSections[5].Key);
-            Assert.Equal("j", indexConfigurationSections[6].Key);
-            Assert.Equal("x", indexConfigurationSections[7].Key);
+            Assert.Equal("address:0", indexConfigurationSections[0].Key);
+            Assert.Equal("address:1", indexConfigurationSections[1].Key);
+            Assert.Equal("address:2", indexConfigurationSections[2].Key);
+            Assert.Equal("address:3", indexConfigurationSections[3].Key);
+            Assert.Equal("address:4", indexConfigurationSections[4].Key);
+            Assert.Equal("address:i", indexConfigurationSections[5].Key);
+            Assert.Equal("address:j", indexConfigurationSections[6].Key);
+            Assert.Equal("address:x", indexConfigurationSections[7].Key);
         }
 
         [Fact]

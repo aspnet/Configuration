@@ -4,41 +4,30 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Framework.Configuration.Internal;
 using Microsoft.Framework.Internal;
 
 namespace Microsoft.Framework.Configuration
 {
-    public class ConfigurationSection : IConfigurationSection
+    public class ConfigurationSection : ConfigurationBase, IConfigurationSection
     {
-        private readonly IList<IConfigurationSource> _sources = new List<IConfigurationSource>();
-        private string _key { get; set; }
-        private string _value { get; set; }
+        private string _key;
 
-        public ConfigurationSection(IList<IConfigurationSource> sources)
+        public ConfigurationSection([NotNull] IList<IConfigurationSource> sources)
+            : base(sources)
         {
-            _sources = sources;
+            _key = string.Empty;
+            Value = null;
         }
-
-        public string this[string key]
+        public ConfigurationSection([NotNull] IList<IConfigurationSource> sources, [NotNull] string key)
+            : base (sources)
         {
-            get
+            if (string.IsNullOrEmpty(key))
             {
-                _value = Get(key);
-                return _value;
+                throw new InvalidOperationException(Resources.Error_EmptyKey);
             }
-            set
-            {
-                Set(key, value);
-            }
-        }
 
-        public IEnumerable<IConfigurationSource> Sources
-        {
-            get
-            {
-                return _sources;
-            }
+            _key = key;
+            Value = base[_key];
         }
 
         public string Key
@@ -51,82 +40,88 @@ namespace Microsoft.Framework.Configuration
 
         public string Value
         {
+            get; set;
+        }
+
+        public override string this[[NotNull] string key]
+        {
             get
             {
-                if (_value != null)
+                var prefix = _key;
+
+                if (!string.IsNullOrEmpty(prefix))
                 {
-                    return _value;
+                    prefix = prefix + Constants.KeyDelimiter;
                 }
                 else
                 {
-                    _value = Get(_key);
-                    return _value;
+                    prefix = string.Empty;
                 }
-            }
 
+                return base[prefix + key];
+            }
             set
             {
-                Set(_key, value);
-            }
-        }
-
-        public IConfigurationSection GetSection(string key)
-        {
-            return new ConfigurationFocus(this, key + Constants.KeyDelimiter);
-        }
-
-        public IEnumerable<IConfigurationSection> GetChildren()
-        {
-            return GetChildrenImplementation(_key + Constants.KeyDelimiter);
-        }
-
-        private string Get([NotNull] string key)
-        {
-            // If a key in the newly added configuration source is identical to a key in a 
-            // formerly added configuration source, the new one overrides the former one.
-            // So we search in reverse order, starting with latest configuration source.
-            foreach (var src in _sources.Reverse())
-            {
-                string value = null;
-                if (src.TryGet(key, out value))
+                if (!Sources.Any())
                 {
-                    return value;
+                    throw new InvalidOperationException(Resources.Error_NoSources);
+                }
+
+                var prefix = _key;
+
+                if (!string.IsNullOrEmpty(prefix))
+                {
+                    prefix = prefix + Constants.KeyDelimiter;
+                }
+                else
+                {
+                    prefix = string.Empty;
+                }
+
+                _key = prefix + key;
+
+                foreach (var src in Sources)
+                {
+                    src.Set(key, value);
                 }
             }
-
-            return null;
         }
 
-        private void Set([NotNull] string key, [NotNull] string value)
+        public override IConfigurationSection GetSection([NotNull] string key)
         {
-            if (!_sources.Any())
+            if (string.IsNullOrEmpty(key))
             {
-                throw new InvalidOperationException(Resources.Error_NoSources);
+                throw new InvalidOperationException(Resources.Error_EmptyKey);
             }
 
-            _key = key;
-            _value = value;
-
-            foreach (var src in _sources)
+            var prefix = Key;
+            if (!string.IsNullOrEmpty(prefix))
             {
-                src.Set(key, value);
+                prefix = prefix + Constants.KeyDelimiter;
             }
+            else
+            {
+                prefix = string.Empty;
+            }
+            return new ConfigurationSection(Sources, prefix + key);
         }
 
-        private IEnumerable<IConfigurationSection> GetChildrenImplementation(string prefix)
+        public override IEnumerable<IConfigurationSection> GetChildren()
         {
-            var segments = _sources.Aggregate(
+            var prefix =Key + Constants.KeyDelimiter;
+
+            var segments = Sources.Aggregate(
                 Enumerable.Empty<string>(),
                 (seed, source) => source.ProduceConfigurationSections(seed, prefix, Constants.KeyDelimiter));
 
             var distinctSegments = segments.Distinct();
 
-            return distinctSegments.Select(segment => CreateConfigurationFocus(prefix, segment));
+            return distinctSegments.Select(segment => CreateConfigurationSection(prefix, segment));
         }
 
-        private IConfigurationSection CreateConfigurationFocus(string prefix, string segment)
+        private IConfigurationSection CreateConfigurationSection(string prefix, string segment)
         {
-            return new ConfigurationFocus(this, prefix + segment + Constants.KeyDelimiter, segment);
+            return new ConfigurationSection(Sources, prefix + segment);
         }
     }
 }

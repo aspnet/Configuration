@@ -12,14 +12,14 @@ namespace Microsoft.Framework.Configuration
 {
     public static class ConfigurationBinder
     {
-        public static TModel Bind<TModel>(IConfiguration configuration) where TModel : new()
+        public static TModel Bind<TModel>(IConfigurationSection configuration) where TModel : new()
         {
             var model = new TModel();
             Bind(model, configuration);
             return model;
         }
 
-        public static void Bind(object model, IConfiguration configuration)
+        public static void Bind(object model, IConfigurationSection configuration)
         {
             if (model == null)
             {
@@ -29,7 +29,7 @@ namespace Microsoft.Framework.Configuration
             BindObjectProperties(model, configuration);
         }
 
-        private static void BindObjectProperties(object obj, IConfiguration configuration)
+        private static void BindObjectProperties(object obj, IConfigurationSection configuration)
         {
             foreach (var property in GetAllProperties(obj.GetType().GetTypeInfo()))
             {
@@ -37,7 +37,7 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        private static void BindProperty(PropertyInfo property, object propertyOwner, IConfiguration configuration)
+        private static void BindProperty(PropertyInfo property, object propertyOwner, IConfigurationSection configuration)
         {
             configuration = configuration.GetSection(property.Name);
 
@@ -68,9 +68,9 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        private static object BindType(Type type, object typeInstance, IConfiguration configuration)
+        private static object BindType(Type type, object typeInstance, IConfigurationSection configuration)
         {
-            var configValue = configuration[null];
+            var configValue = configuration.Value;
             var typeInfo = type.GetTypeInfo();
 
             if (configValue != null)
@@ -80,8 +80,7 @@ namespace Microsoft.Framework.Configuration
             }
             else
             {
-                var subkeys = configuration.GetChildren();
-                if (subkeys.Count() != 0)
+                if (configuration.GetChildren().Count() != 0)
                 {
                     if (typeInstance == null)
                     {
@@ -131,7 +130,7 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        private static void BindDictionary(object dictionary, Type iDictionaryType, IConfiguration configuration)
+        private static void BindDictionary(object dictionary, Type iDictionaryType, IConfigurationSection configuration)
         {
             var iDictionaryTypeInfo = iDictionaryType.GetTypeInfo();
 
@@ -147,22 +146,21 @@ namespace Microsoft.Framework.Configuration
             }
 
             var addMethod = iDictionaryTypeInfo.GetDeclaredMethod("Add");
-            var subkeys = configuration.GetChildren();
 
-            foreach (var keyProperty in subkeys)
+            foreach (var configurationSection in configuration.GetChildren())
             {
                 var item = BindType(
                     type: valueType,
                     typeInstance: null,
-                    configuration: keyProperty);
+                    configuration: configurationSection);
                 if (item != null)
                 {
-                    addMethod.Invoke(dictionary, new[] { keyProperty.Key, item });
+                    addMethod.Invoke(dictionary, new[] { configurationSection.Key, item });
                 }
             }
         }
 
-        private static void BindCollection(object collection, Type iCollectionType, IConfiguration configuration)
+        private static void BindCollection(object collection, Type iCollectionType, IConfigurationSection configuration)
         {
             var iCollectionTypeInfo = iCollectionType.GetTypeInfo();
 
@@ -171,16 +169,15 @@ namespace Microsoft.Framework.Configuration
             var itemType = iCollectionTypeInfo.GenericTypeArguments[0];
 
             var addMethod = iCollectionTypeInfo.GetDeclaredMethod("Add");
-            var subkeys = configuration.GetChildren().ToList();
 
-            foreach (var keyProperty in subkeys)
+            foreach (var configurationSection in configuration.GetChildren())
             {
                 try
                 {
                     var item = BindType(
                         type: itemType,
                         typeInstance: null,
-                        configuration: keyProperty);
+                        configuration: configurationSection);
                     if (item != null)
                     {
                         addMethod.Invoke(collection, new[] { item });
@@ -192,7 +189,7 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        private static object CreateValueFromConfiguration(Type type, string value, IConfiguration configuration)
+        private static object CreateValueFromConfiguration(Type type, string value, IConfigurationSection configuration)
         {
             var typeInfo = type.GetTypeInfo();
 
@@ -201,7 +198,7 @@ namespace Microsoft.Framework.Configuration
                 return CreateValueFromConfiguration(Nullable.GetUnderlyingType(type), value, configuration);
             }
 
-            var configurationValue = configuration[key: null];
+            var configurationValue = configuration.Value;
 
             try
             {

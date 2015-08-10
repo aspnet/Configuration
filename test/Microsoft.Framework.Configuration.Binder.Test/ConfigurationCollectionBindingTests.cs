@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Framework.Configuration.Memory;
 using Xunit;
 
@@ -22,9 +23,9 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             };
 
             var builder = new ConfigurationBuilder(new MemoryConfigurationSource(input));
-            var config = builder.Build();
 
-            var options = ConfigurationBinder.Bind<OptionsWithLists>(config);
+            var options = ConfigurationBinder.Bind<OptionsWithLists>(
+                new ConfigurationSection(builder.Sources.ToList()));
 
             var list = options.StringList;
 
@@ -48,9 +49,9 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             };
 
             var builder = new ConfigurationBuilder(new MemoryConfigurationSource(input));
-            var config = builder.Build();
 
-            var options = ConfigurationBinder.Bind<OptionsWithLists>(config);
+            var options = ConfigurationBinder.Bind<OptionsWithLists>(
+                new ConfigurationSection(builder.Sources.ToList()));
 
             var list = options.IntList;
 
@@ -74,9 +75,9 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             };
 
             var builder = new ConfigurationBuilder(new MemoryConfigurationSource(input));
-            var config = builder.Build();
 
-            var options = ConfigurationBinder.Bind<OptionsWithLists>(config);
+            var options = ConfigurationBinder.Bind<OptionsWithLists>(
+                new ConfigurationSection(builder.Sources.ToList()));
 
             var list = options.AlreadyInitializedList;
 
@@ -101,9 +102,9 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             };
 
             var builder = new ConfigurationBuilder(new MemoryConfigurationSource(input));
-            var config = builder.Build();
 
-            var options = ConfigurationBinder.Bind<OptionsWithLists>(config);
+            var options = ConfigurationBinder.Bind<OptionsWithLists>(
+                new ConfigurationSection(builder.Sources.ToList()));
 
             var list = options.CustomList;
 
@@ -126,9 +127,9 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             };
 
             var builder = new ConfigurationBuilder(new MemoryConfigurationSource(input));
-            var config = builder.Build();
 
-            var options = ConfigurationBinder.Bind<OptionsWithLists>(config);
+            var options = ConfigurationBinder.Bind<OptionsWithLists>(
+                new ConfigurationSection(builder.Sources.ToList()));
 
             Assert.Equal(3, options.ObjectList.Count);
 
@@ -150,9 +151,9 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             };
 
             var builder = new ConfigurationBuilder(new MemoryConfigurationSource(input));
-            var config = builder.Build();
 
-            var options = ConfigurationBinder.Bind<OptionsWithLists>(config);
+            var options = ConfigurationBinder.Bind<OptionsWithLists>(
+                new ConfigurationSection(builder.Sources.ToList()));
 
             Assert.Equal(2, options.NestedLists.Count);
             Assert.Equal(2, options.NestedLists[0].Count);
@@ -176,15 +177,15 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             };
 
             var builder = new ConfigurationBuilder(new MemoryConfigurationSource(input));
-            var config = builder.Build();
 
-            var options = ConfigurationBinder.Bind<OptionsWithDictionary>(config);
+            var options = ConfigurationBinder.Bind<OptionsWithDictionary>(
+                new ConfigurationSection(builder.Sources.ToList()));
 
             Assert.Equal(3, options.StringDictionary.Count);
 
-            Assert.Equal("val_1", options.StringDictionary["abc"]);
-            Assert.Equal("val_2", options.StringDictionary["def"]);
-            Assert.Equal("val_3", options.StringDictionary["ghi"]);
+            Assert.Equal("val_1", options.StringDictionary["StringDictionary:abc"]);
+            Assert.Equal("val_2", options.StringDictionary["StringDictionary:def"]);
+            Assert.Equal("val_3", options.StringDictionary["StringDictionary:ghi"]);
         }
 
         [Fact]
@@ -198,15 +199,15 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             };
 
             var builder = new ConfigurationBuilder(new MemoryConfigurationSource(input));
-            var config = builder.Build();
 
-            var options = ConfigurationBinder.Bind<OptionsWithDictionary>(config);
+            var options = ConfigurationBinder.Bind<OptionsWithDictionary>(
+                new ConfigurationSection(builder.Sources.ToList()));
 
             Assert.Equal(3, options.IntDictionary.Count);
 
-            Assert.Equal(42, options.IntDictionary["abc"]);
-            Assert.Equal(43, options.IntDictionary["def"]);
-            Assert.Equal(44, options.IntDictionary["ghi"]);
+            Assert.Equal(42, options.IntDictionary["IntDictionary:abc"]);
+            Assert.Equal(43, options.IntDictionary["IntDictionary:def"]);
+            Assert.Equal(44, options.IntDictionary["IntDictionary:ghi"]);
         }
 
         [Fact]
@@ -220,15 +221,15 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             };
 
             var builder = new ConfigurationBuilder(new MemoryConfigurationSource(input));
-            var config = builder.Build();
 
-            var options = ConfigurationBinder.Bind<OptionsWithDictionary>(config);
+            var options = ConfigurationBinder.Bind<OptionsWithDictionary>(
+                new ConfigurationSection(builder.Sources.ToList()));
 
             Assert.Equal(3, options.ObjectDictionary.Count);
 
-            Assert.Equal(1, options.ObjectDictionary["abc"].Integer);
-            Assert.Equal(2, options.ObjectDictionary["def"].Integer);
-            Assert.Equal(3, options.ObjectDictionary["ghi"].Integer);
+            Assert.Equal(1, options.ObjectDictionary["ObjectDictionary:abc"].Integer);
+            Assert.Equal(2, options.ObjectDictionary["ObjectDictionary:def"].Integer);
+            Assert.Equal(3, options.ObjectDictionary["ObjectDictionary:ghi"].Integer);
         }
 
         [Fact]
@@ -244,19 +245,19 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             };
 
             var builder = new ConfigurationBuilder(new MemoryConfigurationSource(input));
-            var config = builder.Build();
 
-            var options = ConfigurationBinder.Bind<OptionsWithDictionary>(config);
+            var options = ConfigurationBinder.Bind<OptionsWithDictionary>(
+                new ConfigurationSection(builder.Sources.ToList()));
 
             Assert.Equal(2, options.ListDictionary.Count);
-            Assert.Equal(2, options.ListDictionary["abc"].Count);
-            Assert.Equal(3, options.ListDictionary["def"].Count);
+            Assert.Equal(2, options.ListDictionary["ListDictionary:abc"].Count);
+            Assert.Equal(3, options.ListDictionary["ListDictionary:def"].Count);
 
-            Assert.Equal("abc_0", options.ListDictionary["abc"][0]);
-            Assert.Equal("abc_1", options.ListDictionary["abc"][1]);
-            Assert.Equal("def_0", options.ListDictionary["def"][0]);
-            Assert.Equal("def_1", options.ListDictionary["def"][1]);
-            Assert.Equal("def_2", options.ListDictionary["def"][2]);
+            Assert.Equal("abc_0", options.ListDictionary["ListDictionary:abc"][0]);
+            Assert.Equal("abc_1", options.ListDictionary["ListDictionary:abc"][1]);
+            Assert.Equal("def_0", options.ListDictionary["ListDictionary:def"][0]);
+            Assert.Equal("def_1", options.ListDictionary["ListDictionary:def"][1]);
+            Assert.Equal("def_2", options.ListDictionary["ListDictionary:def"][2]);
         }
 
         [Fact]
@@ -272,9 +273,9 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             };
 
             var builder = new ConfigurationBuilder(new MemoryConfigurationSource(input));
-            var config = builder.Build();
 
-            var options = ConfigurationBinder.Bind<OptionsWithLists>(config);
+            var options = ConfigurationBinder.Bind<OptionsWithLists>(
+                new ConfigurationSection(builder.Sources.ToList()));
 
             Assert.Equal(2, options.ObjectList.Count);
             Assert.Equal(2, options.ObjectList[0].ListInNestedOption.Count);
@@ -298,9 +299,9 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             };
 
             var builder = new ConfigurationBuilder(new MemoryConfigurationSource(input));
-            var config = builder.Build();
 
-            var options = ConfigurationBinder.Bind<OptionsWithDictionary>(config);
+            var options = ConfigurationBinder.Bind<OptionsWithDictionary>(
+                new ConfigurationSection(builder.Sources.ToList()));
 
             Assert.Equal(0, options.NonStringKeyDictionary.Count);
         }

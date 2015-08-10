@@ -180,7 +180,7 @@ namespace Microsoft.Framework.Configuration.Test
             memVal2 = configFocus["DB1:Connection2"];
             memVal3 = configFocus["DB2:Connection"];
             memVal4 = configFocus["Source:DB2:Connection"];
-            memVal5 = configFocus[null];
+            memVal5 = configFocus.Value;
 
             // Assert
             Assert.Equal("MemVal1", memVal1);
@@ -191,7 +191,7 @@ namespace Microsoft.Framework.Configuration.Test
             Assert.Equal("MemVal2", configFocus["DB1:Connection2"]);
             Assert.Null(configFocus["DB2:Connection"]);
             Assert.Null(configFocus["Source:DB2:Connection"]);
-            Assert.Equal("MemVal4", configFocus[null]);
+            Assert.Equal("MemVal4", configFocus.Value);
         }
 
         [Fact]
@@ -227,10 +227,10 @@ namespace Microsoft.Framework.Configuration.Test
 
             // Assert
             Assert.Equal(2, configFocusList.Count());
-            Assert.Equal("MemVal1", configFocusList.FirstOrDefault(c => c.Key == "DB1")["Connection1"]);
-            Assert.Equal("MemVal2", configFocusList.FirstOrDefault(c => c.Key == "DB1")["Connection2"]);
-            Assert.Equal("MemVal3", configFocusList.FirstOrDefault(c => c.Key == "DB2Connection")[null]);
-            Assert.False(configFocusList.Exists(c => c.Key == "DB3"));
+            Assert.Equal("MemVal1", configFocusList.FirstOrDefault(c => c.Key == "Data:DB1")["Connection1"]);
+            Assert.Equal("MemVal2", configFocusList.FirstOrDefault(c => c.Key == "Data:DB1")["Connection2"]);
+            Assert.Equal("MemVal3", configFocusList.FirstOrDefault(c => c.Key == "Data:DB2Connection").Value);
+            Assert.False(configFocusList.Exists(c => c.Key == "Data:DB3"));
             Assert.False(configFocusList.Exists(c => c.Key == "Source:DB3"));
         }
 
