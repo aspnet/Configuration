@@ -183,9 +183,9 @@ namespace Microsoft.Framework.Configuration.Binder.Test
 
             Assert.Equal(3, options.StringDictionary.Count);
 
-            Assert.Equal("val_1", options.StringDictionary["StringDictionary:abc"]);
-            Assert.Equal("val_2", options.StringDictionary["StringDictionary:def"]);
-            Assert.Equal("val_3", options.StringDictionary["StringDictionary:ghi"]);
+            Assert.Equal("val_1", options.StringDictionary["abc"]);
+            Assert.Equal("val_2", options.StringDictionary["def"]);
+            Assert.Equal("val_3", options.StringDictionary["ghi"]);
         }
 
         [Fact]
@@ -205,9 +205,9 @@ namespace Microsoft.Framework.Configuration.Binder.Test
 
             Assert.Equal(3, options.IntDictionary.Count);
 
-            Assert.Equal(42, options.IntDictionary["IntDictionary:abc"]);
-            Assert.Equal(43, options.IntDictionary["IntDictionary:def"]);
-            Assert.Equal(44, options.IntDictionary["IntDictionary:ghi"]);
+            Assert.Equal(42, options.IntDictionary["abc"]);
+            Assert.Equal(43, options.IntDictionary["def"]);
+            Assert.Equal(44, options.IntDictionary["ghi"]);
         }
 
         [Fact]
@@ -227,9 +227,9 @@ namespace Microsoft.Framework.Configuration.Binder.Test
 
             Assert.Equal(3, options.ObjectDictionary.Count);
 
-            Assert.Equal(1, options.ObjectDictionary["ObjectDictionary:abc"].Integer);
-            Assert.Equal(2, options.ObjectDictionary["ObjectDictionary:def"].Integer);
-            Assert.Equal(3, options.ObjectDictionary["ObjectDictionary:ghi"].Integer);
+            Assert.Equal(1, options.ObjectDictionary["abc"].Integer);
+            Assert.Equal(2, options.ObjectDictionary["def"].Integer);
+            Assert.Equal(3, options.ObjectDictionary["ghi"].Integer);
         }
 
         [Fact]
@@ -250,14 +250,14 @@ namespace Microsoft.Framework.Configuration.Binder.Test
             var options = ConfigurationBinder.Bind<OptionsWithDictionary>(config);
 
             Assert.Equal(2, options.ListDictionary.Count);
-            Assert.Equal(2, options.ListDictionary["ListDictionary:abc"].Count);
-            Assert.Equal(3, options.ListDictionary["ListDictionary:def"].Count);
+            Assert.Equal(2, options.ListDictionary["abc"].Count);
+            Assert.Equal(3, options.ListDictionary["def"].Count);
 
-            Assert.Equal("abc_0", options.ListDictionary["ListDictionary:abc"][0]);
-            Assert.Equal("abc_1", options.ListDictionary["ListDictionary:abc"][1]);
-            Assert.Equal("def_0", options.ListDictionary["ListDictionary:def"][0]);
-            Assert.Equal("def_1", options.ListDictionary["ListDictionary:def"][1]);
-            Assert.Equal("def_2", options.ListDictionary["ListDictionary:def"][2]);
+            Assert.Equal("abc_0", options.ListDictionary["abc"][0]);
+            Assert.Equal("abc_1", options.ListDictionary["abc"][1]);
+            Assert.Equal("def_0", options.ListDictionary["def"][0]);
+            Assert.Equal("def_1", options.ListDictionary["def"][1]);
+            Assert.Equal("def_2", options.ListDictionary["def"][2]);
         }
 
         [Fact]

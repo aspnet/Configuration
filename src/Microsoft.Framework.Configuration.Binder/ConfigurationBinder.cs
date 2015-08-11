@@ -71,16 +71,20 @@ namespace Microsoft.Framework.Configuration
         private static object BindType(Type type, object typeInstance, IConfiguration configuration)
         {
             string configValue = null;
+            IConfigurationSection configurationSection = null;
+
+            var typeInfo = type.GetTypeInfo();
+
             if (configuration is IConfigurationSection)
             {
-                configValue = ((IConfigurationSection)configuration).Value;
+                configurationSection = (IConfigurationSection)configuration;
+                configValue = configurationSection.Value;
             }
-            var typeInfo = type.GetTypeInfo();
 
             if (configValue != null)
             {
                 // Leaf nodes are always reinitialized
-                return CreateValueFromConfiguration(type, configValue, configuration as IConfigurationSection);
+                return CreateValueFromSection(type, configValue, configurationSection);
             }
             else
             {
@@ -159,7 +163,14 @@ namespace Microsoft.Framework.Configuration
                     configuration: configurationSection);
                 if (item != null)
                 {
-                    addMethod.Invoke(dictionary, new[] { configurationSection.Key, item });
+                    var key = configurationSection.Key;
+                    if (configuration is IConfigurationSection)
+                    {
+                        // Remove the parent key and : delimiter to get the configurationSection's key
+                        key = key.Substring((configuration as IConfigurationSection).Key.Length + 1);
+                    }
+
+                    addMethod.Invoke(dictionary, new[] { key, item });
                 }
             }
         }
@@ -193,13 +204,13 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        private static object CreateValueFromConfiguration(Type type, string value, IConfigurationSection configuration)
+        private static object CreateValueFromSection(Type type, string value, IConfigurationSection configuration)
         {
             var typeInfo = type.GetTypeInfo();
 
             if (typeInfo.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
-                return CreateValueFromConfiguration(Nullable.GetUnderlyingType(type), value, configuration);
+                return CreateValueFromSection(Nullable.GetUnderlyingType(type), value, configuration);
             }
 
             var configurationValue = configuration.Value;

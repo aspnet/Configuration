@@ -223,15 +223,15 @@ namespace Microsoft.Framework.Configuration.Test
             var config = builder.Build();
 
             // Act
-            var configFocusList = config.GetSection("Data").GetChildren().ToList();
+            var configSections = config.GetSection("Data").GetChildren().ToList();
 
             // Assert
-            Assert.Equal(2, configFocusList.Count());
-            Assert.Equal("MemVal1", configFocusList.FirstOrDefault(c => c.Key == "Data:DB1")["Connection1"]);
-            Assert.Equal("MemVal2", configFocusList.FirstOrDefault(c => c.Key == "Data:DB1")["Connection2"]);
-            Assert.Equal("MemVal3", configFocusList.FirstOrDefault(c => c.Key == "Data:DB2Connection").Value);
-            Assert.False(configFocusList.Exists(c => c.Key == "Data:DB3"));
-            Assert.False(configFocusList.Exists(c => c.Key == "Source:DB3"));
+            Assert.Equal(2, configSections.Count());
+            Assert.Equal("MemVal1", configSections.FirstOrDefault(c => c.Key == "Data:DB1")["Connection1"]);
+            Assert.Equal("MemVal2", configSections.FirstOrDefault(c => c.Key == "Data:DB1")["Connection2"]);
+            Assert.Equal("MemVal3", configSections.FirstOrDefault(c => c.Key == "Data:DB2Connection").Value);
+            Assert.False(configSections.Exists(c => c.Key == "Data:DB3"));
+            Assert.False(configSections.Exists(c => c.Key == "Source:DB3"));
         }
 
         [Fact]

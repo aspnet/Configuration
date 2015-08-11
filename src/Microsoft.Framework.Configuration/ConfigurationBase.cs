@@ -26,8 +26,6 @@ namespace Microsoft.Framework.Configuration
                     throw new InvalidOperationException(Resources.Error_EmptyKey);
                 }
 
-                var prefixedKey = GetPrefix() + key;
-
                 // If a key in the newly added configuration source is identical to a key in a
                 // formerly added configuration source, the new one overrides the former one.
                 // So we search in reverse order, starting with latest configuration source.
@@ -35,7 +33,7 @@ namespace Microsoft.Framework.Configuration
                 {
                     string value = null;
 
-                    if (src.TryGet(prefixedKey, out value))
+                    if (src.TryGet(GetPrefix() + key, out value))
                     {
                         return value;
                     }
@@ -68,6 +66,10 @@ namespace Microsoft.Framework.Configuration
         public IEnumerable<IConfigurationSection> GetChildren()
         {
             var prefix = GetPrefix();
+            Func<string, string, ConfigurationSection> CreateConfigurationSection = (string myPrefix, string segment) =>
+            {
+                return new ConfigurationSection(Sources, prefix + segment);
+            };
 
             var segments = Sources.Aggregate(
                 Enumerable.Empty<string>(),
@@ -75,7 +77,7 @@ namespace Microsoft.Framework.Configuration
 
             var distinctSegments = segments.Distinct();
 
-            return distinctSegments.Select(segment => CreateConfigurationSection(prefix, segment));
+            return distinctSegments.Select(segment => CreateConfigurationSection.Invoke(prefix, segment));
         }
 
         public IConfigurationSection GetSection(string key)
@@ -89,10 +91,5 @@ namespace Microsoft.Framework.Configuration
         }
 
         protected abstract string GetPrefix();
-
-        private IConfigurationSection CreateConfigurationSection(string prefix, string segment)
-        {
-            return new ConfigurationSection(Sources, prefix + segment);
-        }
     }
 }

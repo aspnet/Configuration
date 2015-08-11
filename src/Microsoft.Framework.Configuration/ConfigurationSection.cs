@@ -10,7 +10,7 @@ namespace Microsoft.Framework.Configuration
 {
     public class ConfigurationSection : ConfigurationBase, IConfigurationSection
     {
-        private string _key { get; }
+        private readonly string _key;
 
         public ConfigurationSection([NotNull] IList<IConfigurationSource> sources, [NotNull] string key)
             : base (sources)
@@ -63,17 +63,7 @@ namespace Microsoft.Framework.Configuration
 
         protected override string GetPrefix()
         {
-            var prefix = _key;
-            if (!string.IsNullOrEmpty(prefix))
-            {
-                prefix = prefix + Constants.KeyDelimiter;
-            }
-            else
-            {
-                prefix = string.Empty;
-            }
-
-            return prefix;
+            return _key + Constants.KeyDelimiter;
         }
     }
 }
