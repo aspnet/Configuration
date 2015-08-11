@@ -17,7 +17,7 @@ namespace Microsoft.Framework.Configuration
             _sources = sources;
         }
 
-        public virtual string this[[NotNull] string key]
+        public string this[[NotNull] string key]
         {
             get
             {
@@ -26,6 +26,8 @@ namespace Microsoft.Framework.Configuration
                     throw new InvalidOperationException(Resources.Error_EmptyKey);
                 }
 
+                var prefixedKey = GetPrefix() + key;
+
                 // If a key in the newly added configuration source is identical to a key in a
                 // formerly added configuration source, the new one overrides the former one.
                 // So we search in reverse order, starting with latest configuration source.
@@ -33,7 +35,7 @@ namespace Microsoft.Framework.Configuration
                 {
                     string value = null;
 
-                    if (src.TryGet(key, out value))
+                    if (src.TryGet(prefixedKey, out value))
                     {
                         return value;
                     }
@@ -43,14 +45,14 @@ namespace Microsoft.Framework.Configuration
             }
             set
             {
-                if (!_sources.Any())
+                if (!Sources.Any())
                 {
                     throw new InvalidOperationException(Resources.Error_NoSources);
                 }
 
-                foreach (var src in _sources)
+                foreach (var src in Sources)
                 {
-                    src.Set(key, value);
+                    src.Set(GetPrefix() + key, value);
                 }
             }
         }
@@ -63,8 +65,34 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        public abstract IEnumerable<IConfigurationSection> GetChildren();
+        public IEnumerable<IConfigurationSection> GetChildren()
+        {
+            var prefix = GetPrefix();
 
-        public abstract IConfigurationSection GetSection(string key);
+            var segments = Sources.Aggregate(
+                Enumerable.Empty<string>(),
+                (seed, source) => source.ProduceConfigurationSections(seed, prefix, Constants.KeyDelimiter));
+
+            var distinctSegments = segments.Distinct();
+
+            return distinctSegments.Select(segment => CreateConfigurationSection(prefix, segment));
+        }
+
+        public IConfigurationSection GetSection(string key)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new InvalidOperationException(Resources.Error_EmptyKey);
+            }
+
+            return new ConfigurationSection(Sources, GetPrefix() + key);
+        }
+
+        protected abstract string GetPrefix();
+
+        private IConfigurationSection CreateConfigurationSection(string prefix, string segment)
+        {
+            return new ConfigurationSection(Sources, prefix + segment);
+        }
     }
 }

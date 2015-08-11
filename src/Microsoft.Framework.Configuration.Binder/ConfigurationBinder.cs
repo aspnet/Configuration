@@ -12,14 +12,14 @@ namespace Microsoft.Framework.Configuration
 {
     public static class ConfigurationBinder
     {
-        public static TModel Bind<TModel>(IConfigurationSection configuration) where TModel : new()
+        public static TModel Bind<TModel>(IConfiguration configuration) where TModel : new()
         {
             var model = new TModel();
             Bind(model, configuration);
             return model;
         }
 
-        public static void Bind(object model, IConfigurationSection configuration)
+        public static void Bind(object model, IConfiguration configuration)
         {
             if (model == null)
             {
@@ -29,7 +29,7 @@ namespace Microsoft.Framework.Configuration
             BindObjectProperties(model, configuration);
         }
 
-        private static void BindObjectProperties(object obj, IConfigurationSection configuration)
+        private static void BindObjectProperties(object obj, IConfiguration configuration)
         {
             foreach (var property in GetAllProperties(obj.GetType().GetTypeInfo()))
             {
@@ -37,7 +37,7 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        private static void BindProperty(PropertyInfo property, object propertyOwner, IConfigurationSection configuration)
+        private static void BindProperty(PropertyInfo property, object propertyOwner, IConfiguration configuration)
         {
             configuration = configuration.GetSection(property.Name);
 
@@ -68,15 +68,19 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        private static object BindType(Type type, object typeInstance, IConfigurationSection configuration)
+        private static object BindType(Type type, object typeInstance, IConfiguration configuration)
         {
-            var configValue = configuration.Value;
+            string configValue = null;
+            if (configuration is IConfigurationSection)
+            {
+                configValue = ((IConfigurationSection)configuration).Value;
+            }
             var typeInfo = type.GetTypeInfo();
 
             if (configValue != null)
             {
                 // Leaf nodes are always reinitialized
-                return CreateValueFromConfiguration(type, configValue, configuration);
+                return CreateValueFromConfiguration(type, configValue, configuration as IConfigurationSection);
             }
             else
             {
@@ -130,7 +134,7 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        private static void BindDictionary(object dictionary, Type iDictionaryType, IConfigurationSection configuration)
+        private static void BindDictionary(object dictionary, Type iDictionaryType, IConfiguration configuration)
         {
             var iDictionaryTypeInfo = iDictionaryType.GetTypeInfo();
 
@@ -160,7 +164,7 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        private static void BindCollection(object collection, Type iCollectionType, IConfigurationSection configuration)
+        private static void BindCollection(object collection, Type iCollectionType, IConfiguration configuration)
         {
             var iCollectionTypeInfo = iCollectionType.GetTypeInfo();
 
