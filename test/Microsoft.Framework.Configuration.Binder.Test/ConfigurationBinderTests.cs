@@ -161,7 +161,7 @@ namespace Microsoft.Framework.Configuration.Binder.Test
         {
             var builder = new ConfigurationBuilder();
             var config = builder.Build();
-            var options = ConfigurationBinder.Bind<List<string>>(config);
+            Assert.NotNull(ConfigurationBinder.Bind<List<string>>(config));
         }
 
         [Fact]
