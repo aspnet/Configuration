@@ -12,28 +12,14 @@ namespace Microsoft.Framework.Configuration
 {
     public static class ConfigurationBinder
     {
-        public static TModel Bind<TModel>(IConfiguration configuration) where TModel : new()
+        public static void Bind(this IConfiguration configuration, object model)
         {
-            var model = new TModel();
-            Bind(model, configuration);
-            return model;
-        }
-
-        public static void Bind(object model, IConfiguration configuration)
-        {
-            if (model == null)
+            if (model != null)
             {
-                return;
-            }
-
-            BindObjectProperties(model, configuration);
-        }
-
-        private static void BindObjectProperties(object obj, IConfiguration configuration)
-        {
-            foreach (var property in GetAllProperties(obj.GetType().GetTypeInfo()))
-            {
-                BindProperty(property, obj, configuration);
+                foreach (var property in GetAllProperties(model.GetType().GetTypeInfo()))
+                {
+                    BindProperty(property, model, configuration);
+                }
             }
         }
 
@@ -130,7 +116,7 @@ namespace Microsoft.Framework.Configuration
                         else
                         {
                             // Something else
-                            BindObjectProperties(typeInstance, configuration);
+                            Bind(configuration, typeInstance);
                         }
                     }
                 }
@@ -138,14 +124,14 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        private static void BindDictionary(object dictionary, Type iDictionaryType, IConfiguration configuration)
+        private static void BindDictionary(object dictionary, Type dictionaryType, IConfiguration configuration)
         {
-            var iDictionaryTypeInfo = iDictionaryType.GetTypeInfo();
+            var typeInfo = dictionaryType.GetTypeInfo();
 
             // It is guaranteed to have a two and only two parameters
             // because this is an IDictionary<K,V>
-            var keyType = iDictionaryTypeInfo.GenericTypeArguments[0];
-            var valueType = iDictionaryTypeInfo.GenericTypeArguments[1];
+            var keyType = typeInfo.GenericTypeArguments[0];
+            var valueType = typeInfo.GenericTypeArguments[1];
 
             if (keyType != typeof(string))
             {
@@ -153,8 +139,7 @@ namespace Microsoft.Framework.Configuration
                 return;
             }
 
-            var addMethod = iDictionaryTypeInfo.GetDeclaredMethod("Add");
-
+            var addMethod = typeInfo.GetDeclaredMethod("Add");
             foreach (var configurationSection in configuration.GetChildren())
             {
                 var item = BindType(
@@ -175,16 +160,14 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        private static void BindCollection(object collection, Type iCollectionType, IConfiguration configuration)
+        private static void BindCollection(object collection, Type collectionType, IConfiguration configuration)
         {
-            var iCollectionTypeInfo = iCollectionType.GetTypeInfo();
+            var typeInfo = collectionType.GetTypeInfo();
 
             // It is guaranteed to have a one and only one parameter
             // because this is an ICollection<T>
-            var itemType = iCollectionTypeInfo.GenericTypeArguments[0];
-
-            var addMethod = iCollectionTypeInfo.GetDeclaredMethod("Add");
-
+            var itemType = typeInfo.GenericTypeArguments[0];
+            var addMethod = typeInfo.GetDeclaredMethod("Add");
             foreach (var configurationSection in configuration.GetChildren())
             {
                 try
