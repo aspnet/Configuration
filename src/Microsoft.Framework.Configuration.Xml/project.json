@@ -24,8 +24,10 @@
         },
         "dotnet": {
             "dependencies": {
-                "System.Xml.XmlDocument": "4.0.1-beta-*",
-                "System.Xml.XmlSerializer": "4.0.11-beta-*"
+                "System.Xml.XmlDocument": "4.0.0",
+                "System.Xml.ReaderWriter": "4.0.0",
+                "System.IO": "4.0.0",
+                "System.IO.FileSystem": "4.0.0"
             }
         }
     }
