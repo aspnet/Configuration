@@ -1,17 +1,17 @@
 {
-    "version": "1.0.0-*",
+    "version": "1.0.0-beta7",
     "description": "Abstractions of key-value pair based configuration.",
     "repository": {
         "type": "git",
         "url": "https://github.com/aspnet/configuration"
     },
-    "dependencies": { },
+    "dependencies": {},
     "frameworks": {
-        "net45": { },
-        "dnx451": { },
+        "net45": {},
+        "dnx451": {},
         "dotnet": {
             "dependencies": {
-                "System.Linq": "4.0.1-beta-*"
+                "System.Linq": "4.0.1-beta-23225"
             }
         }
     }
