@@ -78,7 +78,7 @@ namespace Microsoft.Framework.Configuration
             var distinctSegments = segments.Distinct();
             return distinctSegments.Select(segment =>
             {
-                return new ConfigurationSection(Sources, prefix + segment);
+                return new ConfigurationSection(Sources, prefix, segment);
             });
         }
 
@@ -89,7 +89,7 @@ namespace Microsoft.Framework.Configuration
                 throw new InvalidOperationException(Resources.Error_EmptyKey);
             }
 
-            return new ConfigurationSection(Sources, GetPrefix() + key);
+            return new ConfigurationSection(Sources, GetPrefix(), key);
         }
 
         protected abstract string GetPrefix();

@@ -10,13 +10,19 @@ namespace Microsoft.Framework.Configuration
     public class ConfigurationSection : ConfigurationBase, IConfigurationSection
     {
         private readonly string _key;
+        private readonly string _prefix;
 
-        public ConfigurationSection(IList<IConfigurationSource> sources, string key)
+        public ConfigurationSection(IList<IConfigurationSource> sources, string prefix, string key)
             : base(sources)
         {
             if (sources == null)
             {
                 throw new ArgumentNullException(nameof(sources));
+            }
+
+            if (prefix == null)
+            {
+                throw new ArgumentNullException(nameof(prefix));
             }
 
             if (key == null)
@@ -30,6 +36,7 @@ namespace Microsoft.Framework.Configuration
             }
 
             _key = key;
+            _prefix = prefix;
         }
 
         public string Key
@@ -37,6 +44,21 @@ namespace Microsoft.Framework.Configuration
             get
             {
                 return _key;
+            }
+        }
+
+        public string Path
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_prefix))
+                {
+                    return _prefix + _key;
+                }
+                else
+                {
+                    return _key;
+                }
             }
         }
 
@@ -48,7 +70,7 @@ namespace Microsoft.Framework.Configuration
                 {
                     string value = null;
 
-                    if (src.TryGet(_key, out value))
+                    if (src.TryGet(Path, out value))
                     {
                         return value;
                     }
@@ -65,14 +87,14 @@ namespace Microsoft.Framework.Configuration
 
                 foreach (var src in Sources)
                 {
-                    src.Set(Key, value);
+                    src.Set(Path, value);
                 }
             }
         }
 
         protected override string GetPrefix()
         {
-            return _key + Constants.KeyDelimiter;
+            return Path + Constants.KeyDelimiter;
         }
     }
 }
