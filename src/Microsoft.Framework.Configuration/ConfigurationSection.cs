@@ -10,9 +10,9 @@ namespace Microsoft.Framework.Configuration
     public class ConfigurationSection : ConfigurationBase, IConfigurationSection
     {
         private readonly string _key;
-        private readonly string _prefix;
+        private readonly string _parentPath;
 
-        public ConfigurationSection(IList<IConfigurationSource> sources, string prefix, string key)
+        public ConfigurationSection(IList<IConfigurationSource> sources, string parentPath, string key)
             : base(sources)
         {
             if (sources == null)
@@ -20,23 +20,18 @@ namespace Microsoft.Framework.Configuration
                 throw new ArgumentNullException(nameof(sources));
             }
 
-            if (prefix == null)
+            if (parentPath == null)
             {
-                throw new ArgumentNullException(nameof(prefix));
-            }
-
-            if (key == null)
-            {
-                throw new ArgumentNullException(nameof(key));
+                throw new ArgumentNullException(nameof(parentPath));
             }
 
             if (string.IsNullOrEmpty(key))
             {
-                throw new InvalidOperationException(Resources.Error_EmptyKey);
+                throw new ArgumentException(Resources.Error_EmptyKey);
             }
 
             _key = key;
-            _prefix = prefix;
+            _parentPath = parentPath;
         }
 
         public string Key
@@ -47,13 +42,13 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        public string Path
+        public override string Path
         {
             get
             {
-                if (!string.IsNullOrEmpty(_prefix))
+                if (!string.IsNullOrEmpty(_parentPath))
                 {
-                    return _prefix + _key;
+                    return _parentPath + _key;
                 }
                 else
                 {
@@ -90,11 +85,6 @@ namespace Microsoft.Framework.Configuration
                     src.Set(Path, value);
                 }
             }
-        }
-
-        protected override string GetPrefix()
-        {
-            return Path + Constants.KeyDelimiter;
         }
     }
 }

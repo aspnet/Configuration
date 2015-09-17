@@ -21,13 +21,15 @@ namespace Microsoft.Framework.Configuration
             _sources = sources;
         }
 
+        public virtual string Path { get; set; }
+
         public string this[string key]
         {
             get
             {
                 if (string.IsNullOrEmpty(key))
                 {
-                    throw new InvalidOperationException(Resources.Error_EmptyKey);
+                    throw new ArgumentException(Resources.Error_EmptyKey);
                 }
 
                 // If a key in the newly added configuration source is identical to a key in a
@@ -37,7 +39,7 @@ namespace Microsoft.Framework.Configuration
                 {
                     string value = null;
 
-                    if (src.TryGet(GetPrefix() + key, out value))
+                    if (src.TryGet(GetPath() + key, out value))
                     {
                         return value;
                     }
@@ -54,7 +56,7 @@ namespace Microsoft.Framework.Configuration
 
                 foreach (var src in Sources)
                 {
-                    src.Set(GetPrefix() + key, value);
+                    src.Set(GetPath() + key, value);
                 }
             }
         }
@@ -69,16 +71,14 @@ namespace Microsoft.Framework.Configuration
 
         public IEnumerable<IConfigurationSection> GetChildren()
         {
-            var prefix = GetPrefix();
-
             var segments = Sources.Aggregate(
                 Enumerable.Empty<string>(),
-                (seed, source) => source.ProduceConfigurationSections(seed, prefix, Constants.KeyDelimiter));
+                (seed, source) => source.ProduceConfigurationSections(seed, GetPath(), Constants.KeyDelimiter));
 
             var distinctSegments = segments.Distinct();
             return distinctSegments.Select(segment =>
             {
-                return new ConfigurationSection(Sources, prefix, segment);
+                return new ConfigurationSection(Sources, GetPath(), segment);
             });
         }
 
@@ -86,12 +86,20 @@ namespace Microsoft.Framework.Configuration
         {
             if (string.IsNullOrEmpty(key))
             {
-                throw new InvalidOperationException(Resources.Error_EmptyKey);
+                throw new ArgumentException(Resources.Error_EmptyKey);
             }
 
-            return new ConfigurationSection(Sources, GetPrefix(), key);
+            return new ConfigurationSection(Sources, GetPath(), key);
         }
 
-        protected abstract string GetPrefix();
+        private string GetPath()
+        {
+            if (!string.IsNullOrEmpty(Path))
+            {
+                return Path + Constants.KeyDelimiter;
+            }
+
+            return Path;
+        }
     }
 }
