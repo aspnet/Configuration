@@ -35,6 +35,8 @@ namespace Microsoft.Framework.Configuration
             string prefix,
             string delimiter)
         {
+            prefix = prefix + delimiter;
+
             return Data
                 .Where(kv => kv.Key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
                 .Select(kv => Segment(kv.Key, prefix, delimiter))

@@ -21,7 +21,7 @@ namespace Microsoft.Framework.Configuration
             _sources = sources;
         }
 
-        public virtual string Path { get; set; }
+        public abstract string Path { get; }
 
         public string this[string key]
         {
@@ -39,7 +39,7 @@ namespace Microsoft.Framework.Configuration
                 {
                     string value = null;
 
-                    if (src.TryGet(GetPath() + key, out value))
+                    if (src.TryGet(GetPrefix() + key, out value))
                     {
                         return value;
                     }
@@ -56,7 +56,7 @@ namespace Microsoft.Framework.Configuration
 
                 foreach (var src in Sources)
                 {
-                    src.Set(GetPath() + key, value);
+                    src.Set(GetPrefix() + key, value);
                 }
             }
         }
@@ -73,12 +73,12 @@ namespace Microsoft.Framework.Configuration
         {
             var segments = Sources.Aggregate(
                 Enumerable.Empty<string>(),
-                (seed, source) => source.ProduceConfigurationSections(seed, GetPath(), Constants.KeyDelimiter));
+                (seed, source) => source.ProduceConfigurationSections(seed, Path, Constants.KeyDelimiter));
 
             var distinctSegments = segments.Distinct();
             return distinctSegments.Select(segment =>
             {
-                return new ConfigurationSection(Sources, GetPath(), segment);
+                return new ConfigurationSection(Sources, Path, segment);
             });
         }
 
@@ -89,10 +89,10 @@ namespace Microsoft.Framework.Configuration
                 throw new ArgumentException(Resources.Error_EmptyKey);
             }
 
-            return new ConfigurationSection(Sources, GetPath(), key);
+            return new ConfigurationSection(Sources, Path, key);
         }
 
-        private string GetPath()
+        private string GetPrefix()
         {
             if (!string.IsNullOrEmpty(Path))
             {

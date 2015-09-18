@@ -10,7 +10,7 @@ namespace Microsoft.Framework.Configuration
     public class ConfigurationSection : ConfigurationBase, IConfigurationSection
     {
         private readonly string _key;
-        private readonly string _parentPath;
+        private readonly string _path;
 
         public ConfigurationSection(IList<IConfigurationSource> sources, string parentPath, string key)
             : base(sources)
@@ -31,7 +31,14 @@ namespace Microsoft.Framework.Configuration
             }
 
             _key = key;
-            _parentPath = parentPath;
+            if (!string.IsNullOrEmpty(parentPath))
+            {
+                _path = parentPath + Constants.KeyDelimiter + key;
+            }
+            else
+            {
+                _path = key;
+            }
         }
 
         public string Key
@@ -46,14 +53,7 @@ namespace Microsoft.Framework.Configuration
         {
             get
             {
-                if (!string.IsNullOrEmpty(_parentPath))
-                {
-                    return _parentPath + _key;
-                }
-                else
-                {
-                    return _key;
-                }
+                return _path;
             }
         }
 
@@ -65,7 +65,7 @@ namespace Microsoft.Framework.Configuration
                 {
                     string value = null;
 
-                    if (src.TryGet(Path, out value))
+                    if (src.TryGet(_path, out value))
                     {
                         return value;
                     }
@@ -82,7 +82,7 @@ namespace Microsoft.Framework.Configuration
 
                 foreach (var src in Sources)
                 {
-                    src.Set(Path, value);
+                    src.Set(_path, value);
                 }
             }
         }
