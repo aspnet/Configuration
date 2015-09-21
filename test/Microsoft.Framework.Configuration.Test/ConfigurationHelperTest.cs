@@ -17,29 +17,12 @@ namespace Microsoft.Framework.Configuration.Test
             var testFile = Path.GetTempFileName();
             var testDir = Path.GetDirectoryName(testFile);
             var testFileName = Path.GetFileName(testFile);
-            var mockSourceRoot = new MockConfigurationBuilder { BasePath = testDir };
+            var mockSourceRoot = new MockConfigurationBuilder();
 
+            mockSourceRoot.SetBasePath(testDir);
             var actualPath = ConfigurationHelper.ResolveConfigurationFilePath(mockSourceRoot, testFileName);
 
             Assert.Equal(testFile, actualPath);
-        }
-
-        [Fact]
-        public void ThrowWhenBasePathIsNull()
-        {
-            var testFile = "config.j";
-            var mockSourceRoot = new MockConfigurationBuilder();
-            var expectErrorMessage = Resources.FormatError_MissingBasePath(
-                testFile,
-                typeof(IConfigurationBuilder).Name,
-                nameof(mockSourceRoot.BasePath));
-
-            var exception = Assert.Throws<InvalidOperationException>(() =>
-            {
-                ConfigurationHelper.ResolveConfigurationFilePath(mockSourceRoot, testFile);
-            });
-
-            Assert.Equal(expectErrorMessage, exception.Message);
         }
 
         [Fact]
@@ -48,8 +31,9 @@ namespace Microsoft.Framework.Configuration.Test
             var testFile = Path.GetTempFileName();
             var testDir = Path.GetDirectoryName(testFile);
             var testFileName = Path.GetFileName(testFile);
-            var mockBuilder = new MockConfigurationBuilder { BasePath = testDir };
+            var mockBuilder = new MockConfigurationBuilder();
 
+            mockBuilder.SetBasePath(testDir);
             File.Delete(testFile);
 
             var path = ConfigurationHelper.ResolveConfigurationFilePath(mockBuilder, testFileName);
@@ -59,15 +43,29 @@ namespace Microsoft.Framework.Configuration.Test
 
         private class MockConfigurationBuilder : IConfigurationBuilder
         {
+            private Dictionary<string, object> _properties = new Dictionary<string, object>();
+
+            public MockConfigurationBuilder()
+            {
+                _properties["BasePath"] = string.Empty;
+            }
+
             public string this[string key]
             {
                 get { throw new NotImplementedException(); }
                 set { throw new NotImplementedException(); }
             }
 
-            public string BasePath
+            public Dictionary<string,object> Properties
             {
-                get; set;
+                get
+                {
+                    return _properties;
+                }
+                set
+                {
+                    _properties = value;
+                }
             }
 
             public IEnumerable<IConfigurationSource> Sources

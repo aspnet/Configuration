@@ -15,17 +15,18 @@ namespace Microsoft.Framework.Configuration.Test
         public void SetBasePathThroughConstructor()
         {
             var expectedBasePath = @"C:\ExamplePath";
-            var builder = new ConfigurationBuilder(basePath: expectedBasePath);
+            var builder = new ConfigurationBuilder();
 
-            Assert.Equal(expectedBasePath, builder.BasePath);
+            builder.SetBasePath(expectedBasePath);
+            Assert.Equal(expectedBasePath, builder.Properties["BasePath"]);
         }
 
         [Fact]
-        public void DefaultBasePathIsNull()
+        public void DefaultBasePathIsEmpty()
         {
             var builder = new ConfigurationBuilder();
 
-            Assert.Null(builder.BasePath);
+            Assert.Equal(string.Empty, builder.Properties["BasePath"]);
         }
 
         [Fact]

@@ -8,6 +8,7 @@ namespace Microsoft.Framework.Configuration
     public class ConfigurationBuilder : IConfigurationBuilder
     {
         private readonly IList<IConfigurationSource> _sources = new List<IConfigurationSource>();
+        private Dictionary<string, object> _properties = new Dictionary<string, object>();
 
         public ConfigurationBuilder(params IConfigurationSource[] sources)
             : this(null, sources)
@@ -24,7 +25,7 @@ namespace Microsoft.Framework.Configuration
                 }
             }
 
-            BasePath = basePath;
+            _properties["BasePath"] = string.Empty;
         }
 
         public IEnumerable<IConfigurationSource> Sources
@@ -35,17 +36,25 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        public string BasePath
+        public Dictionary<string, object> Properties
         {
-            get;
+            get
+            {
+                return _properties;
+            }
+            set
+            {
+                _properties = value;
+            }
+            
         }
 
-        /// <summary>
-        /// Adds a new configuration source.
-        /// </summary>
-        /// <param name="configurationSource">The configuration source to add.</param>
-        /// <returns>The same configuration source.</returns>
-        public IConfigurationBuilder Add(IConfigurationSource configurationSource)
+    /// <summary>
+    /// Adds a new configuration source.
+    /// </summary>
+    /// <param name="configurationSource">The configuration source to add.</param>
+    /// <returns>The same configuration source.</returns>
+    public IConfigurationBuilder Add(IConfigurationSource configurationSource)
         {
             return Add(configurationSource, load: true);
         }

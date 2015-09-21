@@ -10,19 +10,11 @@ namespace Microsoft.Framework.Configuration.Helper
     {
         public static string ResolveConfigurationFilePath(IConfigurationBuilder configuration, string path)
         {
+            string basePath = configuration.Properties["BasePath"].ToString();
+
             if (!Path.IsPathRooted(path))
             {
-                if (configuration.BasePath == null)
-                {
-                    throw new InvalidOperationException(Resources.FormatError_MissingBasePath(
-                        path,
-                        typeof(IConfigurationBuilder).Name,
-                        nameof(configuration.BasePath)));
-                }
-                else
-                {
-                    path = Path.Combine(configuration.BasePath, path);
-                }
+                path = Path.Combine(basePath, path);
             }
 
             return path;
