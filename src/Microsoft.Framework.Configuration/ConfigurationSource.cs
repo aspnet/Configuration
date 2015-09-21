@@ -32,20 +32,22 @@ namespace Microsoft.Framework.Configuration
        
         public virtual IEnumerable<string> ProduceConfigurationSections(
             IEnumerable<string> earlierKeys,
-            string prefix,
+            string parentPath,
             string delimiter)
         {
+            parentPath = parentPath + delimiter;
+
             return Data
-                .Where(kv => kv.Key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-                .Select(kv => Segment(kv.Key, prefix, delimiter))
+                .Where(kv => kv.Key.StartsWith(parentPath, StringComparison.OrdinalIgnoreCase))
+                .Select(kv => Segment(kv.Key, parentPath, delimiter))
                 .Concat(earlierKeys)
                 .OrderBy(k => k, ConfigurationKeyComparer.Instance);
         }
 
-        private static string Segment(string key, string prefix, string delimiter)
+        private static string Segment(string key, string parentPath, string delimiter)
         {
-            var indexOf = key.IndexOf(delimiter, prefix.Length, StringComparison.OrdinalIgnoreCase);
-            return indexOf < 0 ? key.Substring(prefix.Length) : key.Substring(prefix.Length, indexOf - prefix.Length);
+            var indexOf = key.IndexOf(delimiter, parentPath.Length, StringComparison.OrdinalIgnoreCase);
+            return indexOf < 0 ? key.Substring(parentPath.Length) : key.Substring(parentPath.Length, indexOf - parentPath.Length);
         }
     }
 }
