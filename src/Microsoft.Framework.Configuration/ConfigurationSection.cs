@@ -15,11 +15,6 @@ namespace Microsoft.Framework.Configuration
         public ConfigurationSection(IList<IConfigurationSource> sources, string parentPath, string key)
             : base(sources)
         {
-            if (sources == null)
-            {
-                throw new ArgumentNullException(nameof(sources));
-            }
-
             if (parentPath == null)
             {
                 throw new ArgumentNullException(nameof(parentPath));
@@ -31,7 +26,7 @@ namespace Microsoft.Framework.Configuration
             }
 
             _key = key;
-            if (!string.IsNullOrEmpty(parentPath))
+            if (!string.Equals(parentPath, string.Empty))
             {
                 _path = parentPath + Constants.KeyDelimiter + key;
             }
@@ -65,7 +60,7 @@ namespace Microsoft.Framework.Configuration
                 {
                     string value = null;
 
-                    if (src.TryGet(_path, out value))
+                    if (src.TryGet(Path, out value))
                     {
                         return value;
                     }
@@ -82,7 +77,7 @@ namespace Microsoft.Framework.Configuration
 
                 foreach (var src in Sources)
                 {
-                    src.Set(_path, value);
+                    src.Set(Path, value);
                 }
             }
         }

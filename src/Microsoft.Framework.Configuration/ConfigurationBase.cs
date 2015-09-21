@@ -27,37 +27,11 @@ namespace Microsoft.Framework.Configuration
         {
             get
             {
-                if (string.IsNullOrEmpty(key))
-                {
-                    throw new ArgumentException(Resources.Error_EmptyKey);
-                }
-
-                // If a key in the newly added configuration source is identical to a key in a
-                // formerly added configuration source, the new one overrides the former one.
-                // So we search in reverse order, starting with latest configuration source.
-                foreach (var src in _sources.Reverse())
-                {
-                    string value = null;
-
-                    if (src.TryGet(GetPrefix() + key, out value))
-                    {
-                        return value;
-                    }
-                }
-
-                return null;
+                return GetSection(key).Value;
             }
             set
             {
-                if (!Sources.Any())
-                {
-                    throw new InvalidOperationException(Resources.Error_NoSources);
-                }
-
-                foreach (var src in Sources)
-                {
-                    src.Set(GetPrefix() + key, value);
-                }
+                GetSection(key).Value = value;
             }
         }
 
@@ -84,22 +58,7 @@ namespace Microsoft.Framework.Configuration
 
         public IConfigurationSection GetSection(string key)
         {
-            if (string.IsNullOrEmpty(key))
-            {
-                throw new ArgumentException(Resources.Error_EmptyKey);
-            }
-
             return new ConfigurationSection(Sources, Path, key);
-        }
-
-        private string GetPrefix()
-        {
-            if (!string.IsNullOrEmpty(Path))
-            {
-                return Path + Constants.KeyDelimiter;
-            }
-
-            return Path;
         }
     }
 }
