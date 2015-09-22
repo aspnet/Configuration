@@ -25,7 +25,14 @@ namespace Microsoft.Framework.Configuration
                 throw new ArgumentNullException(nameof(basePath));
             }
 
-            builder.Properties["BasePath"] = basePath;
+            if (builder.Properties.ContainsKey("BasePath"))
+            {
+                builder.Properties["BasePath"] = basePath;
+            }
+            else
+            {
+                builder.Properties.Add("BasePath", basePath);
+            }
 
             return builder;
         }

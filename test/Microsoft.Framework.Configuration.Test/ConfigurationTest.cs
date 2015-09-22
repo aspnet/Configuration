@@ -12,21 +12,13 @@ namespace Microsoft.Framework.Configuration.Test
     public class ConfigurationTest
     {
         [Fact]
-        public void SetBasePathThroughConstructor()
+        public void SetBasePathThroughBuilder()
         {
             var expectedBasePath = @"C:\ExamplePath";
             var builder = new ConfigurationBuilder();
 
             builder.SetBasePath(expectedBasePath);
             Assert.Equal(expectedBasePath, builder.Properties["BasePath"]);
-        }
-
-        [Fact]
-        public void DefaultBasePathIsEmpty()
-        {
-            var builder = new ConfigurationBuilder();
-
-            Assert.Equal(string.Empty, builder.Properties["BasePath"]);
         }
 
         [Fact]

@@ -10,11 +10,14 @@ namespace Microsoft.Framework.Configuration.Helper
     {
         public static string ResolveConfigurationFilePath(IConfigurationBuilder configuration, string path)
         {
-            string basePath = configuration.Properties["BasePath"].ToString();
-
-            if (!Path.IsPathRooted(path))
+            if (configuration.Properties.ContainsKey("BasePath"))
             {
-                path = Path.Combine(basePath, path);
+                string basePath = configuration.Properties["BasePath"].ToString();
+
+                if (!Path.IsPathRooted(path))
+                {
+                    path = Path.Combine(basePath, path);
+                }
             }
 
             return path;

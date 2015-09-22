@@ -7,7 +7,7 @@ namespace Microsoft.Framework.Configuration
 {
     public interface IConfigurationBuilder
     {
-        Dictionary<string, object> Properties { get; set; }
+        Dictionary<string, object> Properties { get; }
 
         IEnumerable<IConfigurationSource> Sources { get; }
 

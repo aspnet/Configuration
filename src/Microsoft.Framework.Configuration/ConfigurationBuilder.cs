@@ -11,11 +11,6 @@ namespace Microsoft.Framework.Configuration
         private Dictionary<string, object> _properties = new Dictionary<string, object>();
 
         public ConfigurationBuilder(params IConfigurationSource[] sources)
-            : this(null, sources)
-        {
-        }
-
-        public ConfigurationBuilder(string basePath, params IConfigurationSource[] sources)
         {
             if (sources != null)
             {
@@ -24,8 +19,6 @@ namespace Microsoft.Framework.Configuration
                     Add(singleSource);
                 }
             }
-
-            _properties["BasePath"] = string.Empty;
         }
 
         public IEnumerable<IConfigurationSource> Sources
@@ -42,11 +35,6 @@ namespace Microsoft.Framework.Configuration
             {
                 return _properties;
             }
-            set
-            {
-                _properties = value;
-            }
-            
         }
 
     /// <summary>
