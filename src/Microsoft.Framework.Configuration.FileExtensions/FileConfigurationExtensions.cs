@@ -49,22 +49,7 @@ namespace Microsoft.Framework.Configuration
                 return (string)basePath;
             }
 
-            return null;
-        }
-
-        public static string GetConfigurationFilePath(this IConfigurationBuilder configuration, string path)
-        {
-            object value;
-            var basePath = string.Empty;
-
-            if (configuration.Properties.TryGetValue("BasePath", out value))
-            {
-                basePath = (string)value;
-            }
-
-            path = Path.Combine(basePath, path);
-
-            return path;
+            return string.Empty;
         }
     }
 }
