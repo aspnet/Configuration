@@ -3,7 +3,6 @@
 
 using System;
 using System.IO;
-using Microsoft.Framework.Configuration.Helper;
 using Microsoft.Framework.Configuration.Xml;
 
 namespace Microsoft.Framework.Configuration
@@ -56,7 +55,7 @@ namespace Microsoft.Framework.Configuration
                 throw new ArgumentException(Resources.Error_InvalidFilePath, nameof(path));
             }
 
-            var fullPath = ConfigurationHelper.ResolveConfigurationFilePath(configuration, path);
+            var fullPath = configuration.GetConfigurationFilePath(path);
 
             if (!optional && !File.Exists(fullPath))
             {

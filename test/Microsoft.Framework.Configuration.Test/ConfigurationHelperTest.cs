@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.Framework.Configuration.Helper;
 using Xunit;
 
 namespace Microsoft.Framework.Configuration.Test
@@ -20,7 +19,7 @@ namespace Microsoft.Framework.Configuration.Test
             var mockSourceRoot = new MockConfigurationBuilder();
 
             mockSourceRoot.SetBasePath(testDir);
-            var actualPath = ConfigurationHelper.ResolveConfigurationFilePath(mockSourceRoot, testFileName);
+            var actualPath = mockSourceRoot.GetConfigurationFilePath(testFileName);
 
             Assert.Equal(testFile, actualPath);
         }
@@ -36,37 +35,20 @@ namespace Microsoft.Framework.Configuration.Test
             mockBuilder.SetBasePath(testDir);
             File.Delete(testFile);
 
-            var path = ConfigurationHelper.ResolveConfigurationFilePath(mockBuilder, testFileName);
+            var path = mockBuilder.GetConfigurationFilePath(testFileName);
 
             Assert.Equal(testFile, path);
         }
 
         private class MockConfigurationBuilder : IConfigurationBuilder
         {
-            private Dictionary<string, object> _properties = new Dictionary<string, object>();
-
-            public MockConfigurationBuilder()
-            {
-                _properties["BasePath"] = string.Empty;
-            }
-
             public string this[string key]
             {
                 get { throw new NotImplementedException(); }
                 set { throw new NotImplementedException(); }
             }
 
-            public Dictionary<string,object> Properties
-            {
-                get
-                {
-                    return _properties;
-                }
-                set
-                {
-                    _properties = value;
-                }
-            }
+            public Dictionary<string,object> Properties { get; }  = new Dictionary<string, object>();
 
             public IEnumerable<IConfigurationSource> Sources
             {

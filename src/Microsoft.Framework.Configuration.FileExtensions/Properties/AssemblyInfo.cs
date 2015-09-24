@@ -5,6 +5,6 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Microsoft.Framework.Configuration.File.Test")]
+[assembly: InternalsVisibleTo("Microsoft.Framework.Configuration.FileExtensions.Test")]
 [assembly: AssemblyMetadata("Serviceable", "True")]
 [assembly: NeutralResourcesLanguage("en-US")]

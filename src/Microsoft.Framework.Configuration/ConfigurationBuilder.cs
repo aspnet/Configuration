@@ -8,7 +8,6 @@ namespace Microsoft.Framework.Configuration
     public class ConfigurationBuilder : IConfigurationBuilder
     {
         private readonly IList<IConfigurationSource> _sources = new List<IConfigurationSource>();
-        private Dictionary<string, object> _properties = new Dictionary<string, object>();
 
         public ConfigurationBuilder(params IConfigurationSource[] sources)
         {
@@ -29,20 +28,14 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        public Dictionary<string, object> Properties
-        {
-            get
-            {
-                return _properties;
-            }
-        }
+        public Dictionary<string, object> Properties { get; } = new Dictionary<string, object>();
 
-    /// <summary>
-    /// Adds a new configuration source.
-    /// </summary>
-    /// <param name="configurationSource">The configuration source to add.</param>
-    /// <returns>The same configuration source.</returns>
-    public IConfigurationBuilder Add(IConfigurationSource configurationSource)
+        /// <summary>
+        /// Adds a new configuration source.
+        /// </summary>
+        /// <param name="configurationSource">The configuration source to add.</param>
+        /// <returns>The same configuration source.</returns>
+        public IConfigurationBuilder Add(IConfigurationSource configurationSource)
         {
             return Add(configurationSource, load: true);
         }

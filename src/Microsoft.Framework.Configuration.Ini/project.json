@@ -7,7 +7,7 @@
     },
     "dependencies": {
         "Microsoft.Framework.Configuration": "1.0.0-*",
-        "Microsoft.Framework.Configuration.File": "1.0.0-*"
+        "Microsoft.Framework.Configuration.FileExtensions": "1.0.0-*"
     },
     "frameworks": {
     "net45": { },

@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "Microsoft.Framework.Configuration.File": "1.0.0-*",
+    "Microsoft.Framework.Configuration.FileExtensions": "1.0.0-*",
     "xunit.runner.aspnet": "2.0.0-aspnet-*"
   },
   "frameworks": {
