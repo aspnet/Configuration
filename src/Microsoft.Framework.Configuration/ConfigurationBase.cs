@@ -50,16 +50,9 @@ namespace Microsoft.Framework.Configuration
                 (seed, source) => source.GetChildKeys(seed, Path, Constants.KeyDelimiter));
 
             var distinctSegments = segments.Distinct();
-            return Enumerable.Select<string, ConfigurationSection>(distinctSegments,(Func<string, ConfigurationSection>)(segment =>
+            return Enumerable.Select(distinctSegments,(Func<string, ConfigurationSection>)(segment =>
             {
-
-/* Unmerged change from project 'Microsoft.Framework.Configuration.DNX 4.5.1'
-Before:
-                return new ConfigurationSection(Sources, Path, segment);
-After:
-                return new ConfigurationSection((IList<IConfigurationProvider>)this.Providers, Path, segment);
-*/
-                return new ConfigurationSection((IList<IConfigurationProvider>)this.Providers, (string)Path, (string)segment);
+                return new ConfigurationSection(Providers, Path, segment);
             }));
         }
 
