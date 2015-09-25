@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Microsoft.Framework.Configuration.Xml.Test
 {
-    public partial class XmlConfigurationProviderTest
+    public partial class XmlConfigurationTest
     {
         [Fact]
         public void LoadKeyValuePairsFromValidEncryptedXml_ThrowsPlatformNotSupported()

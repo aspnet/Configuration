@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Microsoft.Framework.Configuration.Ini.Test
 {
-    public class IniConfigurationProviderTest
+    public class IniConfigurationTest
     {
         [Fact]
         public void LoadKeyValuePairsFromValidIniFile()

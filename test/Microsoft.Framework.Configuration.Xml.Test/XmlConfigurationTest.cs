@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Microsoft.Framework.Configuration.Xml.Test
 {
-    public partial class XmlConfigurationProviderTest
+    public partial class XmlConfigurationTest
     {
         private static readonly string ArbitraryFilePath = "Unit tests do not touch file system";
 

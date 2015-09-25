@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Microsoft.Framework.Configuration
 {
-    public class JsonConfigurationProviderTest
+    public class JsonConfigurationTest
     {
         [Fact]
         public void LoadKeyValuePairsFromValidJson()

@@ -9,11 +9,11 @@ namespace Microsoft.Framework.Configuration
     {
         private readonly IList<IConfigurationProvider> _sources = new List<IConfigurationProvider>();
 
-        public ConfigurationBuilder(params IConfigurationSource[] sources)
+        public ConfigurationBuilder(params IConfigurationProvider[] providers)
         {
-            if (sources != null)
+            if (providers != null)
             {
-                foreach (var singleSource in sources)
+                foreach (var singleSource in providers)
                 {
                     Add(singleSource);
                 }
