@@ -8,7 +8,7 @@ namespace Microsoft.Framework.Configuration
 {
     public class ConfigurationRoot : ConfigurationBase, IConfigurationRoot
     {
-        public ConfigurationRoot(IList<IConfigurationSource> sources)
+        public ConfigurationRoot(IList<IConfigurationProvider> sources)
             : base(sources)
         {
             if (sources == null)

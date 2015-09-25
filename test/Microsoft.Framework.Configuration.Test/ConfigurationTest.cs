@@ -223,7 +223,7 @@ namespace Microsoft.Framework.Configuration.Test
             var memConfigSrc2 = new MemoryConfigurationSource(dict);
             var memConfigSrc3 = new MemoryConfigurationSource(dict);
 
-            var srcSet = new HashSet<IConfigurationSource>()
+            var srcSet = new HashSet<IConfigurationProvider>()
             {
                 memConfigSrc1,
                 memConfigSrc2,

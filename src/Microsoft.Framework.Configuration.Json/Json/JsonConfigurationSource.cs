@@ -10,9 +10,9 @@ using Newtonsoft.Json;
 namespace Microsoft.Framework.Configuration.Json
 {
     /// <summary>
-    /// A JSON file based <see cref="ConfigurationSource"/>.
+    /// A JSON file based <see cref="ConfigurationProvider"/>.
     /// </summary>
-    public class JsonConfigurationSource : ConfigurationSource
+    public class JsonConfigurationSource : ConfigurationProvider
     {
         /// <summary>
         /// Initializes a new instance of <see cref="JsonConfigurationSource"/>.

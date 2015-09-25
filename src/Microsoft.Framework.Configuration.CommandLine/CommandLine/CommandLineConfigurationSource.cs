@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Microsoft.Framework.Configuration.CommandLine
 {
-    public class CommandLineConfigurationSource : ConfigurationSource
+    public class CommandLineConfigurationSource : ConfigurationProvider
     {
         private readonly Dictionary<string, string> _switchMappings;
 

@@ -8,7 +8,7 @@ using System.IO;
 namespace Microsoft.Framework.Configuration.Ini
 {
     /// <summary>
-    /// An INI file based <see cref="ConfigurationSource"/>.
+    /// An INI file based <see cref="ConfigurationProvider"/>.
     /// Files are simple line structures (<a href="http://en.wikipedia.org/wiki/INI_file">INI Files on Wikipedia</a>)
     /// </summary>
     /// <examples>
@@ -19,7 +19,7 @@ namespace Microsoft.Framework.Configuration.Ini
     /// # comment
     /// / comment
     /// </examples>
-    public class IniConfigurationSource : ConfigurationSource
+    public class IniConfigurationSource : ConfigurationProvider
     {
         /// <summary>
         /// Initializes a new instance of <see cref="IniConfigurationSource"/>.

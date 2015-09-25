@@ -7,7 +7,7 @@ namespace Microsoft.Framework.Configuration
 {
     public class ConfigurationBuilder : IConfigurationBuilder
     {
-        private readonly IList<IConfigurationSource> _sources = new List<IConfigurationSource>();
+        private readonly IList<IConfigurationProvider> _sources = new List<IConfigurationProvider>();
 
         public ConfigurationBuilder(params IConfigurationSource[] sources)
         {
@@ -20,7 +20,7 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        public IEnumerable<IConfigurationSource> Sources
+        public IEnumerable<IConfigurationProvider> Sources
         {
             get
             {
@@ -35,7 +35,7 @@ namespace Microsoft.Framework.Configuration
         /// </summary>
         /// <param name="configurationSource">The configuration source to add.</param>
         /// <returns>The same configuration source.</returns>
-        public IConfigurationBuilder Add(IConfigurationSource configurationSource)
+        public IConfigurationBuilder Add(IConfigurationProvider configurationSource)
         {
             return Add(configurationSource, load: true);
         }
@@ -44,11 +44,11 @@ namespace Microsoft.Framework.Configuration
         /// Adds a new configuration source.
         /// </summary>
         /// <param name="configurationSource">The configuration source to add.</param>
-        /// <param name="load">If true, the configuration source's <see cref="IConfigurationSource.Load"/> method will
+        /// <param name="load">If true, the configuration source's <see cref="IConfigurationProvider.Load"/> method will
         ///  be called.</param>
         /// <returns>The same configuration source.</returns>
         /// <remarks>This method is intended only for test scenarios.</remarks>
-        public IConfigurationBuilder Add(IConfigurationSource configurationSource, bool load)
+        public IConfigurationBuilder Add(IConfigurationProvider configurationSource, bool load)
         {
             if (load)
             {

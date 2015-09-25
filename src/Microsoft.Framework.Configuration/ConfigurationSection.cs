@@ -12,7 +12,7 @@ namespace Microsoft.Framework.Configuration
         private readonly string _key;
         private readonly string _path;
 
-        public ConfigurationSection(IList<IConfigurationSource> sources, string parentPath, string key)
+        public ConfigurationSection(IList<IConfigurationProvider> sources, string parentPath, string key)
             : base(sources)
         {
             if (parentPath == null)

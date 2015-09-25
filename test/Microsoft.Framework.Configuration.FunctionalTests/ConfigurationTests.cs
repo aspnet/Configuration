@@ -159,7 +159,7 @@ CommonKey3:CommonKey4=IniValue6";
             foreach (var src in builder.Sources)
             {
                 Assert.Equal("NewValue",
-                    (src as ConfigurationSource).Get("CommonKey1:CommonKey2:CommonKey3:CommonKey4"));
+                    (src as ConfigurationProvider).Get("CommonKey1:CommonKey2:CommonKey3:CommonKey4"));
             }
 
             // Recover values by reloading
@@ -174,7 +174,7 @@ CommonKey3:CommonKey4=IniValue6";
             foreach (var src in builder.Sources)
             {
                 Assert.Equal("NewValue",
-                    (src as ConfigurationSource).Get("CommonKey1:CommonKey2:CommonKey3:CommonKey4"));
+                    (src as ConfigurationProvider).Get("CommonKey1:CommonKey2:CommonKey3:CommonKey4"));
             }
 
             // Recover values by reloading

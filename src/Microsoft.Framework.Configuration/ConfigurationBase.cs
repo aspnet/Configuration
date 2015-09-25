@@ -9,9 +9,9 @@ namespace Microsoft.Framework.Configuration
 {
     public abstract class ConfigurationBase : IConfiguration
     {
-        private readonly IList<IConfigurationSource> _sources = new List<IConfigurationSource>();
+        private readonly IList<IConfigurationProvider> _sources = new List<IConfigurationProvider>();
 
-        public ConfigurationBase(IList<IConfigurationSource> sources)
+        public ConfigurationBase(IList<IConfigurationProvider> sources)
         {
             if (sources == null)
             {
@@ -35,7 +35,7 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        public IList<IConfigurationSource> Sources
+        public IList<IConfigurationProvider> Sources
         {
             get
             {
@@ -47,7 +47,7 @@ namespace Microsoft.Framework.Configuration
         {
             var segments = Sources.Aggregate(
                 Enumerable.Empty<string>(),
-                (seed, source) => source.ProduceConfigurationSections(seed, Path, Constants.KeyDelimiter));
+                (seed, source) => source.GetChildKeys(seed, Path, Constants.KeyDelimiter));
 
             var distinctSegments = segments.Distinct();
             return distinctSegments.Select(segment =>

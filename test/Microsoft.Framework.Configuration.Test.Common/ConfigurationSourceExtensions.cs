@@ -7,11 +7,11 @@ namespace Microsoft.Framework.Configuration.Test
 {
     public static class ConfigurationSourceExtensions
     {
-        public static string Get(this IConfigurationSource configSource,string key)
+        public static string Get(this IConfigurationProvider provider, string key)
         {
             string value;
 
-            if (!configSource.TryGet(key, out value))
+            if (!provider.TryGet(key, out value))
             {
                 throw new InvalidOperationException("Key not found");
             }
