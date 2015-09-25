@@ -20,7 +20,7 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        public IEnumerable<IConfigurationProvider> Sources
+        public IEnumerable<IConfigurationProvider> Providers
         {
             get
             {
@@ -33,28 +33,28 @@ namespace Microsoft.Framework.Configuration
         /// <summary>
         /// Adds a new configuration source.
         /// </summary>
-        /// <param name="configurationSource">The configuration source to add.</param>
+        /// <param name="configurationProvider">The configuration source to add.</param>
         /// <returns>The same configuration source.</returns>
-        public IConfigurationBuilder Add(IConfigurationProvider configurationSource)
+        public IConfigurationBuilder Add(IConfigurationProvider configurationProvider)
         {
-            return Add(configurationSource, load: true);
+            return Add(configurationProvider, load: true);
         }
 
         /// <summary>
         /// Adds a new configuration source.
         /// </summary>
-        /// <param name="configurationSource">The configuration source to add.</param>
+        /// <param name="configurationProvider">The configuration source to add.</param>
         /// <param name="load">If true, the configuration source's <see cref="IConfigurationProvider.Load"/> method will
         ///  be called.</param>
         /// <returns>The same configuration source.</returns>
         /// <remarks>This method is intended only for test scenarios.</remarks>
-        public IConfigurationBuilder Add(IConfigurationProvider configurationSource, bool load)
+        public IConfigurationBuilder Add(IConfigurationProvider configurationProvider, bool load)
         {
             if (load)
             {
-                configurationSource.Load();
+                configurationProvider.Load();
             }
-            _sources.Add(configurationSource);
+            _sources.Add(configurationProvider);
             return this;
         }
 

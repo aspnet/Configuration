@@ -9,7 +9,7 @@ namespace Microsoft.Framework.Configuration
     {
         Dictionary<string, object> Properties { get; }
 
-        IEnumerable<IConfigurationProvider> Sources { get; }
+        IEnumerable<IConfigurationProvider> Providers { get; }
 
         IConfigurationBuilder Add(IConfigurationProvider provider);
 
