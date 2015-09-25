@@ -9,16 +9,16 @@ namespace Microsoft.Framework.Configuration
 {
     public abstract class ConfigurationBase : IConfiguration
     {
-        private readonly IList<IConfigurationProvider> _sources = new List<IConfigurationProvider>();
+        private readonly IList<IConfigurationProvider> _providers = new List<IConfigurationProvider>();
 
-        public ConfigurationBase(IList<IConfigurationProvider> sources)
+        public ConfigurationBase(IList<IConfigurationProvider> providers)
         {
-            if (sources == null)
+            if (providers == null)
             {
-                throw new ArgumentNullException(nameof(sources));
+                throw new ArgumentNullException(nameof(providers));
             }
 
-            _sources = sources;
+            _providers = providers;
         }
 
         public abstract string Path { get; }
@@ -35,30 +35,37 @@ namespace Microsoft.Framework.Configuration
             }
         }
 
-        public IList<IConfigurationProvider> Sources
+        public IList<IConfigurationProvider> Providers
         {
             get
             {
-                return _sources;
+                return _providers;
             }
         }
 
         public IEnumerable<IConfigurationSection> GetChildren()
         {
-            var segments = Sources.Aggregate(
+            var segments = Providers.Aggregate(
                 Enumerable.Empty<string>(),
                 (seed, source) => source.GetChildKeys(seed, Path, Constants.KeyDelimiter));
 
             var distinctSegments = segments.Distinct();
-            return distinctSegments.Select(segment =>
+            return Enumerable.Select<string, ConfigurationSection>(distinctSegments,(Func<string, ConfigurationSection>)(segment =>
             {
+
+/* Unmerged change from project 'Microsoft.Framework.Configuration.DNX 4.5.1'
+Before:
                 return new ConfigurationSection(Sources, Path, segment);
-            });
+After:
+                return new ConfigurationSection((IList<IConfigurationProvider>)this.Providers, Path, segment);
+*/
+                return new ConfigurationSection((IList<IConfigurationProvider>)this.Providers, (string)Path, (string)segment);
+            }));
         }
 
         public IConfigurationSection GetSection(string key)
         {
-            return new ConfigurationSection(Sources, Path, key);
+            return new ConfigurationSection(Providers, Path, key);
         }
     }
 }

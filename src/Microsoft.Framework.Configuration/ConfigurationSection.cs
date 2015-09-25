@@ -56,7 +56,7 @@ namespace Microsoft.Framework.Configuration
         {
             get
             {
-                foreach (var src in Sources.Reverse())
+                foreach (var src in Providers.Reverse())
                 {
                     string value = null;
 
@@ -70,12 +70,12 @@ namespace Microsoft.Framework.Configuration
             }
             set
             {
-                if (!Sources.Any())
+                if (!Providers.Any())
                 {
                     throw new InvalidOperationException(Resources.Error_NoSources);
                 }
 
-                foreach (var src in Sources)
+                foreach (var src in Providers)
                 {
                     src.Set(Path, value);
                 }
