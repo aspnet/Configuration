@@ -13,9 +13,9 @@ namespace Microsoft.Framework.Configuration
         {
             if (providers != null)
             {
-                foreach (var singleSource in providers)
+                foreach (var provider in providers)
                 {
-                    Add(singleSource);
+                    Add(provider);
                 }
             }
         }

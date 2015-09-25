@@ -27,9 +27,9 @@ namespace Microsoft.Framework.Configuration
 
         public void Reload()
         {
-            foreach (var src in Providers)
+            foreach (var provider in Providers)
             {
-                src.Load();
+                provider.Load();
             }
         }
     }

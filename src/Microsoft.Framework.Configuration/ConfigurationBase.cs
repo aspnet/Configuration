@@ -45,15 +45,11 @@ namespace Microsoft.Framework.Configuration
 
         public IEnumerable<IConfigurationSection> GetChildren()
         {
-            var segments = Providers.Aggregate(
-                Enumerable.Empty<string>(),
-                (seed, source) => source.GetChildKeys(seed, Path, Constants.KeyDelimiter));
-
-            var distinctSegments = segments.Distinct();
-            return Enumerable.Select(distinctSegments,(Func<string, ConfigurationSection>)(segment =>
-            {
-                return new ConfigurationSection(Providers, Path, segment);
-            }));
+            return Providers
+                .Aggregate(Enumerable.Empty<string>(),
+                    (seed, source) => source.GetChildKeys(seed, Path, Constants.KeyDelimiter))
+                .Distinct()
+                .Select(GetSection);
         }
 
         public IConfigurationSection GetSection(string key)

@@ -56,11 +56,11 @@ namespace Microsoft.Framework.Configuration
         {
             get
             {
-                foreach (var src in Providers.Reverse())
+                foreach (var provider in Providers.Reverse())
                 {
                     string value = null;
 
-                    if (src.TryGet(Path, out value))
+                    if (provider.TryGet(Path, out value))
                     {
                         return value;
                     }
@@ -75,9 +75,9 @@ namespace Microsoft.Framework.Configuration
                     throw new InvalidOperationException(Resources.Error_NoSources);
                 }
 
-                foreach (var src in Providers)
+                foreach (var provider in Providers)
                 {
-                    src.Set(Path, value);
+                    provider.Set(Path, value);
                 }
             }
         }
