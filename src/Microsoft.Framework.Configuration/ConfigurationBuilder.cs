@@ -7,7 +7,7 @@ namespace Microsoft.Framework.Configuration
 {
     public class ConfigurationBuilder : IConfigurationBuilder
     {
-        private readonly IList<IConfigurationProvider> _sources = new List<IConfigurationProvider>();
+        private readonly IList<IConfigurationProvider> _providers = new List<IConfigurationProvider>();
 
         public ConfigurationBuilder(params IConfigurationProvider[] providers)
         {
@@ -24,7 +24,7 @@ namespace Microsoft.Framework.Configuration
         {
             get
             {
-                return _sources;
+                return _providers;
             }
         }
 
@@ -54,13 +54,13 @@ namespace Microsoft.Framework.Configuration
             {
                 configurationProvider.Load();
             }
-            _sources.Add(configurationProvider);
+            _providers.Add(configurationProvider);
             return this;
         }
 
         public IConfigurationRoot Build()
         {
-            return new ConfigurationRoot(_sources);
+            return new ConfigurationRoot(_providers);
         }
     }
 }
