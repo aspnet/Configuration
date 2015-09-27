@@ -23,7 +23,7 @@ namespace Microsoft.Framework.Configuration
 
         public abstract string Path { get; }
 
-        public string this[string key]
+        public virtual string this[string key]
         {
             get
             {

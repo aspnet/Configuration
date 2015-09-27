@@ -258,5 +258,49 @@ namespace Microsoft.Framework.Configuration.Test
             // Assert
             Assert.Equal(expectedMsg, ex.Message);
         }
+
+
+        [Fact]
+        public void OverrideBuilderReturnsNewValue()
+        {
+            // Arrange
+            var builder = new DerivedConfigurationBuilder();
+            var config = builder.Build();
+
+            // Assert
+            Assert.Equal(CustomConfigurationRoot.SomeValue, config["ANY KEY"]);
+        }
+
+        #region helper classes
+
+        class DerivedConfigurationBuilder : ConfigurationBuilder
+        {
+            public override IConfigurationRoot Build()
+            {
+                return new CustomConfigurationRoot(Providers.ToList());
+            }
+        }
+
+        class CustomConfigurationRoot : ConfigurationRoot
+        {
+            public const string SomeValue = "New Version!";
+
+            public CustomConfigurationRoot(IList<IConfigurationProvider> providers) : base(providers) { }
+
+            public override string this[string key]
+            {
+                get
+                {
+                    return SomeValue;
+                }
+
+                set
+                {
+                    base[key] = value;
+                }
+            }
+        }
+
+        #endregion
     }
 }
