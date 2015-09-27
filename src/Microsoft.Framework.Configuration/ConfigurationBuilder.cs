@@ -58,7 +58,7 @@ namespace Microsoft.Framework.Configuration
             return this;
         }
 
-        public IConfigurationRoot Build()
+        public virtual IConfigurationRoot Build()
         {
             return new ConfigurationRoot(_providers);
         }
