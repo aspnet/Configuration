@@ -236,6 +236,37 @@ CommonKey3:CommonKey4=IniValue6";
             File.Delete(_jsonConfigFilePath);
         }
 
+        [Fact]
+        public void GetDefaultBasePathForSources()
+        {
+            // Arrange
+            var builder = new ConfigurationBuilder();
+            _jsonConfigFilePath = Path.Combine(Directory.GetCurrentDirectory(), "test.json");
+            _xmlConfigFilePath = Path.Combine(Directory.GetCurrentDirectory(), "xmltest.xml");
+            File.WriteAllText(_jsonConfigFilePath, _jsonConfigFileContent);
+            File.WriteAllText(_xmlConfigFilePath, _xmlConfigFileContent);
+
+            // Act
+            builder.AddJsonFile("test.json").AddXmlFile("xmltest.xml");
+
+            var config = builder.Build();
+
+            // Assert
+            Assert.Equal("JsonValue1", config["JsonKey1"]);
+            Assert.Equal("JsonValue2", config["Json.Key2:JsonKey3"]);
+            Assert.Equal("JsonValue3", config["Json.Key2:Json.Key4"]);
+            Assert.Equal("JsonValue4", config["Json.Key2:JsonKey5:JsonKey6"]);
+            Assert.Equal("JsonValue5", config["CommonKey1:CommonKey2:JsonKey7"]);
+
+            Assert.Equal("XmlValue1", config["XmlKey1"]);
+            Assert.Equal("XmlValue2", config["XmlKey2:XmlKey3"]);
+            Assert.Equal("XmlValue3", config["XmlKey2:XmlKey4"]);
+            Assert.Equal("XmlValue4", config["XmlKey2:XmlKey5:XmlKey6"]);
+
+            File.Delete(_jsonConfigFilePath);
+            File.Delete(_xmlConfigFilePath);
+        }
+
         public void Dispose()
         {
             File.Delete(_iniConfigFilePath);
