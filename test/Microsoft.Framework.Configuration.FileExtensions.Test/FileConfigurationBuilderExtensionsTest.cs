@@ -46,7 +46,7 @@ namespace Microsoft.Framework.Configuration.Json
         }
 
         [Fact]
-        public void GetBasePath_ReturnEmptyIfNotSet()
+        public void GetBasePath_ReturnBaseDirectoryIfNotSet()
         {
             // Arrange
             var configurationBuilder = new ConfigurationBuilder();
@@ -55,7 +55,7 @@ namespace Microsoft.Framework.Configuration.Json
             var actualPath = configurationBuilder.GetBasePath();
 
             // Assert
-            Assert.Equal(string.Empty, actualPath);
+            Assert.Equal(Directory.GetCurrentDirectory(), actualPath);
         }
     }
 }

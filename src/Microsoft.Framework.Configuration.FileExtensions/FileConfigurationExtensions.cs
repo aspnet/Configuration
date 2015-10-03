@@ -49,7 +49,13 @@ namespace Microsoft.Framework.Configuration
                 return (string)basePath;
             }
 
-            return string.Empty;
+#if DOTNET
+            return AppContext.BaseDirectory;
+#else
+            var baseDir = AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY");
+
+            return (baseDir != null) ? (string)baseDir : AppDomain.CurrentDomain.BaseDirectory;
+#endif
         }
     }
 }
