@@ -64,7 +64,7 @@ namespace Microsoft.Framework.Configuration.Json
 #endif
 
             // Assert
-            Assert.Equal(Directory.GetCurrentDirectory(), actualPath);
+            Assert.Equal(expectedPath, actualPath);
         }
     }
 }
