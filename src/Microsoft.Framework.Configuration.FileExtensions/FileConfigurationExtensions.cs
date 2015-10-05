@@ -52,9 +52,8 @@ namespace Microsoft.Framework.Configuration
 #if DOTNET
             return AppContext.BaseDirectory;
 #else
-            var baseDir = AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY");
-
-            return (baseDir != null) ? (string)baseDir : AppDomain.CurrentDomain.BaseDirectory;
+            return AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY") as string ??
+                AppDomain.CurrentDomain.BaseDirectory ?? string.Empty;
 #endif
         }
     }

@@ -10,9 +10,9 @@ namespace Microsoft.Framework.Configuration.Test
 {
     public class ConfigurationTests : IDisposable
     {
-        private string _iniConfigFilePath;
-        private string _xmlConfigFilePath;
-        private string _jsonConfigFilePath;
+        private readonly string _iniConfigFilePath;
+        private readonly string _xmlConfigFilePath;
+        private readonly string _jsonConfigFilePath;
         private static readonly string _iniConfigFileContent =
             @"IniKey1=IniValue1
 [IniKey2]
@@ -210,8 +210,8 @@ CommonKey3:CommonKey4=IniValue6";
         {
             // Arrange
             var configurationBuilder = new ConfigurationBuilder();
-            _jsonConfigFilePath = Path.Combine(Directory.GetCurrentDirectory(), "test.json");
-            File.WriteAllText(_jsonConfigFilePath, _jsonConfigFileContent);
+            var jsonConfigFilePath = Path.Combine(Directory.GetCurrentDirectory(), "test.json");
+            File.WriteAllText(jsonConfigFilePath, _jsonConfigFileContent);
 
             // Act
             configurationBuilder.SetBasePath(Path.GetDirectoryName(_xmlConfigFilePath))
@@ -233,7 +233,7 @@ CommonKey3:CommonKey4=IniValue6";
             Assert.Equal("XmlValue3", config["XmlKey2:XmlKey4"]);
             Assert.Equal("XmlValue4", config["XmlKey2:XmlKey5:XmlKey6"]);
 
-            File.Delete(_jsonConfigFilePath);
+            File.Delete(jsonConfigFilePath);
         }
 
         [Fact]
@@ -241,10 +241,10 @@ CommonKey3:CommonKey4=IniValue6";
         {
             // Arrange
             var builder = new ConfigurationBuilder();
-            _jsonConfigFilePath = Path.Combine(Directory.GetCurrentDirectory(), "test.json");
-            _xmlConfigFilePath = Path.Combine(Directory.GetCurrentDirectory(), "xmltest.xml");
-            File.WriteAllText(_jsonConfigFilePath, _jsonConfigFileContent);
-            File.WriteAllText(_xmlConfigFilePath, _xmlConfigFileContent);
+            var jsonConfigFilePath = Path.Combine(Directory.GetCurrentDirectory(), "test.json");
+            var xmlConfigFilePath = Path.Combine(Directory.GetCurrentDirectory(), "xmltest.xml");
+            File.WriteAllText(jsonConfigFilePath, _jsonConfigFileContent);
+            File.WriteAllText(xmlConfigFilePath, _xmlConfigFileContent);
 
             // Act
             builder.AddJsonFile("test.json").AddXmlFile("xmltest.xml");
@@ -263,8 +263,8 @@ CommonKey3:CommonKey4=IniValue6";
             Assert.Equal("XmlValue3", config["XmlKey2:XmlKey4"]);
             Assert.Equal("XmlValue4", config["XmlKey2:XmlKey5:XmlKey6"]);
 
-            File.Delete(_jsonConfigFilePath);
-            File.Delete(_xmlConfigFilePath);
+            File.Delete(jsonConfigFilePath);
+            File.Delete(xmlConfigFilePath);
         }
 
         public void Dispose()

@@ -54,6 +54,15 @@ namespace Microsoft.Framework.Configuration.Json
             // Act
             var actualPath = configurationBuilder.GetBasePath();
 
+            string expectedPath = string.Empty;
+
+#if DNXCORE50
+             expectedPath = AppContext.BaseDirectory;
+#else
+            expectedPath = AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY") as string ??
+                AppDomain.CurrentDomain.BaseDirectory ?? string.Empty;
+#endif
+
             // Assert
             Assert.Equal(Directory.GetCurrentDirectory(), actualPath);
         }
