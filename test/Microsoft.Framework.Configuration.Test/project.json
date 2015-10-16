@@ -3,17 +3,16 @@
         "warningsAsErrors": true
     },
     "dependencies": {
-        "Microsoft.Framework.Configuration": "1.0.0-*",
-        "Microsoft.Framework.Configuration.FileExtensions": "1.0.0-*",
+        "Microsoft.Framework.Configuration": "1.0.0-beta8",
+        "Microsoft.Framework.Configuration.FileExtensions": "1.0.0-beta8",
         "Microsoft.Framework.Configuration.Test.Common": "1.0.0-*",
-        "xunit.runner.aspnet": "2.0.0-aspnet-*"
+        "xunit.runner.aspnet": "2.1.0-beta1-build60"
     },
     "frameworks": {
-        "dnx451": {
-        },
+        "dnx451": {},
         "dnxcore50": {
             "dependencies": {
-                "System.Collections.NonGeneric": "4.0.1-beta-*"
+                "System.Collections.NonGeneric": "4.0.1-beta-23409"
             }
         }
     },

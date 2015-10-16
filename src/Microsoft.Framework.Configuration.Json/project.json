@@ -6,24 +6,24 @@
         "url": "https://github.com/aspnet/configuration"
     },
     "dependencies": {
-        "Newtonsoft.Json": "6.0.6",
-        "Microsoft.Framework.Configuration": "1.0.0-*",
-        "Microsoft.Framework.Configuration.FileExtensions": "1.0.0-*"
+        "Newtonsoft.Json": "7.0.1",
+        "Microsoft.Framework.Configuration": "1.0.0-beta8",
+        "Microsoft.Framework.Configuration.FileExtensions": "1.0.0-beta8"
     },
     "frameworks": {
-        "net45": { },
-        "dnx451": { },
+        "net45": {},
+        "dnx451": {},
         "dnxcore50": {
             "dependencies": {
-                "System.Dynamic.Runtime": "4.0.11-beta-*"
+                "System.Dynamic.Runtime": "4.0.11-beta-23409"
             }
         },
         "dotnet": {
             "dependencies": {
-                "System.Dynamic.Runtime": "4.0.10",
-                "System.IO": "4.0.10",
-                "System.IO.FileSystem": "4.0.0",
-                "System.IO.FileSystem.Primitives": "4.0.0"
+                "System.Dynamic.Runtime": "4.0.11-beta-23409",
+                "System.IO": "4.0.11-beta-23409",
+                "System.IO.FileSystem": "4.0.1-beta-23409",
+                "System.IO.FileSystem.Primitives": "4.0.1-beta-23409"
             }
         }
     }

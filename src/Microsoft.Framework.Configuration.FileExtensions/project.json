@@ -1,4 +1,4 @@
-﻿{
+{
     "version": "1.0.0-*",
     "description": "File based provider configuration extensions for the Configuration package.",
     "repository": {
@@ -6,11 +6,11 @@
         "url": "https://github.com/aspnet/configuration"
     },
     "dependencies": {
-        "Microsoft.Framework.Configuration": "1.0.0-*"
+        "Microsoft.Framework.Configuration": "1.0.0-beta8"
     },
     "frameworks": {
-    "net45": { },
-    "dnx451": { },
-    "dotnet": { }
+        "net45": {},
+        "dnx451": {},
+        "dotnet": {}
     }
 }
