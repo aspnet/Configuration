@@ -24,7 +24,8 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// TODO: Not really sure what this is...
+        /// Gets a key/value collection that can be used to share data between the <see cref="IConfigurationBuilder"/>
+        /// and the registered <see cref="IConfigurationProvider"/>s.
         /// </summary>
         public Dictionary<string, object> Properties { get; } = new Dictionary<string, object>();
 
