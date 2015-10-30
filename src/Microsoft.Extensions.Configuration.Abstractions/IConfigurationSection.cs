@@ -4,23 +4,22 @@
 namespace Microsoft.Extensions.Configuration
 {
     /// <summary>
-    /// REVIEW: Really not confident these are correct.
-    /// Represents a sub-section of application configuration values.
+    /// Represents a section of application configuration values.
     /// </summary>
     public interface IConfigurationSection : IConfiguration
     {
         /// <summary>
-        /// Gets the key this sub-section was retrieved from.
+        /// Gets the key this section occupies in its parent.
         /// </summary>
         string Key { get; }
 
         /// <summary>
-        /// Gets the path to the sub-section within the <see cref="IConfiguration"/> it was retrieved from.
+        /// Gets the full path to this section within the <see cref="IConfiguration"/>.
         /// </summary>
         string Path { get; }
 
         /// <summary>
-        /// Gets or sets the value.
+        /// Gets or sets the section value.
         /// </summary>
         string Value { get; set; }
     }
