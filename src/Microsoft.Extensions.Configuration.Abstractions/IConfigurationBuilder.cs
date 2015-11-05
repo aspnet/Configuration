@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.Configuration
         Dictionary<string, object> Properties { get; }
 
         /// <summary>
-        /// Returns the providers used to obtain configuation values.
+        /// Gets the providers used to obtain configuation values
         /// </summary>
         IEnumerable<IConfigurationProvider> Providers { get; }
 
@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.Configuration
         /// Adds a new configuration provider.
         /// </summary>
         /// <param name="provider">The configuration provider to add.</param>
-        /// <returns>The same configuration provider.</returns>
+        /// <returns>The same <see cref="IConfigurationBuilder"/>.</returns>
         IConfigurationBuilder Add(IConfigurationProvider provider);
 
         /// <summary>

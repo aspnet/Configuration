@@ -31,11 +31,13 @@ namespace Microsoft.Extensions.Configuration
         void Load();
 
         /// <summary>
-        /// TODO: No idea what this is, help pls.
+        /// Returns the immediate descendant configuration keys for a given parent path based on this
+        /// <see cref="IConfigurationProvider"/>'s data and the set of keys returned by all the preceding
+        /// <see cref="IConfigurationProvider"/>s.
         /// </summary>
-        /// <param name="earlierKeys"></param>
-        /// <param name="parentPath"></param>
-        /// <param name="delimiter"></param>
+        /// <param name="earlierKeys">The child keys returned by the preceding providers for the same parent path.</param>
+        /// <param name="parentPath">The parent path.</param>
+        /// <param name="delimiter">The delimiter to use to identify keys in the <see cref="IConfigurationProvider"/>'s data.</param>
         /// <returns>The child keys.</returns>
         IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string parentPath, string delimiter);
     }

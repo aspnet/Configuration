@@ -33,7 +33,7 @@ namespace Microsoft.Extensions.Configuration
         /// Adds a new configuration provider.
         /// </summary>
         /// <param name="provider">The configuration provider to add.</param>
-        /// <returns>The same configuration provider.</returns>
+        /// <returns>The same <see cref="IConfigurationBuilder"/>.</returns>
         public IConfigurationBuilder Add(IConfigurationProvider provider)
         {
             return Add(provider, load: true);
@@ -46,7 +46,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="provider">The configuration provider to add.</param>
         /// <param name="load">If true, the configuration provider's <see cref="IConfigurationProvider.Load"/> method will
         ///  be called.</param>
-        /// <returns>The same configuration provider.</returns>
+        /// <returns>The same <see cref="IConfigurationBuilder"/>.</returns>
         public IConfigurationBuilder Add(IConfigurationProvider provider, bool load)
         {
             if (load)
