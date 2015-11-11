@@ -36,5 +36,6 @@ namespace Microsoft.Extensions.Configuration
         IEnumerable<IConfigurationSection> GetChildren();
 
         IChangeToken GetReloadToken();
+        IConfigurationRoot Root { get; }
     }
 }

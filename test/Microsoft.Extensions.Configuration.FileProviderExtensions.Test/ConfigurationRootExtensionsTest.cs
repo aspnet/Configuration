@@ -46,6 +46,14 @@ namespace Microsoft.Extensions.Configuration
 
             public int ReloadCount { get; private set; }
 
+            public IConfigurationRoot Root
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
             public string this[string key]
             {
                 get

@@ -86,5 +86,7 @@ namespace Microsoft.Extensions.Configuration
             var previousReloadToken = Interlocked.Exchange(ref _reloadToken, new ConfigurationReloadToken());
             previousReloadToken.OnReload();
         }
+
+        public IConfigurationRoot Root { get { return this; } }
     }
 }
