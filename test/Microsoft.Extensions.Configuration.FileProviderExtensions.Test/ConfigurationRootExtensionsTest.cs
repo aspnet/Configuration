@@ -40,6 +40,45 @@ namespace Microsoft.Extensions.Configuration
             Assert.Equal(1, configuration.ReloadCount);
         }
 
+        [Fact]
+        public void ReloadTokensFireOnce()
+        {
+            var count = 0;
+            var config = new ConfigurationBuilder().AddInMemoryCollection().Build();
+            var cleanup = config.GetReloadToken().RegisterChangeCallback(s => count++, this);
+            Assert.Equal(0, count);
+            config.Reload();
+            Assert.Equal(1, count);
+            config.Reload();
+            Assert.Equal(1, count);
+        }
+
+        [Fact]
+        public void ReloadTokensNeedsToBeReregisteredToFireAgain()
+        {
+            var count = 0;
+            var config = new ConfigurationBuilder().AddInMemoryCollection().Build();
+            var cleanup = config.GetReloadToken().RegisterChangeCallback(s => count++, this);
+            Assert.Equal(0, count);
+            config.Reload();
+            Assert.Equal(1, count);
+            cleanup = config.GetReloadToken().RegisterChangeCallback(s => count++, this);
+            config.Reload();
+            Assert.Equal(2, count);
+        }
+
+        [Fact]
+        public void ReloadTokensDoNotFireAfterDispose()
+        {
+            var count = 0;
+            var config = new ConfigurationBuilder().AddInMemoryCollection().Build();
+            var cleanup = config.GetReloadToken().RegisterChangeCallback(s => count++, this);
+            Assert.Equal(0, count);
+            cleanup.Dispose();
+            config.Reload();
+            Assert.Equal(0, count);
+        }
+
         private class MockConfigurationRoot : IConfigurationRoot
         {
             public Action OnReload { get; set; }

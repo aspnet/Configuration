@@ -67,7 +67,7 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentNullException(nameof(filename));
             }
 
-            ChangeTokenHelper.OnChange(() => fileProvider.Watch(filename), () => config.Reload());
+            ChangeToken.OnChange(() => fileProvider.Watch(filename), () => config.Reload());
             return config;
         }
     }
