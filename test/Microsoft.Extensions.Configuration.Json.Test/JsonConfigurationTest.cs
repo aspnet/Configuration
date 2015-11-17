@@ -138,23 +138,12 @@ namespace Microsoft.Extensions.Configuration
         [Fact]
         public void ThrowFormatExceptionWhenFileIsEmpty()
         {
-            //var config = new ConfigurationBuilder();
-            //var tempFileName = "C:\\temp\\" + Guid.NewGuid().ToString() + ".json";
-            //var tempFile = File.Create(tempFileName);
-            //tempFile.Close();
-            //config.AddJsonFile(tempFileName);
-
-            //var exception = Assert.Throws<FormatException>(
-            //    () => config.AddJsonFile(tempFileName));
-            //Assert.NotNull(exception.Message);
-
             var json = @"";
             var jsonConfigSource = new JsonConfigurationProvider("EmptyFile.txt");
 
             var exception = Assert.Throws<FormatException>(
                 () => jsonConfigSource.Load(TestStreamHelpers.StringToStream(json)));
-            throw exception;
-            //Assert.NotNull(exception.Message);
+            Assert.NotNull(exception.Message);
         }
     }
 }
