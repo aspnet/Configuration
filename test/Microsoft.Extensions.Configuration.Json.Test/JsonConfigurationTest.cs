@@ -139,7 +139,7 @@ namespace Microsoft.Extensions.Configuration
         public void ThrowFormatExceptionWhenFileIsEmpty()
         {
             var json = @"";
-            var jsonConfigSource = new JsonConfigurationProvider("EmptyFile.txt");
+            var jsonConfigSource = new JsonConfigurationProvider("EmptyConfig.json");
 
             var exception = Assert.Throws<FormatException>(
                 () => jsonConfigSource.Load(TestStreamHelpers.StringToStream(json)));
