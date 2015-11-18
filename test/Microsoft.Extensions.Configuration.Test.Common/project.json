@@ -4,15 +4,14 @@
     "keyFile": "../../tools/Key.snk"
   },
   "dependencies": {
-    "Microsoft.Extensions.Configuration": "1.0.0-*"
+    "Microsoft.Extensions.Configuration": "1.0.0-rc1-final"
   },
   "frameworks": {
-    "dnx451": {
-    },
+    "dnx451": {},
     "dnxcore50": {
       "dependencies": {
-        "System.Collections.NonGeneric": "4.0.1-beta-*",
-        "System.Runtime": "4.0.21-beta-*"
+        "System.Collections.NonGeneric": "4.0.1-beta-23516",
+        "System.Runtime": "4.0.21-beta-23516"
       }
     }
   }

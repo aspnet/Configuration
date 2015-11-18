@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.0.0-rc1-final",
   "compilationOptions": {
     "warningsAsErrors": true,
     "keyFile": "../../tools/Key.snk"
@@ -10,13 +10,13 @@
     "url": "https://github.com/aspnet/configuration"
   },
   "dependencies": {
-    "Microsoft.AspNet.FileProviders.Physical": "1.0.0-*",
-    "Microsoft.Extensions.Configuration.Abstractions": "1.0.0-*",
-    "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0-*"
+    "Microsoft.AspNet.FileProviders.Physical": "1.0.0-rc1-final",
+    "Microsoft.Extensions.Configuration.Abstractions": "1.0.0-rc1-final",
+    "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0-rc1-final"
   },
   "frameworks": {
-    "net451": { },
-    "dotnet5.4": { },
-    "netcore50": { }
+    "net451": {},
+    "dotnet5.4": {},
+    "netcore50": {}
   }
 }

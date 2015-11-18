@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.0.0-rc1-final",
   "compilationOptions": {
     "warningsAsErrors": true,
     "keyFile": "../../tools/Key.snk"
@@ -10,8 +10,8 @@
     "url": "https://github.com/aspnet/configuration"
   },
   "dependencies": {
-    "Microsoft.Extensions.Configuration": "1.0.0-*",
-    "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0-*"
+    "Microsoft.Extensions.Configuration": "1.0.0-rc1-final",
+    "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0-rc1-final"
   },
   "frameworks": {
     "net451": {
@@ -22,17 +22,17 @@
     },
     "dotnet5.4": {
       "dependencies": {
-        "System.Xml.XmlDocument": "4.0.1-beta-*",
-        "System.Xml.XmlSerializer": "4.0.11-beta-*"
+        "System.Xml.XmlDocument": "4.0.1-beta-23516",
+        "System.Xml.XmlSerializer": "4.0.11-beta-23516"
       }
     },
     "netcore50": {
       "dependencies": {
-        "System.IO": "4.0.10",
-        "System.IO.FileSystem": "4.0.0",
-        "System.IO.FileSystem.Primitives": "4.0.0",
-        "System.Xml.ReaderWriter": "4.0.10",
-        "System.Xml.XmlDocument": "4.0.0"
+        "System.IO": "4.0.11-beta-23516",
+        "System.IO.FileSystem": "4.0.1-beta-23516",
+        "System.IO.FileSystem.Primitives": "4.0.1-beta-23516",
+        "System.Xml.ReaderWriter": "4.0.11-beta-23516",
+        "System.Xml.XmlDocument": "4.0.1-beta-23516"
       }
     }
   }

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.0.0-rc1-final",
   "compilationOptions": {
     "warningsAsErrors": true,
     "keyFile": "../../tools/Key.snk"
@@ -10,25 +10,25 @@
     "url": "https://github.com/aspnet/configuration"
   },
   "dependencies": {
-    "Microsoft.Extensions.Configuration": "1.0.0-*"
+    "Microsoft.Extensions.Configuration": "1.0.0-rc1-final"
   },
   "frameworks": {
     "net451": {},
     "dotnet5.4": {
       "dependencies": {
-        "System.ComponentModel.TypeConverter": "4.0.1-beta-*"
+        "System.ComponentModel.TypeConverter": "4.0.1-beta-23516"
       }
     },
     "netcore50": {
       "dependencies": {
-        "System.Collections": "4.0.10",
-        "System.ComponentModel.TypeConverter": "4.0.0",
-        "System.Diagnostics.Debug": "4.0.10",
-        "System.Globalization": "4.0.10",
-        "System.Linq": "4.0.0",
-        "System.Reflection": "4.0.10",
-        "System.Resources.ResourceManager": "4.0.0",
-        "System.Runtime": "4.0.20"
+        "System.Collections": "4.0.11-beta-23516",
+        "System.ComponentModel.TypeConverter": "4.0.1-beta-23516",
+        "System.Diagnostics.Debug": "4.0.11-beta-23516",
+        "System.Globalization": "4.0.11-beta-23516",
+        "System.Linq": "4.0.1-beta-23516",
+        "System.Reflection": "4.1.0-beta-23516",
+        "System.Resources.ResourceManager": "4.0.1-beta-23516",
+        "System.Runtime": "4.0.21-beta-23516"
       }
     }
   }
