@@ -284,7 +284,7 @@ namespace Microsoft.Extensions.Configuration.Test
             // Act
             var token1 = config.GetReloadToken();
             var token2 = config.GetReloadToken();
-            config.Reload();
+            config.ReloadAll();
             var token3 = config.GetReloadToken();
             var token4 = config.GetReloadToken();
 
@@ -304,7 +304,7 @@ namespace Microsoft.Extensions.Configuration.Test
             // Act
             var token1 = config.GetReloadToken();
             var hasChanged1 = token1.HasChanged;
-            config.Reload();
+            config.ReloadAll();
             var hasChanged2 = token1.HasChanged;
 
             // Assert
@@ -322,7 +322,7 @@ namespace Microsoft.Extensions.Configuration.Test
             // Act
             var token1 = config.GetReloadToken();
             var hasChanged1 = token1.HasChanged;
-            config.Reload();
+            config.ReloadAll();
             var hasChanged2 = token1.HasChanged;
             var token2 = config.GetReloadToken();
             var hasChanged3 = token2.HasChanged;

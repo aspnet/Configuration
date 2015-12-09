@@ -7,7 +7,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Extensions.Configuration
 {
-    public static class FileProviderExtensions
+    public static class ConfigurationExtensions
     {
         public static IConfiguration ReloadOnChanged(this IConfiguration config, string filename)
         {
