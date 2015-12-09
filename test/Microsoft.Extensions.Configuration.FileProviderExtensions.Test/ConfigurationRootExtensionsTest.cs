@@ -47,9 +47,9 @@ namespace Microsoft.Extensions.Configuration
             var config = new ConfigurationBuilder().AddInMemoryCollection().Build();
             var cleanup = config.GetReloadToken().RegisterChangeCallback(s => count++, this);
             Assert.Equal(0, count);
-            config.Reload();
+            config.ReloadAll();
             Assert.Equal(1, count);
-            config.Reload();
+            config.ReloadAll();
             Assert.Equal(1, count);
         }
 
@@ -60,10 +60,10 @@ namespace Microsoft.Extensions.Configuration
             var config = new ConfigurationBuilder().AddInMemoryCollection().Build();
             var cleanup = config.GetReloadToken().RegisterChangeCallback(s => count++, this);
             Assert.Equal(0, count);
-            config.Reload();
+            config.ReloadAll();
             Assert.Equal(1, count);
             cleanup = config.GetReloadToken().RegisterChangeCallback(s => count++, this);
-            config.Reload();
+            config.ReloadAll();
             Assert.Equal(2, count);
         }
 
@@ -75,23 +75,15 @@ namespace Microsoft.Extensions.Configuration
             var cleanup = config.GetReloadToken().RegisterChangeCallback(s => count++, this);
             Assert.Equal(0, count);
             cleanup.Dispose();
-            config.Reload();
+            config.ReloadAll();
             Assert.Equal(0, count);
         }
 
-        private class MockConfigurationRoot : IConfigurationRoot
+        private class MockConfigurationRoot : IConfiguration
         {
             public Action OnReload { get; set; }
 
             public int ReloadCount { get; private set; }
-
-            public IConfigurationRoot Root
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-            }
 
             public string this[string key]
             {
@@ -106,11 +98,11 @@ namespace Microsoft.Extensions.Configuration
                 }
             }
 
+
             public IEnumerable<IConfigurationSection> GetChildren()
             {
                 throw new NotImplementedException();
             }
-
             public IChangeToken GetReloadToken()
             {
                 throw new NotImplementedException();
@@ -121,7 +113,7 @@ namespace Microsoft.Extensions.Configuration
                 throw new NotImplementedException();
             }
 
-            public void Reload()
+            public void ReloadAll()
             {
                 OnReload?.Invoke();
                 ReloadCount++;

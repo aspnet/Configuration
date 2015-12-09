@@ -83,6 +83,9 @@ namespace Microsoft.Extensions.Configuration
 
         public IChangeToken GetReloadToken() => _root.GetReloadToken();
 
-        public IConfigurationRoot Root { get { return _root;  } }
+        public void ReloadAll()
+        {
+            _root.ReloadAll();
+        }
     }
 }

@@ -163,7 +163,7 @@ CommonKey3:CommonKey4=IniValue6";
             }
 
             // Recover values by reloading
-            config.Reload();
+            config.ReloadAll();
 
             Assert.Equal("XmlValue6", config["CommonKey1:CommonKey2:CommonKey3:CommonKey4"]);
 
@@ -178,7 +178,7 @@ CommonKey3:CommonKey4=IniValue6";
             }
 
             // Recover values by reloading
-            config.Reload();
+            config.ReloadAll();
             Assert.Equal("XmlValue6", config["CommonKey1:CommonKey2:CommonKey3:CommonKey4"]);
         }
 

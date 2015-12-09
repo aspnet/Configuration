@@ -9,7 +9,7 @@ namespace Microsoft.Extensions.Configuration
 {
     public static class FileProviderExtensions
     {
-        public static IConfigurationRoot ReloadOnChanged(this IConfigurationRoot config, string filename)
+        public static IConfiguration ReloadOnChanged(this IConfiguration config, string filename)
         {
             if (config == null)
             {
@@ -29,7 +29,7 @@ namespace Microsoft.Extensions.Configuration
             return ReloadOnChanged(config, basePath, filename);
         }
 
-        public static IConfigurationRoot ReloadOnChanged(this IConfigurationRoot config, string basePath, string filename)
+        public static IConfiguration ReloadOnChanged(this IConfiguration config, string basePath, string filename)
         {
             if (config == null)
             {
@@ -50,7 +50,7 @@ namespace Microsoft.Extensions.Configuration
             return ReloadOnChanged(config, fileProvider, filename);
         }
 
-        public static IConfigurationRoot ReloadOnChanged(this IConfigurationRoot config, IFileProvider fileProvider, string filename)
+        public static IConfiguration ReloadOnChanged(this IConfiguration config, IFileProvider fileProvider, string filename)
         {
             if (config == null)
             {
@@ -67,7 +67,7 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentNullException(nameof(filename));
             }
 
-            ChangeToken.OnChange(() => fileProvider.Watch(filename), () => config.Reload());
+            ChangeToken.OnChange(() => fileProvider.Watch(filename), () => config.ReloadAll());
             return config;
         }
     }

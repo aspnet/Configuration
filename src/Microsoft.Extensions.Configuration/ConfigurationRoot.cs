@@ -9,7 +9,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Extensions.Configuration
 {
-    public class ConfigurationRoot : IConfigurationRoot
+    public class ConfigurationRoot : IConfiguration
     {
         private IList<IConfigurationProvider> _providers;
         private ConfigurationReloadToken _reloadToken = new ConfigurationReloadToken();
@@ -77,7 +77,7 @@ namespace Microsoft.Extensions.Configuration
             return new ConfigurationSection(this, key);
         }
 
-        public void Reload()
+        public void ReloadAll()
         {
             foreach (var provider in _providers)
             {
@@ -86,7 +86,5 @@ namespace Microsoft.Extensions.Configuration
             var previousReloadToken = Interlocked.Exchange(ref _reloadToken, new ConfigurationReloadToken());
             previousReloadToken.OnReload();
         }
-
-        public IConfigurationRoot Root { get { return this; } }
     }
 }
