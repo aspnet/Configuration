@@ -10,6 +10,9 @@ addons:
     - libssl-dev
     - libunwind8
     - zlib1g
+os:
+  - linux
+  - osx
 env:
   - KOREBUILD_DNU_RESTORE_CORECLR=true
 mono:
