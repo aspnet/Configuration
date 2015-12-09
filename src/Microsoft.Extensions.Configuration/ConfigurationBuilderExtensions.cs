@@ -30,7 +30,7 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="config">The <see cref="IConfiguration"/> to include.</param>
-        /// <param name="key">The key of the root of the configuartion to inculde.</param>
+        /// <param name="key">The key of the root of the configuartion to include.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddConfiguration(this IConfigurationBuilder configurationBuilder, IConfiguration configuration, string key)
         {
