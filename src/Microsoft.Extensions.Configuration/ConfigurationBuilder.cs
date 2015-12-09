@@ -59,31 +59,6 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Includes an existing IConfiguration as a configuration provider to <paramref name="configuraton"/>.
-        /// </summary>
-        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="config">The <see cref="IConfiguration"/> to include.</param>
-        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public IConfigurationBuilder AddConfiguration(IConfiguration config)
-        {
-            Add(new ChainedConfigurationProvider(config));
-            return this;
-        }
-
-        /// <summary>
-        /// Includes an existing IConfiguration as a configuration provider to <paramref name="configuraton"/>.
-        /// </summary>
-        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="config">The <see cref="IConfiguration"/> to include.</param>
-        /// <param name="key">The key of the root of the configuartion to inculde.</param>
-        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public IConfigurationBuilder AddConfiguration(IConfiguration config, string key)
-        {
-            Add(new ChainedConfigurationProvider(config.GetSection(key)));
-            return this;
-        }
-
-        /// <summary>
         /// Builds an <see cref="IConfiguration"/> with keys and values from the set of providers registered in
         /// <see cref="Providers"/>.
         /// </summary>

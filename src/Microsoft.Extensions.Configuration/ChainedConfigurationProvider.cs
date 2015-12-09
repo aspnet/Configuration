@@ -7,20 +7,20 @@ namespace Microsoft.Extensions.Configuration
 {
     public class ChainedConfigurationProvider : ConfigurationProvider
     {
-        private readonly IConfiguration _config;
+        private readonly IConfiguration _configuration;
 
-        public ChainedConfigurationProvider(IConfiguration config)
+        public ChainedConfigurationProvider(IConfiguration configuration)
         {
-            if (config == null)
+            if (configuration == null)
             {
-                throw new ArgumentNullException(nameof(config));
+                throw new ArgumentNullException(nameof(configuration));
             }
-            _config = config;
+            _configuration = configuration;
         }
 
         public override void Load()
         {
-            foreach (var section in _config.GetChildren())
+            foreach (var section in _configuration.GetChildren())
             {
                 AddSection(section, section.Key);
             }
