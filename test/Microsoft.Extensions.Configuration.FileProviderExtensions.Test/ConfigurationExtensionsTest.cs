@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Microsoft.Extensions.Configuration
 {
-    public class ConfigurationRootExtensionsTest
+    public class ConfigurationExtensionsTest
     {
         [Fact]
         public void ReloadOnChanged_GetTokenBeforeReload()
