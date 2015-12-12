@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Extensions.Configuration
@@ -83,5 +82,10 @@ namespace Microsoft.Extensions.Configuration
         public IEnumerable<IConfigurationSection> GetChildren() => _root.GetChildrenImplementation(Path);
 
         public IChangeToken GetReloadToken() => _root.GetReloadToken();
+
+        public void ReloadAll()
+        {
+            _root.ReloadAll();
+        }
     }
 }

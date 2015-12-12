@@ -3,12 +3,13 @@
 
 using System;
 using Microsoft.AspNet.FileProviders;
+using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Extensions.Configuration
 {
-    public static class FileProviderExtensions
+    public static class ConfigurationExtensions
     {
-        public static IConfigurationRoot ReloadOnChanged(this IConfigurationRoot config, string filename)
+        public static IConfiguration ReloadOnChanged(this IConfiguration config, string filename)
         {
             if (config == null)
             {
@@ -28,10 +29,7 @@ namespace Microsoft.Extensions.Configuration
             return ReloadOnChanged(config, basePath, filename);
         }
 
-        public static IConfigurationRoot ReloadOnChanged(
-            this IConfigurationRoot config,
-            string basePath,
-            string filename)
+        public static IConfiguration ReloadOnChanged(this IConfiguration config, string basePath, string filename)
         {
             if (config == null)
             {
@@ -52,10 +50,7 @@ namespace Microsoft.Extensions.Configuration
             return ReloadOnChanged(config, fileProvider, filename);
         }
 
-        public static IConfigurationRoot ReloadOnChanged(
-            this IConfigurationRoot config,
-            IFileProvider fileProvider,
-            string filename)
+        public static IConfiguration ReloadOnChanged(this IConfiguration config, IFileProvider fileProvider, string filename)
         {
             if (config == null)
             {
@@ -72,20 +67,7 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentNullException(nameof(filename));
             }
 
-            Action<object> callback = null;
-            callback = _ =>
-            {
-                // The order here is important. We need to take the token and then apply our changes BEFORE
-                // registering. This prevents us from possible having two change updates to process concurrently.
-                //
-                // If the file changes after we take the token, then we'll process the update immediately upon
-                // registering the callback.
-                var token = fileProvider.Watch(filename);
-                config.Reload();
-                token.RegisterChangeCallback(callback, null);
-            };
-
-            fileProvider.Watch(filename).RegisterChangeCallback(callback, null);
+            ChangeToken.OnChange(() => fileProvider.Watch(filename), () => config.ReloadAll());
             return config;
         }
     }

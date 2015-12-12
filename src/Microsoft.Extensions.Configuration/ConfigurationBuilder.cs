@@ -61,8 +61,8 @@ namespace Microsoft.Extensions.Configuration
         /// Builds an <see cref="IConfiguration"/> with keys and values from the set of providers registered in
         /// <see cref="Providers"/>.
         /// </summary>
-        /// <returns>An <see cref="IConfigurationRoot"/> with keys and values from the registered providers.</returns>
-        public IConfigurationRoot Build()
+        /// <returns>An <see cref="IConfiguration"/> with keys and values from the registered providers.</returns>
+        public IConfiguration Build()
         {
             return new ConfigurationRoot(_providers);
         }

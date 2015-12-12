@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Microsoft.Extensions.Configuration
 {
-    public class ConfigurationRootExtensionsTest
+    public class ConfigurationExtensionsTest
     {
         [Fact]
         public void ReloadOnChanged_GetTokenBeforeReload()
@@ -40,7 +40,46 @@ namespace Microsoft.Extensions.Configuration
             Assert.Equal(1, configuration.ReloadCount);
         }
 
-        private class MockConfigurationRoot : IConfigurationRoot
+        [Fact]
+        public void ReloadTokensFireOnce()
+        {
+            var count = 0;
+            var config = new ConfigurationBuilder().AddInMemoryCollection().Build();
+            var cleanup = config.GetReloadToken().RegisterChangeCallback(s => count++, this);
+            Assert.Equal(0, count);
+            config.ReloadAll();
+            Assert.Equal(1, count);
+            config.ReloadAll();
+            Assert.Equal(1, count);
+        }
+
+        [Fact]
+        public void ReloadTokensNeedsToBeReregisteredToFireAgain()
+        {
+            var count = 0;
+            var config = new ConfigurationBuilder().AddInMemoryCollection().Build();
+            var cleanup = config.GetReloadToken().RegisterChangeCallback(s => count++, this);
+            Assert.Equal(0, count);
+            config.ReloadAll();
+            Assert.Equal(1, count);
+            cleanup = config.GetReloadToken().RegisterChangeCallback(s => count++, this);
+            config.ReloadAll();
+            Assert.Equal(2, count);
+        }
+
+        [Fact]
+        public void ReloadTokensDoNotFireAfterDispose()
+        {
+            var count = 0;
+            var config = new ConfigurationBuilder().AddInMemoryCollection().Build();
+            var cleanup = config.GetReloadToken().RegisterChangeCallback(s => count++, this);
+            Assert.Equal(0, count);
+            cleanup.Dispose();
+            config.ReloadAll();
+            Assert.Equal(0, count);
+        }
+
+        private class MockConfigurationRoot : IConfiguration
         {
             public Action OnReload { get; set; }
 
@@ -59,11 +98,11 @@ namespace Microsoft.Extensions.Configuration
                 }
             }
 
+
             public IEnumerable<IConfigurationSection> GetChildren()
             {
                 throw new NotImplementedException();
             }
-
             public IChangeToken GetReloadToken()
             {
                 throw new NotImplementedException();
@@ -74,7 +113,7 @@ namespace Microsoft.Extensions.Configuration
                 throw new NotImplementedException();
             }
 
-            public void Reload()
+            public void ReloadAll()
             {
                 OnReload?.Invoke();
                 ReloadCount++;
