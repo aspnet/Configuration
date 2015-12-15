@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration.Memory;
 
 namespace Microsoft.Extensions.Configuration
 {
-    public static class CoreConfigurationBuilderExtensions
+    public static class DefaultConfigurationBuilderExtensions
     {
         /// <summary>
         /// Includes an existing IConfiguration as a configuration provider to <paramref name="configuraton"/>.
