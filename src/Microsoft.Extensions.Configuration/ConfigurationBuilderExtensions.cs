@@ -15,13 +15,13 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="config">The <see cref="IConfiguration"/> to include.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddConfiguration(this IConfigurationBuilder configurationBuilder, IConfiguration configuration)
+        public static IConfigurationBuilder Include(this IConfigurationBuilder configurationBuilder, IConfiguration configuration)
         {
             if (configurationBuilder == null)
             {
                 throw new ArgumentNullException(nameof(configurationBuilder));
             }
-            configurationBuilder.Add(new ChainedConfigurationProvider(configuration));
+            configurationBuilder.Add(new IncludeConfigurationProvider(configuration));
             return configurationBuilder;
         }
 
@@ -29,16 +29,16 @@ namespace Microsoft.Extensions.Configuration
         /// Includes an existing IConfiguration as a configuration provider to <paramref name="configuraton"/>.
         /// </summary>
         /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="sectionKey">Includes the configuration starting from the child section found with this key.</param>
         /// <param name="config">The <see cref="IConfiguration"/> to include.</param>
-        /// <param name="key">The key of the root of the configuartion to include.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddConfiguration(this IConfigurationBuilder configurationBuilder, IConfiguration configuration, string key)
+        public static IConfigurationBuilder Include(this IConfigurationBuilder configurationBuilder, string sectionKey, IConfiguration configuration)
         {
             if (configurationBuilder == null)
             {
                 throw new ArgumentNullException(nameof(configurationBuilder));
             }
-            configurationBuilder.Add(new ChainedConfigurationProvider(configuration.GetSection(key)));
+            configurationBuilder.Add(new IncludeConfigurationProvider(configuration.GetSection(sectionKey)));
             return configurationBuilder;
         }
 
