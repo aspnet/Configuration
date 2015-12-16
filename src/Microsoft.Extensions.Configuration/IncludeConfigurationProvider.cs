@@ -13,18 +13,27 @@ namespace Microsoft.Extensions.Configuration
             {
                 throw new ArgumentNullException(nameof(source));
             }
+            int pathStart;
+            if (source is IConfigurationRoot)
+            {
+                pathStart = 0;
+            }
+            else
+            {
+                pathStart = source.Path.Length + 1;
+            }
             foreach (var section in source.GetChildren())
             {
-                AddSection(section, section.Key);
+                AddSection(section, pathStart);
             }
         }
 
-        private void AddSection(IConfigurationSection section, string keyPrefix)
+        private void AddSection(IConfigurationSection section, int pathStart)
         {
-            Data.Add(keyPrefix, section.Value);
+            Data.Add(section.Path.Substring(pathStart), section.Value);
             foreach (var child in section.GetChildren())
             {
-                AddSection(child, keyPrefix + Constants.KeyDelimiter + child.Key);
+                AddSection(child, pathStart);
             }
         }
     }
