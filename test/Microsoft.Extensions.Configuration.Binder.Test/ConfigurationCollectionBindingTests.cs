@@ -103,7 +103,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             var config = configurationBuilder.Build();
 
             var list = new List<string>();
-            config.GetSection("StringList").Bind(list);
+            config.GetSubSection("StringList").Bind(list);
 
             Assert.Equal(4, list.Count);
 

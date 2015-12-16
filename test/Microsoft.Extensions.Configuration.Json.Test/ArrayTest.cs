@@ -106,7 +106,7 @@ namespace Microsoft.Extensions.Configuration.Json.Test
             configurationBuilder.Add(jsonConfigSource2, load: false);
             var config = configurationBuilder.Build();
 
-            Assert.Equal(3, config.GetSection("ip").GetChildren().Count());
+            Assert.Equal(3, config.GetSubSection("ip").GetChildren().Count());
             Assert.Equal("15.16.17.18", config["ip:0"]);
             Assert.Equal("7.8.9.10", config["ip:1"]);
             Assert.Equal("11.12.13.14", config["ip:2"]);
@@ -140,7 +140,7 @@ namespace Microsoft.Extensions.Configuration.Json.Test
             configurationBuilder.Add(jsonConfigSource2, load: false);
             var config = configurationBuilder.Build();
 
-            Assert.Equal(3, config.GetSection("ip").GetChildren().Count());
+            Assert.Equal(3, config.GetSubSection("ip").GetChildren().Count());
             Assert.Equal("1.2.3.4", config["ip:0"]);
             Assert.Equal("15.16.17.18", config["ip:1"]);
             Assert.Equal("11.12.13.14", config["ip:2"]);
@@ -174,7 +174,7 @@ namespace Microsoft.Extensions.Configuration.Json.Test
             configurationBuilder.Add(jsonConfigSource2, load: false);
             var config = configurationBuilder.Build();
 
-            Assert.Equal(4, config.GetSection("ip").GetChildren().Count());
+            Assert.Equal(4, config.GetSubSection("ip").GetChildren().Count());
             Assert.Equal("1.2.3.4", config["ip:0"]);
             Assert.Equal("7.8.9.10", config["ip:1"]);
             Assert.Equal("11.12.13.14", config["ip:2"]);
@@ -199,7 +199,7 @@ namespace Microsoft.Extensions.Configuration.Json.Test
             configurationBuilder.Add(jsonConfigSource, load: false);
             var config = configurationBuilder.Build();
 
-            var configurationSection = config.GetSection("setting");
+            var configurationSection = config.GetSubSection("setting");
             var indexConfigurationSections = configurationSection.GetChildren().ToArray();
 
             Assert.Equal(3, indexConfigurationSections.Count());
@@ -229,7 +229,7 @@ namespace Microsoft.Extensions.Configuration.Json.Test
             configurationBuilder.Add(jsonConfigSource, load: false);
             var config = configurationBuilder.Build();
 
-            var configurationSection = config.GetSection("setting");
+            var configurationSection = config.GetSubSection("setting");
             var indexConfigurationSections = configurationSection.GetChildren().ToArray();
 
             Assert.Equal(6, indexConfigurationSections.Count());

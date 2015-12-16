@@ -43,12 +43,12 @@ namespace Microsoft.Extensions.Configuration
 
         public static T Get<T>(this IConfiguration configuration, string key)
         {
-            return Get(configuration.GetSection(key), default(T));
+            return Get(configuration.GetSubSection(key), default(T));
         }
 
         public static T Get<T>(this IConfiguration configuration, string key, T defaultValue)
         {
-            return Get<T>(configuration.GetSection(key), defaultValue);
+            return Get<T>(configuration.GetSubSection(key), defaultValue);
         }
 
         public static object Get(this IConfiguration configuration, Type type)
@@ -66,7 +66,7 @@ namespace Microsoft.Extensions.Configuration
 
         public static object Get(this IConfiguration configuration, Type type, string key)
         {
-            return Get(configuration.GetSection(key), type);
+            return Get(configuration.GetSubSection(key), type);
         }
 
         private static void BindNonScalar(this IConfiguration configuration, object instance)
@@ -100,7 +100,7 @@ namespace Microsoft.Extensions.Configuration
                 return;
             }
 
-            propertyValue = BindInstance(property.PropertyType, propertyValue, config.GetSection(property.Name));
+            propertyValue = BindInstance(property.PropertyType, propertyValue, config.GetSubSection(property.Name));
             if (propertyValue != null && hasPublicSetter)
             {
                 property.SetValue(instance, propertyValue);
@@ -109,12 +109,11 @@ namespace Microsoft.Extensions.Configuration
 
         private static object BindInstance(Type type, object instance, IConfiguration config)
         {
-            var section = config as IConfigurationSection;
-            var configValue = section?.Value;
+            var configValue = config.Value;
             if (configValue != null)
             {
                 // Leaf nodes are always reinitialized
-                return ReadValue(type, configValue, section);
+                return ReadValue(type, configValue, config);
             }
 
             if (config != null && config.GetChildren().Any())
@@ -278,7 +277,7 @@ namespace Microsoft.Extensions.Configuration
             return newArray;
         }
 
-        private static object ReadValue(Type type, string value, IConfigurationSection config)
+        private static object ReadValue(Type type, string value, IConfiguration config)
         {
             if (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
