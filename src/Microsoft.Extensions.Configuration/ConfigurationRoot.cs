@@ -24,6 +24,12 @@ namespace Microsoft.Extensions.Configuration
             _providers = providers;
         }
 
+        public string Key => string.Empty;
+
+        public string Path => string.Empty;
+
+        public string Value { get; set; }
+
         public string this[string key]
         {
             get
@@ -55,16 +61,16 @@ namespace Microsoft.Extensions.Configuration
             }
         }
 
-        public IEnumerable<IConfigurationSection> GetChildren() => GetChildrenImplementation(string.Empty);
+        public IEnumerable<IConfiguration> GetChildren() => GetChildrenImplementation(string.Empty);
 
-        internal IEnumerable<IConfigurationSection> GetChildrenImplementation(string path)
+        internal IEnumerable<IConfiguration> GetChildrenImplementation(string path)
         {
             var prefix = string.IsNullOrEmpty(path) ? "" : (path + Constants.KeyDelimiter);
             return _providers
                 .Aggregate(Enumerable.Empty<string>(),
                     (seed, source) => source.GetChildKeys(seed, path, Constants.KeyDelimiter))
                 .Distinct()
-                .Select(key => GetSection(prefix + key));
+                .Select(key => GetSubSection(prefix + key));
         }
 
         public IChangeToken GetReloadToken()
@@ -72,7 +78,7 @@ namespace Microsoft.Extensions.Configuration
             return _reloadToken;
         }
 
-        public IConfigurationSection GetSection(string key)
+        public IConfiguration GetSubSection(string key)
         {
             return new ConfigurationSection(this, key);
         }
