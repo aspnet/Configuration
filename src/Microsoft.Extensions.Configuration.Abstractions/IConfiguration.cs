@@ -7,22 +7,22 @@ using Microsoft.Extensions.Primitives;
 namespace Microsoft.Extensions.Configuration
 {
     /// <summary>
-    /// Represents a set of key/value application configuration properties.
+    /// Represents an element which may have a value and/or set of key/value configuration properties.
     /// </summary>
     public interface IConfiguration
     {
         /// <summary>
-        /// Gets the key this section occupies in its parent, or "" for the root.
+        /// Gets the key this element occupies in its parent, or "" for the root.
         /// </summary>
         string Key { get; }
 
         /// <summary>
-        /// Gets the full path to this configuration. Returns "" for the root.
+        /// Gets the full path to this element. Returns "" for the root.
         /// </summary>
         string Path { get; }
 
         /// <summary>
-        /// Gets or sets the value for this section.
+        /// Gets or sets the value for this element.
         /// </summary>
         string Value { get; set; }
 
