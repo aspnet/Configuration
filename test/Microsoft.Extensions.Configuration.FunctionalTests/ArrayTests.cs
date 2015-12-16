@@ -58,7 +58,7 @@ i=ini_i.i.i.i
 
             var config = configurationBuilder.Build();
 
-            var configurationSection = config.GetSection("address");
+            var configurationSection = config.GetSubSection("address");
             var indexConfigurationSections = configurationSection.GetChildren().ToArray();
 
             Assert.Equal(8, indexConfigurationSections.Length);

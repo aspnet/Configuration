@@ -7,10 +7,25 @@ using Microsoft.Extensions.Primitives;
 namespace Microsoft.Extensions.Configuration
 {
     /// <summary>
-    /// Represents a set of key/value application configuration properties.
+    /// Represents an element which may have a value and/or set of key/value configuration properties.
     /// </summary>
     public interface IConfiguration
     {
+        /// <summary>
+        /// Gets the key this element occupies in its parent, or "" for the root.
+        /// </summary>
+        string Key { get; }
+
+        /// <summary>
+        /// Gets the full path to this element. Returns "" for the root.
+        /// </summary>
+        string Path { get; }
+
+        /// <summary>
+        /// Gets or sets the value for this element.
+        /// </summary>
+        string Value { get; set; }
+
         /// <summary>
         /// Gets or sets a configuration value.
         /// </summary>
@@ -27,13 +42,13 @@ namespace Microsoft.Extensions.Configuration
         ///     This method will never return <c>null</c>. If no matching sub-section is found with the specified key,
         ///     an empty <see cref="IConfigurationSection"/> will be returned.
         /// </remarks>
-        IConfigurationSection GetSection(string key);
+        IConfiguration GetSubSection(string key);
 
         /// <summary>
         /// Gets the immediate descendant configuration sub-sections.
         /// </summary>
         /// <returns>The configuration sub-sections.</returns>
-        IEnumerable<IConfigurationSection> GetChildren();
+        IEnumerable<IConfiguration> GetChildren();
 
         IChangeToken GetReloadToken();
     }

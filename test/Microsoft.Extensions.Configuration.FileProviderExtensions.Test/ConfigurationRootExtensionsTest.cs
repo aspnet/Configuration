@@ -46,6 +46,35 @@ namespace Microsoft.Extensions.Configuration
 
             public int ReloadCount { get; private set; }
 
+            public string Key
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public string Path
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public string Value
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
             public string this[string key]
             {
                 get
@@ -59,7 +88,7 @@ namespace Microsoft.Extensions.Configuration
                 }
             }
 
-            public IEnumerable<IConfigurationSection> GetChildren()
+            public IEnumerable<IConfiguration> GetChildren()
             {
                 throw new NotImplementedException();
             }
@@ -69,7 +98,7 @@ namespace Microsoft.Extensions.Configuration
                 throw new NotImplementedException();
             }
 
-            public IConfigurationSection GetSection(string key)
+            public IConfiguration GetSubSection(string key)
             {
                 throw new NotImplementedException();
             }

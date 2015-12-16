@@ -8,7 +8,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Extensions.Configuration
 {
-    public class ConfigurationSection : IConfigurationSection
+    public class ConfigurationSection : IConfiguration
     {
         private readonly ConfigurationRoot _root;
         private readonly string _path;
@@ -78,9 +78,9 @@ namespace Microsoft.Extensions.Configuration
             }
         }
 
-        public IConfigurationSection GetSection(string key) => _root.GetSection(Path + Constants.KeyDelimiter + key);
+        public IConfiguration GetSubSection(string key) => _root.GetSubSection(Path + Constants.KeyDelimiter + key);
 
-        public IEnumerable<IConfigurationSection> GetChildren() => _root.GetChildrenImplementation(Path);
+        public IEnumerable<IConfiguration> GetChildren() => _root.GetChildrenImplementation(Path);
 
         public IChangeToken GetReloadToken() => _root.GetReloadToken();
     }

@@ -151,7 +151,7 @@ namespace Microsoft.Extensions.Configuration.Test
             var config = configurationBuilder.Build();
 
             // Act
-            var configFocus = config.GetSection("Data");
+            var configFocus = config.GetSubSection("Data");
 
             var memVal1 = configFocus["DB1:Connection1"];
             var memVal2 = configFocus["DB1:Connection2"];
@@ -200,7 +200,7 @@ namespace Microsoft.Extensions.Configuration.Test
             var config = configurationBuilder.Build();
 
             // Act
-            var configSections = config.GetSection("Data").GetChildren().ToList();
+            var configSections = config.GetSubSection("Data").GetChildren().ToList();
 
             // Assert
             Assert.Equal(2, configSections.Count());
