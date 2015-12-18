@@ -42,7 +42,7 @@ namespace Microsoft.Extensions.Configuration.Test
 
             // Assert
             Assert.Contains(memConfigSrc2, configurationBuilder2.Providers);
-            Assert.True(configurationBuilder2.Providers.ElementAt(1) is IncludeConfigurationProvider);
+            Assert.True(configurationBuilder2.Providers.ElementAt(1) is IncludedConfigurationProvider);
 
             Assert.Equal("ValueInMem1", memVal1);
             Assert.Equal("ValueInMem2", memVal2);
@@ -84,7 +84,7 @@ namespace Microsoft.Extensions.Configuration.Test
 
             // Assert
             Assert.Contains(memConfigSrc2, configurationBuilder2.Providers);
-            Assert.True(configurationBuilder2.Providers.ElementAt(1) is IncludeConfigurationProvider);
+            Assert.True(configurationBuilder2.Providers.ElementAt(1) is IncludedConfigurationProvider);
 
             Assert.Equal("Value", memVal0);
             Assert.Equal("MemVal1", memVal1);

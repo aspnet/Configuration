@@ -21,7 +21,7 @@ namespace Microsoft.Extensions.Configuration
             {
                 throw new ArgumentNullException(nameof(configurationBuilder));
             }
-            configurationBuilder.Add(new IncludeConfigurationProvider(configuration));
+            configurationBuilder.Add(new IncludedConfigurationProvider(configuration));
             return configurationBuilder;
         }
 
@@ -38,7 +38,7 @@ namespace Microsoft.Extensions.Configuration
             {
                 throw new ArgumentNullException(nameof(configurationBuilder));
             }
-            configurationBuilder.Add(new IncludeConfigurationProvider(configuration.GetSection(sectionKey)));
+            configurationBuilder.Add(new IncludedConfigurationProvider(configuration.GetSection(sectionKey)));
             return configurationBuilder;
         }
 

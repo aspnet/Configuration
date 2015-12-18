@@ -5,26 +5,23 @@ using System;
 
 namespace Microsoft.Extensions.Configuration
 {
-    public class IncludeConfigurationProvider : ConfigurationProvider
+    public class IncludedConfigurationProvider : ConfigurationProvider
     {
-        public IncludeConfigurationProvider(IConfiguration source)
+        public IncludedConfigurationProvider(IConfiguration source)
         {
             if (source == null)
             {
                 throw new ArgumentNullException(nameof(source));
             }
-            int pathStart;
-            if (source is IConfigurationRoot)
+            int pathStart = 0;
+            var section = source as IConfigurationSection;
+            if (section != null)
             {
-                pathStart = 0;
+                pathStart = section.Path.Length + 1;
             }
-            else
+            foreach (var child in source.GetChildren())
             {
-                pathStart = source.Path.Length + 1;
-            }
-            foreach (var section in source.GetChildren())
-            {
-                AddSection(section, pathStart);
+                AddSection(child, pathStart);
             }
         }
 
