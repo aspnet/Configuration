@@ -7,8 +7,41 @@ using Microsoft.Extensions.Configuration.Memory;
 
 namespace Microsoft.Extensions.Configuration
 {
-    public static class MemoryConfigurationExtensions
+    public static class DefaultConfigurationBuilderExtensions
     {
+        /// <summary>
+        /// Includes an existing IConfiguration as a configuration provider to <paramref name="configuraton"/>.
+        /// </summary>
+        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="config">The <see cref="IConfiguration"/> to include.</param>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder Include(this IConfigurationBuilder configurationBuilder, IConfiguration configuration)
+        {
+            if (configurationBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(configurationBuilder));
+            }
+            configurationBuilder.Add(new IncludedConfigurationProvider(configuration));
+            return configurationBuilder;
+        }
+
+        /// <summary>
+        /// Includes an existing IConfiguration as a configuration provider to <paramref name="configuraton"/>.
+        /// </summary>
+        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="sectionKey">Includes the configuration starting from the child section found with this key.</param>
+        /// <param name="config">The <see cref="IConfiguration"/> to include.</param>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder Include(this IConfigurationBuilder configurationBuilder, string sectionKey, IConfiguration configuration)
+        {
+            if (configurationBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(configurationBuilder));
+            }
+            configurationBuilder.Add(new IncludedConfigurationProvider(configuration.GetSection(sectionKey)));
+            return configurationBuilder;
+        }
+
         /// <summary>
         /// Adds the memory configuration provider to <paramref name="configuraton"/>.
         /// </summary>
