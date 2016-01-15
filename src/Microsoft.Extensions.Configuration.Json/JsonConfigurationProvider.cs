@@ -89,16 +89,16 @@ namespace Microsoft.Extensions.Configuration.Json
                 if (File.Exists(Path))
                 {
                     // Read the JSON file and get the line content where the error occurred.
-                    List<string> fileContent;
+                    var fileContent = File.ReadLines(Path);
                     if (e.LineNumber > 1)
                     {
-                        fileContent = File.ReadLines(Path).Skip(e.LineNumber - 2).Take(2).ToList();
-                        errorLine = fileContent[0].Trim() + Environment.NewLine + fileContent[1].Trim();
+                        var errorContext = fileContent.Skip(e.LineNumber - 2).Take(2).ToList();
+                        errorLine = errorContext[0].Trim() + Environment.NewLine + errorContext[1].Trim();
                     }
                     else
                     {
-                        fileContent = File.ReadLines(Path).Skip(e.LineNumber - 1).Take(1).ToList();
-                        errorLine = fileContent[0].Trim();
+                        var possibleLineContent = fileContent.Skip(e.LineNumber - 1).FirstOrDefault();
+                        errorLine = possibleLineContent ?? string.Empty;
                     }
                 }
 
