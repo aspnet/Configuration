@@ -43,7 +43,7 @@ namespace Microsoft.Extensions.Configuration.Json
         {
         }
 
-        protected override void Load(Stream stream)
+        public override void Load(Stream stream)
         {
             var parser = new JsonConfigurationFileParser();
             try

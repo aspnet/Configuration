@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Extensions.FileProviders;
 
 namespace Microsoft.Extensions.Configuration
 {
@@ -20,7 +21,7 @@ namespace Microsoft.Extensions.Configuration
 
 
         /// <summary>
-        /// Initializes a new instance of <see cref="IniConfigurationProvider"/>.
+        /// Initializes a new instance of <see cref="FileConfigurationProvider"/>.
         /// </summary>
         /// <param name="path">Absolute path of the INI configuration file.</param>
         /// <param name="optional">Determines if the configuration is optional.</param>
@@ -30,16 +31,16 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Initializes a new instance of <see cref="IniConfigurationProvider"/>.
+        /// Initializes a new instance of <see cref="FileConfigurationProvider"/>.
         /// </summary>
-        /// <param name="path">Absolute path of the INI configuration file.</param>
+        /// <param name="path">Absolute path of the configuration file.</param>
         /// <param name="optional">Determines if the configuration is optional.</param>
         /// <param name="reloadOnFileChanged">Determines if the configuration provider should be reloaded if the file changes.</param>
         public FileConfigurationProvider(string path, bool optional, bool reloadOnFileChanged)
         {
             if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentException(Resources.Error_InvalidFilePath, nameof(path));
+                throw new ArgumentException("File path must be a non - empty string.", nameof(path));
             }
 
             Optional = optional;
@@ -70,7 +71,7 @@ namespace Microsoft.Extensions.Configuration
         {
             if (ReloadOnFileChanged)
             {
-                this.ReloadOnChanged(Path);
+                ReloadOnFileChange();
             }
         }
 
@@ -89,7 +90,7 @@ namespace Microsoft.Extensions.Configuration
                 }
                 else
                 {
-                    throw new FileNotFoundException(Resources.FormatError_FileNotFound(Path), Path);
+                    throw new FileNotFoundException($"The configuration file '{Path}' was not found and is not optional.");
                 }
             }
             else
@@ -101,6 +102,39 @@ namespace Microsoft.Extensions.Configuration
             }
         }
 
-        protected internal abstract void Load(Stream stream);
+        public abstract void Load(Stream stream);
+
+        public IFileProvider FileProvider { get; set; }
+
+        private void ReloadOnFileChange()
+        {
+            var fileProvider = FileProvider;
+            if (fileProvider == null)
+            {
+#if NET451
+                var basePath = AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY") as string ??
+                    AppDomain.CurrentDomain.BaseDirectory ??
+                    string.Empty;
+#else
+                var basePath = AppContext.BaseDirectory ?? string.Empty;
+#endif
+                fileProvider = new PhysicalFileProvider(basePath);
+            }
+
+            Action<object> callback = null;
+            callback = _ =>
+            {
+                // The order here is important. We need to take the token and then apply our changes BEFORE
+                // registering. This prevents us from possible having two change updates to process concurrently.
+                //
+                // If the file changes after we take the token, then we'll process the update immediately upon
+                // registering the callback.
+                var token = fileProvider.Watch(Path);
+                Load();
+                token.RegisterChangeCallback(callback, null);
+            };
+
+            fileProvider.Watch(Path).RegisterChangeCallback(callback, null);
+        }
     }
 }

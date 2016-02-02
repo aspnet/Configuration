@@ -240,47 +240,5 @@ namespace Microsoft.Extensions.Configuration.Json.Test
             Assert.Equal("bob", indexConfigurationSections[4].Key);
             Assert.Equal("hello", indexConfigurationSections[5].Key);
         }
-
-        [Fact]
-        public void ReloadOnChanged_GetTokenBeforeReload()
-        {
-            var json = @"{
-                'setting': [
-                    'b',
-                    'a',
-                    '2'
-                ]
-            }";
-
-            var jsonConfigSource = new JsonConfigurationProvider(TestStreamHelpers.ArbitraryFilePath, false, );
-            jsonConfigSource.Load(TestStreamHelpers.StringToStream(json));
-
-            var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.Add(jsonConfigSource, );
-            var config = configurationBuilder.Build();
-
-            var configurationSection = config.GetSection("setting");
-            var indexConfigurationSections = configurationSection.GetChildren().ToArray();
-
-            Assert.Equal(3, indexConfigurationSections.Count());
-            Assert.Equal("b", indexConfigurationSections[0].Value);
-            Assert.Equal("a", indexConfigurationSections[1].Value);
-            Assert.Equal("2", indexConfigurationSections[2].Value);
-
-            // Act-1
-            configuration.ReloadOnChanged(fileProvider, "config.json");
-
-            // Assert-1
-            Assert.Equal(1, fileProvider.WatchCount);
-            Assert.Equal(0, configuration.ReloadCount);
-
-            // Act-2
-            fileProvider.Cancel = tokenSource2;
-            tokenSource1.Cancel();
-
-            Assert.Equal(2, fileProvider.WatchCount);
-            Assert.Equal(1, configuration.ReloadCount);
-        }
-
     }
 }
