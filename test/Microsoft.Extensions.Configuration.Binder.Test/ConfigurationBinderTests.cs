@@ -498,7 +498,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
         }
 
         [Fact]
-        public void BinderDoesNotCallGetterOnIfNoSetter()
+        public void BinderCallsGetterEvenIfNoSetter()
         {
             var input = new Dictionary<string, string>
             {
@@ -511,7 +511,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
 
             // Getter throws so make sure its not called
             var obj = new ThrowsOnGetter();
-            config.Bind(obj);
+            Assert.Throws<NotImplementedException>(() => config.Bind(obj));
         }
 
         private interface ISomeInterface
