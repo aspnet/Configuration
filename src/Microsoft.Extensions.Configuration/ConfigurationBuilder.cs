@@ -64,7 +64,12 @@ namespace Microsoft.Extensions.Configuration
         /// <returns>An <see cref="IConfigurationRoot"/> with keys and values from the registered providers.</returns>
         public IConfigurationRoot Build()
         {
-            return new ConfigurationRoot(_providers);
+            var root = new ConfigurationRoot(_providers);
+            foreach (var provider in _providers)
+            {
+                provider.Initialize(root);
+            }
+            return root;
         }
     }
 }

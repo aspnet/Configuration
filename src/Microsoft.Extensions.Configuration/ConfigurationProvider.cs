@@ -29,6 +29,10 @@ namespace Microsoft.Extensions.Configuration
         public virtual void Load()
         {
         }
+
+        public virtual void Initialize(IConfigurationRoot root)
+        {
+        }
        
         public virtual IEnumerable<string> GetChildKeys(
             IEnumerable<string> earlierKeys,
