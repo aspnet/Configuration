@@ -28,7 +28,7 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentNullException(nameof(configurationBuilder));
             }
 
-            return AddJsonFile(configurationBuilder, path, optional: false);
+            return AddJsonFile(configurationBuilder, path, optional: false, reloadOnFileChanged: false);
         }
 
         /// <summary>
@@ -38,6 +38,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="path">Absolute path or path relative to <see cref="IConfigurationBuilder.BasePath"/> of
         /// <paramref name="configurationBuilder"/>.</param>
         /// <param name="optional">Determines if loading the configuration provider is optional.</param>
+        /// <param name="reloadOnFileChanged">Determines if the configuration provider should be reloaded automatically when the file changes.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         /// <exception cref="ArgumentException">If <paramref name="path"/> is null or empty.</exception>
         /// <exception cref="FileNotFoundException">If <paramref name="optional"/> is <c>false</c> and the file cannot
@@ -45,7 +46,8 @@ namespace Microsoft.Extensions.Configuration
         public static IConfigurationBuilder AddJsonFile(
             this IConfigurationBuilder configurationBuilder,
             string path,
-            bool optional)
+            bool optional,
+            bool reloadOnFileChanged)
         {
             if (configurationBuilder == null)
             {
@@ -64,8 +66,7 @@ namespace Microsoft.Extensions.Configuration
                 throw new FileNotFoundException(Resources.FormatError_FileNotFound(fullPath), fullPath);
             }
 
-            configurationBuilder.Add(new JsonConfigurationProvider(fullPath, optional: optional));
-
+            configurationBuilder.Add(new JsonConfigurationProvider(fullPath, optional: optional, reloadOnFileChanged: reloadOnFileChanged));
             return configurationBuilder;
         }
     }

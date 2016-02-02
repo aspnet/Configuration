@@ -31,6 +31,12 @@ namespace Microsoft.Extensions.Configuration
         void Load();
 
         /// <summary>
+        /// Called when the IConfigurationRoot is being built.
+        /// </summary>
+        /// <param name="root"></param>
+        void Initialize(IConfigurationRoot root);
+
+        /// <summary>
         /// Returns the immediate descendant configuration keys for a given parent path based on this
         /// <see cref="IConfigurationProvider"/>'s data and the set of keys returned by all the preceding
         /// <see cref="IConfigurationProvider"/>s.

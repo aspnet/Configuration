@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
@@ -13,7 +14,7 @@ namespace Microsoft.Extensions.Configuration
     public class ConfigurationRootExtensionsTest
     {
         [Fact]
-        public void ReloadOnChanged_GetTokenBeforeReload()
+        public void FileConfigurationProviderReloadsOnFileChanged()
         {
             // Arrange
             var tokenSource1 = new CancellationTokenSource();
@@ -22,62 +23,35 @@ namespace Microsoft.Extensions.Configuration
             var fileProvider = new MockFileProvider();
             fileProvider.Cancel = tokenSource1;
 
-            var configuration = new MockConfigurationRoot();
-            configuration.OnReload = () => Assert.Equal(2, fileProvider.WatchCount);
+            var testProvider = new TestFileProvider("ignored") { FileProvider = fileProvider };
 
             // Act-1
-            configuration.ReloadOnChanged(fileProvider, "config.json");
+            var configuration = new ConfigurationBuilder().Add(testProvider).Build();
 
             // Assert-1
+            Assert.Equal(0, testProvider.LoadCount);
             Assert.Equal(1, fileProvider.WatchCount);
-            Assert.Equal(0, configuration.ReloadCount);
 
             // Act-2
             fileProvider.Cancel = tokenSource2;
             tokenSource1.Cancel();
 
+            // Assert-2
+            Assert.Equal(1, testProvider.LoadCount);
             Assert.Equal(2, fileProvider.WatchCount);
-            Assert.Equal(1, configuration.ReloadCount);
         }
 
-        private class MockConfigurationRoot : IConfigurationRoot
+        private class TestFileProvider : FileConfigurationProvider
         {
-            public Action OnReload { get; set; }
-
-            public int ReloadCount { get; private set; }
-
-            public string this[string key]
+            public TestFileProvider(string path) : base(path, optional: false, reloadOnFileChanged: true)
             {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-
-                set
-                {
-                    throw new NotImplementedException();
-                }
             }
 
-            public IEnumerable<IConfigurationSection> GetChildren()
-            {
-                throw new NotImplementedException();
-            }
+            public int LoadCount { get; set; }
 
-            public IChangeToken GetReloadToken()
+            public override void Load(Stream stream)
             {
-                throw new NotImplementedException();
-            }
-
-            public IConfigurationSection GetSection(string key)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Reload()
-            {
-                OnReload?.Invoke();
-                ReloadCount++;
+                LoadCount++;
             }
         }
 

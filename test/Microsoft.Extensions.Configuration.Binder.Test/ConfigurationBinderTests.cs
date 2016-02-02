@@ -497,6 +497,23 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
                 exception.Message);
         }
 
+        [Fact]
+        public void BinderCallsGetterEvenIfNoSetter()
+        {
+            var input = new Dictionary<string, string>
+            {
+                {"Throw", "x"}
+            };
+
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddInMemoryCollection(input);
+            var config = configurationBuilder.Build();
+
+            // Getter throws so make sure its not called
+            var obj = new ThrowsOnGetter();
+            Assert.Throws<NotImplementedException>(() => config.Bind(obj));
+        }
+
         private interface ISomeInterface
         {
         }
@@ -513,6 +530,17 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             public ThrowsWhenActivated()
             {
                 throw new Exception();
+            }
+        }
+
+        private class ThrowsOnGetter
+        {
+            public string Throw
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
             }
         }
 

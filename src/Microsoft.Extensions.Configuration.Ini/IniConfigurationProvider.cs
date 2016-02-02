@@ -19,16 +19,15 @@ namespace Microsoft.Extensions.Configuration.Ini
     /// # comment
     /// / comment
     /// </examples>
-    public class IniConfigurationProvider : ConfigurationProvider
+    public class IniConfigurationProvider : FileConfigurationProvider
     {
         /// <summary>
         /// Initializes a new instance of <see cref="IniConfigurationProvider"/>.
         /// </summary>
         /// <param name="path">Absolute path of the INI configuration file.</param>
         public IniConfigurationProvider(string path)
-            : this(path, optional: false)
-        {
-        }
+            : base(path)
+        { }
 
         /// <summary>
         /// Initializes a new instance of <see cref="IniConfigurationProvider"/>.
@@ -36,54 +35,20 @@ namespace Microsoft.Extensions.Configuration.Ini
         /// <param name="path">Absolute path of the INI configuration file.</param>
         /// <param name="optional">Determines if the configuration is optional.</param>
         public IniConfigurationProvider(string path, bool optional)
-        {
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new ArgumentException(Resources.Error_InvalidFilePath, nameof(path));
-            }
-
-            Optional = optional;
-            Path = path;
-        }
+            : base(path, optional)
+        { }
 
         /// <summary>
-        /// Gets a value that determines if this instance of <see cref="IniConfigurationProvider"/> is optional.
+        /// Initializes a new instance of <see cref="IniConfigurationProvider"/>.
         /// </summary>
-        public bool Optional { get; }
+        /// <param name="path">Absolute path of the configuration file.</param>
+        /// <param name="optional">Determines if the configuration is optional.</param>
+        /// <param name="reloadOnFileChanged">Determines if the configuration provider should be reloaded if the file changes.</param>
+        public IniConfigurationProvider(string path, bool optional, bool reloadOnFileChanged)
+            : base(path, optional, reloadOnFileChanged)
+        { }
 
-        /// <summary>
-        /// The absolute path of the file backing this instance of <see cref="IniConfigurationProvider"/>.
-        /// </summary>
-        public string Path { get; }
-
-        /// <summary>
-        /// Loads the contents of the file at <see cref="Path"/>.
-        /// </summary>
-        /// <exception cref="FileNotFoundException">If <see cref="Optional"/> is <c>false</c> and a
-        /// file does not exist at <see cref="Path"/>.</exception>
-        public override void Load()
-        {
-            if (!File.Exists(Path))
-            {
-                if (Optional)
-                {
-                    Data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                }
-                else
-                {
-                    throw new FileNotFoundException(Resources.FormatError_FileNotFound(Path), Path);
-                }
-            }
-            else
-            {
-                using (var stream = new FileStream(Path, FileMode.Open, FileAccess.Read))
-                {
-                    Load(stream);
-                }
-            }
-        }
-
-        internal void Load(Stream stream)
+        public override void Load(Stream stream)
         {
             var data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
