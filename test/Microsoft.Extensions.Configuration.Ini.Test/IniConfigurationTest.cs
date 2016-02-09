@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using Microsoft.Extensions.Configuration.Test;
+using Microsoft.Extensions.FileProviders;
 using Xunit;
 
 namespace Microsoft.Extensions.Configuration.Ini.Test
@@ -19,9 +20,7 @@ Provider=SqlClient
 [Data:Inventory]
 ConnectionString=AnotherTestConnectionString
 SubHeader:Provider=MySql";
-            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.ArbitraryFilePath);
-
-            iniConfigSrc.Load(TestStreamHelpers.StringToStream(ini));
+            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.StringToStream(ini));
 
             Assert.Equal("TestConnectionString", iniConfigSrc.Get("defaultconnection:ConnectionString"));
             Assert.Equal("SqlClient", iniConfigSrc.Get("DEFAULTCONNECTION:PROVIDER"));
@@ -33,9 +32,7 @@ SubHeader:Provider=MySql";
         public void LoadMethodCanHandleEmptyValue()
         {
             var ini = @"DefaultKey=";
-            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.ArbitraryFilePath);
-
-            iniConfigSrc.Load(TestStreamHelpers.StringToStream(ini));
+            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.StringToStream(ini));
 
             Assert.Equal(string.Empty, iniConfigSrc.Get("DefaultKey"));
         }
@@ -49,9 +46,7 @@ SubHeader:Provider=MySql";
                       "[Data:Inventory]\n" +
                       "ConnectionString=\"AnotherTestConnectionString\"\n" +
                       "Provider=\"MySql\"";
-            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.ArbitraryFilePath);
-
-            iniConfigSrc.Load(TestStreamHelpers.StringToStream(ini));
+            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.StringToStream(ini));
 
             Assert.Equal("TestConnectionString", iniConfigSrc.Get("DefaultConnection:ConnectionString"));
             Assert.Equal("SqlClient", iniConfigSrc.Get("DefaultConnection:Provider"));
@@ -65,9 +60,7 @@ SubHeader:Provider=MySql";
             var ini = "[ConnectionString]\n" +
                       "DefaultConnection=\"TestConnectionString\n" +
                       "Provider=SqlClient\"";
-            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.ArbitraryFilePath);
-
-            iniConfigSrc.Load(TestStreamHelpers.StringToStream(ini));
+            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.StringToStream(ini));
 
             Assert.Equal("\"TestConnectionString", iniConfigSrc.Get("ConnectionString:DefaultConnection"));
             Assert.Equal("SqlClient\"", iniConfigSrc.Get("ConnectionString:Provider"));
@@ -79,9 +72,7 @@ SubHeader:Provider=MySql";
             var ini = "[ConnectionString]\n" +
                       "DefaultConnection=Test\"Connection\"String\n" +
                       "Provider=Sql\"Client";
-            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.ArbitraryFilePath);
-
-            iniConfigSrc.Load(TestStreamHelpers.StringToStream(ini));
+            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.StringToStream(ini));
 
             Assert.Equal("Test\"Connection\"String", iniConfigSrc.Get("ConnectionString:DefaultConnection"));
             Assert.Equal("Sql\"Client", iniConfigSrc.Get("ConnectionString:Provider"));
@@ -96,9 +87,7 @@ SubHeader:Provider=MySql";
             Data:Inventory:ConnectionString=AnotherTestConnectionString
             Data:Inventory:Provider=MySql
             ";
-            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.ArbitraryFilePath);
-
-            iniConfigSrc.Load(TestStreamHelpers.StringToStream(ini));
+            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.StringToStream(ini));
 
             Assert.Equal("TestConnectionString", iniConfigSrc.Get("DefaultConnection:ConnectionString"));
             Assert.Equal("SqlClient", iniConfigSrc.Get("DefaultConnection:Provider"));
@@ -120,9 +109,7 @@ SubHeader:Provider=MySql";
             ConnectionString=AnotherTestConnectionString
             Provider=MySql
             ";
-            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.ArbitraryFilePath);
-
-            iniConfigSrc.Load(TestStreamHelpers.StringToStream(ini));
+            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.StringToStream(ini));
 
             Assert.Equal("TestConnectionString", iniConfigSrc.Get("DefaultConnection:ConnectionString"));
             Assert.Equal("SqlClient", iniConfigSrc.Get("DefaultConnection:Provider"));
@@ -136,10 +123,9 @@ SubHeader:Provider=MySql";
             var ini = @"
 ConnectionString
             ";
-            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.ArbitraryFilePath);
             var expectedMsg = Resources.FormatError_UnrecognizedLineFormat("ConnectionString");
 
-            var exception = Assert.Throws<FormatException>(() => iniConfigSrc.Load(TestStreamHelpers.StringToStream(ini)));
+            var exception = Assert.Throws<FormatException>(() => new IniConfigurationProvider(TestStreamHelpers.StringToStream(ini)));
 
             Assert.Equal(expectedMsg, exception.Message);
         }
@@ -151,10 +137,9 @@ ConnectionString
 [ConnectionString
 DefaultConnection=TestConnectionString
             ";
-            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.ArbitraryFilePath);
             var expectedMsg = Resources.FormatError_UnrecognizedLineFormat("[ConnectionString");
 
-            var exception = Assert.Throws<FormatException>(() => iniConfigSrc.Load(TestStreamHelpers.StringToStream(ini)));
+            var exception = Assert.Throws<FormatException>(() => new IniConfigurationProvider(TestStreamHelpers.StringToStream(ini)));
 
             Assert.Equal(expectedMsg, exception.Message);
         }
@@ -164,7 +149,7 @@ DefaultConnection=TestConnectionString
         {
             var expectedMsg = new ArgumentException(Resources.Error_InvalidFilePath, "path").Message;
 
-            var exception = Assert.Throws<ArgumentException>(() => new IniConfigurationProvider(null));
+            var exception = Assert.Throws<ArgumentException>(() => new IniConfigurationProvider(path: null));
 
             Assert.Equal(expectedMsg, exception.Message);
         }
@@ -190,10 +175,9 @@ DefaultConnection=TestConnectionString
             DefaultConnection:ConnectionString=AnotherTestConnectionString
             Provider=MySql
             ";
-            var iniConfigSrc = new IniConfigurationProvider(TestStreamHelpers.ArbitraryFilePath);
             var expectedMsg = Resources.FormatError_KeyIsDuplicated("Data:DefaultConnection:ConnectionString");
 
-            var exception = Assert.Throws<FormatException>(() => iniConfigSrc.Load(TestStreamHelpers.StringToStream(ini)));
+            var exception = Assert.Throws<FormatException>(() => new IniConfigurationProvider(TestStreamHelpers.StringToStream(ini)));
 
             Assert.Equal(expectedMsg, exception.Message);
         }

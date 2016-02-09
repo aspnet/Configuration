@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Extensions.Configuration.FileProviders;
 
 namespace Microsoft.Extensions.Configuration.Ini
 {
@@ -38,15 +39,10 @@ namespace Microsoft.Extensions.Configuration.Ini
             : base(path, optional)
         { }
 
-        /// <summary>
-        /// Initializes a new instance of <see cref="IniConfigurationProvider"/>.
-        /// </summary>
-        /// <param name="path">Absolute path of the configuration file.</param>
-        /// <param name="optional">Determines if the configuration is optional.</param>
-        /// <param name="reloadOnFileChanged">Determines if the configuration provider should be reloaded if the file changes.</param>
-        public IniConfigurationProvider(string path, bool optional, bool reloadOnFileChanged)
-            : base(path, optional, reloadOnFileChanged)
-        { }
+        internal IniConfigurationProvider(Stream stream)
+        {
+            Load(stream);
+        }
 
         public override void Load(Stream stream)
         {

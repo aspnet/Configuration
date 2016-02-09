@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Microsoft.Extensions.Configuration.FileProviders;
 
 namespace Microsoft.Extensions.Configuration.Xml
 {
@@ -24,17 +25,15 @@ namespace Microsoft.Extensions.Configuration.Xml
         /// <param name="path">Absolute path of the XML configuration file.</param>
         public XmlConfigurationProvider(string path)
             : base(path)
-        {
-        }
+        { }
 
         public XmlConfigurationProvider(string path, bool optional)
             : base(path, optional)
-        {
-        }
+        { }
 
-        public XmlConfigurationProvider(string path, bool optional, bool reloadOnFileChanged)
-            : base(path, optional, reloadOnFileChanged)
+        internal XmlConfigurationProvider(Stream stream)
         {
+            Load(stream);
         }
 
         internal XmlDocumentDecryptor Decryptor
@@ -61,7 +60,7 @@ namespace Microsoft.Extensions.Configuration.Xml
                     IgnoreWhitespace = true
                 };
 
-            using (var reader = _xmlDocumentDecryptor.CreateDecryptingXmlReader(stream, readerSettings))
+            using (var reader = Decryptor.CreateDecryptingXmlReader(stream, readerSettings))
             {
                 var prefixStack = new Stack<string>();
 

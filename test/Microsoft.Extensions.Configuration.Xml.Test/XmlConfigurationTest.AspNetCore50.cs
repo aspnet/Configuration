@@ -46,10 +46,8 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
                 </settings>";
 
             // Arrange
-            var xmlConfigSrc = new XmlConfigurationProvider(ArbitraryFilePath);
-
             // Act & assert
-            var ex = Assert.Throws<PlatformNotSupportedException>(() => xmlConfigSrc.Load(TestStreamHelpers.StringToStream(xml)));
+            var ex = Assert.Throws<PlatformNotSupportedException>(() => new XmlConfigurationProvider(TestStreamHelpers.StringToStream(xml)));
             Assert.Equal(Resources.Error_EncryptedXmlNotSupported, ex.Message);
         }
     }

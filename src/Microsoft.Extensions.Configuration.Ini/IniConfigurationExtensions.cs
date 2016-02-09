@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using Microsoft.Extensions.Configuration.Ini;
+using Microsoft.Extensions.FileProviders;
 
 namespace Microsoft.Extensions.Configuration
 {
@@ -52,15 +53,17 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentException(Resources.Error_InvalidFilePath, nameof(path));
             }
 
-            var fullPath = Path.Combine(configurationBuilder.GetBasePath(), path);
+            var basePath = configurationBuilder.GetBasePath();
+            var fullPath = Path.Combine(basePath, path);
 
             if (!optional && !File.Exists(fullPath))
             {
                 throw new FileNotFoundException(Resources.FormatError_FileNotFound(fullPath), fullPath);
             }
 
-            configurationBuilder.Add(new IniConfigurationProvider(fullPath, optional: optional));
-            return configurationBuilder;
+            var provider = new IniConfigurationProvider(fullPath, optional);
+            provider.ReloadWhenFileChanges(new PhysicalFileProvider(basePath));
+            return configurationBuilder.Add(provider);
         }
     }
 }

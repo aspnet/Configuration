@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Test;
+using Microsoft.Extensions.FileProviders;
 using Newtonsoft.Json;
 using Xunit;
 
@@ -24,9 +25,7 @@ namespace Microsoft.Extensions.Configuration
             'zipcode': '12345'
         }
 }";
-            var jsonConfigSrc = new JsonConfigurationProvider(TestStreamHelpers.ArbitraryFilePath);
-
-            jsonConfigSrc.Load(TestStreamHelpers.StringToStream(json));
+            var jsonConfigSrc = new JsonConfigurationProvider(TestStreamHelpers.StringToStream(json));
 
             Assert.Equal("test", jsonConfigSrc.Get("firstname"));
             Assert.Equal("last.name", jsonConfigSrc.Get("test.last.name"));
@@ -41,9 +40,7 @@ namespace Microsoft.Extensions.Configuration
 {
     'name': ''
 }";
-            var jsonConfigSrc = new JsonConfigurationProvider(TestStreamHelpers.ArbitraryFilePath);
-
-            jsonConfigSrc.Load(TestStreamHelpers.StringToStream(json));
+            var jsonConfigSrc = new JsonConfigurationProvider(TestStreamHelpers.StringToStream(json));
 
             Assert.Equal(string.Empty, jsonConfigSrc.Get("name"));
         }
@@ -52,10 +49,9 @@ namespace Microsoft.Extensions.Configuration
         public void NonObjectRootIsInvalid()
         {
             var json = @"'test'";
-            var jsonConfigSource = new JsonConfigurationProvider(TestStreamHelpers.ArbitraryFilePath);
           
             var exception = Assert.Throws<FormatException>(
-                () => jsonConfigSource.Load(TestStreamHelpers.StringToStream(json)));
+                () => new JsonConfigurationProvider(TestStreamHelpers.StringToStream(json)));
 
             Assert.NotNull(exception.Message);
         }
@@ -71,9 +67,7 @@ namespace Microsoft.Extensions.Configuration
                     ""zipcode"": ""12345""
                 }
             }";
-            var jsonConfigSrc = new JsonConfigurationProvider(TestStreamHelpers.ArbitraryFilePath);
-
-            jsonConfigSrc.Load(TestStreamHelpers.StringToStream(json));
+            var jsonConfigSrc = new JsonConfigurationProvider(TestStreamHelpers.StringToStream(json));
 
             Assert.Equal("test", jsonConfigSrc.Get("name"));
             Assert.Equal("Something street", jsonConfigSrc.Get("address:street"));
@@ -90,10 +84,9 @@ namespace Microsoft.Extensions.Configuration
                     'zipcode': '12345'
                 }
             /* Missing a right brace here*/";
-            var jsonConfigSource = new JsonConfigurationProvider(TestStreamHelpers.ArbitraryFilePath);
            
             var exception = Assert.Throws<FormatException>(
-                () => jsonConfigSource.Load(TestStreamHelpers.StringToStream(json)));
+                () => new JsonConfigurationProvider(TestStreamHelpers.StringToStream(json)));
             Assert.NotNull(exception.Message);
         }
 
@@ -102,7 +95,7 @@ namespace Microsoft.Extensions.Configuration
         {
             var expectedMsg = new ArgumentException(Resources.Error_InvalidFilePath, "path").Message;
 
-            var exception = Assert.Throws<ArgumentException>(() => new JsonConfigurationProvider(null));
+            var exception = Assert.Throws<ArgumentException>(() => new JsonConfigurationProvider(path: null));
 
             Assert.Equal(expectedMsg, exception.Message);
         }
@@ -139,10 +132,8 @@ namespace Microsoft.Extensions.Configuration
         public void ThrowFormatExceptionWhenFileIsEmpty()
         {
             var json = @"";
-            var jsonConfigSource = new JsonConfigurationProvider(TestStreamHelpers.ArbitraryFilePath);
-
             var exception = Assert.Throws<FormatException>(
-                () => jsonConfigSource.Load(TestStreamHelpers.StringToStream(json)));
+                () => new JsonConfigurationProvider(TestStreamHelpers.StringToStream(json)));
         }
     }
 }

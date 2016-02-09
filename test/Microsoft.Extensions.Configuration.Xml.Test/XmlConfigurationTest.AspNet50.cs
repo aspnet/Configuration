@@ -51,7 +51,8 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
             Assert.Null(xmlDocument.SelectSingleNode("//Inventory"));
 
             // Arrange
-            var xmlConfigSrc = new XmlConfigurationProvider(ArbitraryFilePath)
+            // Act
+            var xmlConfigSrc = new XmlConfigurationProvider(TestStreamHelpers.StringToStream(xmlDocument.OuterXml))
             {
                 Decryptor = new EncryptedXmlDocumentDecryptor(doc =>
                 {
@@ -60,9 +61,6 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
                     return innerEncryptedXml;
                 })
             };
-
-            // Act
-            xmlConfigSrc.Load(TestStreamHelpers.StringToStream(xmlDocument.OuterXml));
 
             // Assert
             Assert.Equal("Test.Connection.String", xmlConfigSrc.Get("DATA.SETTING:DEFAULTCONNECTION:CONNECTION.STRING"));

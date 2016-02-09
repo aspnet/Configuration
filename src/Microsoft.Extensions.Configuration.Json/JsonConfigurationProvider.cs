@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.Extensions.Configuration.FileProviders;
 using Newtonsoft.Json;
 
 namespace Microsoft.Extensions.Configuration.Json
@@ -20,8 +21,7 @@ namespace Microsoft.Extensions.Configuration.Json
         /// <param name="path">Absolute path of the JSON configuration file.</param>
         public JsonConfigurationProvider(string path)
             : base(path)
-        {
-        }
+        { }
 
         /// <summary>
         /// Initializes a new instance of <see cref="JsonConfigurationProvider"/>.
@@ -30,17 +30,11 @@ namespace Microsoft.Extensions.Configuration.Json
         /// <param name="optional">Determines if the configuration is optional.</param>
         public JsonConfigurationProvider(string path, bool optional)
             : base(path, optional)
-        {
-        }
+        { }
 
-        /// <summary>
-        /// Initializes a new instance of <see cref="JsonConfigurationProvider"/>.
-        /// </summary>
-        /// <param name="path">Absolute path of the JSON configuration file.</param>
-        /// <param name="optional">Determines if the configuration is optional.</param>
-        /// <param name="reloadOnFileChanged">Determines if the Load will be called again if the file changes.</param>
-        public JsonConfigurationProvider(string path, bool optional, bool reloadOnFileChanged) : base(path, optional, reloadOnFileChanged)
+        internal JsonConfigurationProvider(Stream stream)
         {
+            Load(stream);
         }
 
         public override void Load(Stream stream)

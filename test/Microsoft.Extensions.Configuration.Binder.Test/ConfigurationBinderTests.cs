@@ -511,7 +511,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
 
             // Getter throws so make sure its not called
             var obj = new ThrowsOnGetter();
-            Assert.Throws<NotImplementedException>(() => config.Bind(obj));
+            Assert.Throws<TargetInvocationException>(() => config.Bind(obj));
         }
 
         private interface ISomeInterface

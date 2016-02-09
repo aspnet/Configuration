@@ -24,7 +24,7 @@ namespace Microsoft.Extensions.Configuration.Test
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act
-            configurationBuilder.Add(memConfigSrc1, load: false);
+            configurationBuilder.Add(memConfigSrc1);
 
             var dic2 = new Dictionary<string, string>()
                 {
@@ -32,7 +32,7 @@ namespace Microsoft.Extensions.Configuration.Test
                 };
             var memConfigSrc2 = new MemoryConfigurationProvider(dic2);
             var configurationBuilder2 = new ConfigurationBuilder();
-            configurationBuilder2.Add(memConfigSrc2, load: false);
+            configurationBuilder2.Add(memConfigSrc2);
             configurationBuilder2.Include(configurationBuilder.Build());
 
             var config = configurationBuilder2.Build();
@@ -64,7 +64,7 @@ namespace Microsoft.Extensions.Configuration.Test
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act
-            configurationBuilder.Add(memConfigSrc1, load: false);
+            configurationBuilder.Add(memConfigSrc1);
 
             var dic2 = new Dictionary<string, string>()
             {
@@ -72,7 +72,7 @@ namespace Microsoft.Extensions.Configuration.Test
             };
             var memConfigSrc2 = new MemoryConfigurationProvider(dic2);
             var configurationBuilder2 = new ConfigurationBuilder();
-            configurationBuilder2.Add(memConfigSrc2, load: false);
+            configurationBuilder2.Add(memConfigSrc2);
             configurationBuilder2.Include("Data", configurationBuilder.Build());
 
             var config = configurationBuilder2.Build();
@@ -117,9 +117,9 @@ namespace Microsoft.Extensions.Configuration.Test
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act
-            configurationBuilder.Add(memConfigSrc1, load: false);
-            configurationBuilder.Add(memConfigSrc2, load: false);
-            configurationBuilder.Add(memConfigSrc3, load: false);
+            configurationBuilder.Add(memConfigSrc1);
+            configurationBuilder.Add(memConfigSrc2);
+            configurationBuilder.Add(memConfigSrc3);
 
             var config = configurationBuilder.Build();
 
@@ -160,8 +160,8 @@ namespace Microsoft.Extensions.Configuration.Test
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act
-            configurationBuilder.Add(memConfigSrc1, load: false);
-            configurationBuilder.Add(memConfigSrc2, load: false);
+            configurationBuilder.Add(memConfigSrc1);
+            configurationBuilder.Add(memConfigSrc2);
 
             var config = configurationBuilder.Build();
 
@@ -184,9 +184,9 @@ namespace Microsoft.Extensions.Configuration.Test
 
             var configurationBuilder = new ConfigurationBuilder();
 
-            configurationBuilder.Add(memConfigSrc1, load: false);
-            configurationBuilder.Add(memConfigSrc2, load: false);
-            configurationBuilder.Add(memConfigSrc3, load: false);
+            configurationBuilder.Add(memConfigSrc1);
+            configurationBuilder.Add(memConfigSrc2);
+            configurationBuilder.Add(memConfigSrc3);
 
             var config = configurationBuilder.Build();
 
@@ -227,9 +227,9 @@ namespace Microsoft.Extensions.Configuration.Test
             var memConfigSrc3 = new MemoryConfigurationProvider(dic3);
 
             var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.Add(memConfigSrc1, load: false);
-            configurationBuilder.Add(memConfigSrc2, load: false);
-            configurationBuilder.Add(memConfigSrc3, load: false);
+            configurationBuilder.Add(memConfigSrc1);
+            configurationBuilder.Add(memConfigSrc2);
+            configurationBuilder.Add(memConfigSrc3);
 
             var config = configurationBuilder.Build();
 
@@ -276,9 +276,9 @@ namespace Microsoft.Extensions.Configuration.Test
             var memConfigSrc3 = new MemoryConfigurationProvider(dic3);
 
             var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.Add(memConfigSrc1, load: false);
-            configurationBuilder.Add(memConfigSrc2, load: false);
-            configurationBuilder.Add(memConfigSrc3, load: false);
+            configurationBuilder.Add(memConfigSrc1);
+            configurationBuilder.Add(memConfigSrc2);
+            configurationBuilder.Add(memConfigSrc3);
 
             var config = configurationBuilder.Build();
 
@@ -316,9 +316,9 @@ namespace Microsoft.Extensions.Configuration.Test
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act
-            configurationBuilder.Add(memConfigSrc1, load: false);
-            configurationBuilder.Add(memConfigSrc2, load: false);
-            configurationBuilder.Add(memConfigSrc3, load: false);
+            configurationBuilder.Add(memConfigSrc1);
+            configurationBuilder.Add(memConfigSrc2);
+            configurationBuilder.Add(memConfigSrc3);
 
             var config = configurationBuilder.Build();
 
