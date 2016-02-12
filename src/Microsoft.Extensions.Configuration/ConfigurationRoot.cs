@@ -62,7 +62,7 @@ namespace Microsoft.Extensions.Configuration
             var prefix = path == null ? "" : (path + Constants.KeyDelimiter);
             return _providers
                 .Aggregate(Enumerable.Empty<string>(),
-                    (seed, source) => source.GetChildKeys(seed, path, Constants.KeyDelimiter))
+                    (seed, source) => source.GetChildKeys(seed, path))
                 .Distinct()
                 .Select(key => GetSection(prefix + key));
         }
