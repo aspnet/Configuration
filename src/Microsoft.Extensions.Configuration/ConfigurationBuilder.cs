@@ -36,23 +36,6 @@ namespace Microsoft.Extensions.Configuration
         /// <returns>The same <see cref="IConfigurationBuilder"/>.</returns>
         public IConfigurationBuilder Add(IConfigurationProvider provider)
         {
-            return Add(provider, load: true);
-        }
-
-        /// <summary>
-        /// Adds a new provider to obtain configuration values from.
-        /// This method is intended only for test scenarios.
-        /// </summary>
-        /// <param name="provider">The configuration provider to add.</param>
-        /// <param name="load">If true, the configuration provider's <see cref="IConfigurationProvider.Load"/> method will
-        ///  be called.</param>
-        /// <returns>The same <see cref="IConfigurationBuilder"/>.</returns>
-        public IConfigurationBuilder Add(IConfigurationProvider provider, bool load)
-        {
-            if (load)
-            {
-                provider.Load();
-            }
             _providers.Add(provider);
             return this;
         }

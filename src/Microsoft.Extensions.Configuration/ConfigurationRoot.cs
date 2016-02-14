@@ -22,6 +22,11 @@ namespace Microsoft.Extensions.Configuration
             }
 
             _providers = providers;
+
+            foreach (var provider in _providers)
+            {
+                provider.Load();
+            }
         }
 
         public string this[string key]
