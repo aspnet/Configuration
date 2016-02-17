@@ -32,21 +32,20 @@ namespace Microsoft.Extensions.Configuration
        
         public virtual IEnumerable<string> GetChildKeys(
             IEnumerable<string> earlierKeys,
-            string parentPath,
-            string delimiter)
+            string parentPath)
         {
-            var prefix = parentPath == null ? string.Empty : parentPath + delimiter;
+            var prefix = parentPath == null ? string.Empty : parentPath + Constants.KeyDelimiter;
 
             return Data
                 .Where(kv => kv.Key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-                .Select(kv => Segment(kv.Key, prefix, delimiter))
+                .Select(kv => Segment(kv.Key, prefix))
                 .Concat(earlierKeys)
                 .OrderBy(k => k, ConfigurationKeyComparer.Instance);
         }
 
-        private static string Segment(string key, string prefix, string delimiter)
+        private static string Segment(string key, string prefix)
         {
-            var indexOf = key.IndexOf(delimiter, prefix.Length, StringComparison.OrdinalIgnoreCase);
+            var indexOf = key.IndexOf(Constants.KeyDelimiter, prefix.Length, StringComparison.OrdinalIgnoreCase);
             return indexOf < 0 ? key.Substring(prefix.Length) : key.Substring(prefix.Length, indexOf - prefix.Length);
         }
     }
