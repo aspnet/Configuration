@@ -38,7 +38,7 @@ namespace Microsoft.Extensions.Configuration
                 return null;
             }
 
-            var lastDelimiterIndex = path.LastIndexOf(KeyDelimiter);
+            var lastDelimiterIndex = path.LastIndexOf(KeyDelimiter, StringComparison.OrdinalIgnoreCase);
             return lastDelimiterIndex == -1 ? path : path.Substring(lastDelimiterIndex + 1);
         }
     }
