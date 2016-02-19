@@ -38,15 +38,15 @@ namespace Microsoft.Extensions.Configuration
 
             return Data
                 .Where(kv => kv.Key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-                .Select(kv => Segment(kv.Key, prefix))
+                .Select(kv => Segment(kv.Key, prefix.Length))
                 .Concat(earlierKeys)
                 .OrderBy(k => k, ConfigurationKeyComparer.Instance);
         }
 
-        private static string Segment(string key, string prefix)
+        private static string Segment(string key, int prefixLength)
         {
-            var indexOf = key.IndexOf(ConfigurationPath.KeyDelimiter, prefix.Length, StringComparison.OrdinalIgnoreCase);
-            return indexOf < 0 ? key.Substring(prefix.Length) : key.Substring(prefix.Length, indexOf - prefix.Length);
+            var indexOf = key.IndexOf(ConfigurationPath.KeyDelimiter, prefixLength, StringComparison.OrdinalIgnoreCase);
+            return indexOf < 0 ? key.Substring(prefixLength) : key.Substring(prefixLength, indexOf - prefixLength);
         }
     }
 }
