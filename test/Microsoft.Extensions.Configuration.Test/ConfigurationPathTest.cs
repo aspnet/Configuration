@@ -17,15 +17,31 @@ namespace Microsoft.Extensions.Configuration.Test
         }
 
         [Fact]
-        public void GetLastSegmentTests()
+        public void GetLastSegmenGetSectionKeyTests()
         {
-            Assert.Equal("", ConfigurationPath.GetLastSegment(":::"));
-            Assert.Equal("c", ConfigurationPath.GetLastSegment("a::b:::c"));
-            Assert.Equal("", ConfigurationPath.GetLastSegment("a:::b:"));
-            Assert.Equal("key", ConfigurationPath.GetLastSegment("key"));
-            Assert.Equal("key", ConfigurationPath.GetLastSegment(":key"));
-            Assert.Equal("key", ConfigurationPath.GetLastSegment("::key"));
-            Assert.Equal("key", ConfigurationPath.GetLastSegment("parent:key"));
+            Assert.Equal(null, ConfigurationPath.GetSectionKey(null));
+            Assert.Equal("", ConfigurationPath.GetSectionKey(""));
+            Assert.Equal("", ConfigurationPath.GetSectionKey(":::"));
+            Assert.Equal("c", ConfigurationPath.GetSectionKey("a::b:::c"));
+            Assert.Equal("", ConfigurationPath.GetSectionKey("a:::b:"));
+            Assert.Equal("key", ConfigurationPath.GetSectionKey("key"));
+            Assert.Equal("key", ConfigurationPath.GetSectionKey(":key"));
+            Assert.Equal("key", ConfigurationPath.GetSectionKey("::key"));
+            Assert.Equal("key", ConfigurationPath.GetSectionKey("parent:key"));
+        }
+
+        [Fact]
+        public void GetParentPathTests()
+        {
+            Assert.Equal(null, ConfigurationPath.GetParentPath(null));
+            Assert.Equal(null, ConfigurationPath.GetParentPath(""));
+            Assert.Equal("::", ConfigurationPath.GetParentPath(":::"));
+            Assert.Equal("a::b::", ConfigurationPath.GetParentPath("a::b:::c"));
+            Assert.Equal("a:::b", ConfigurationPath.GetParentPath("a:::b:"));
+            Assert.Equal(null, ConfigurationPath.GetParentPath("key"));
+            Assert.Equal("", ConfigurationPath.GetParentPath(":key"));
+            Assert.Equal(":", ConfigurationPath.GetParentPath("::key"));
+            Assert.Equal("parent", ConfigurationPath.GetParentPath("parent:key"));
         }
 
     }

@@ -31,15 +31,26 @@ namespace Microsoft.Extensions.Configuration
             return string.Join(KeyDelimiter, pathSegements);
         }
 
-        public static string GetLastSegment(string path)
+        public static string GetSectionKey(string path)
         {
-            if (path == null)
+            if (string.IsNullOrEmpty(path))
+            {
+                return path;
+            }
+
+            var lastDelimiterIndex = path.LastIndexOf(KeyDelimiter, StringComparison.OrdinalIgnoreCase);
+            return lastDelimiterIndex == -1 ? path : path.Substring(lastDelimiterIndex + 1);
+        }
+
+        public static string GetParentPath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
             {
                 return null;
             }
 
             var lastDelimiterIndex = path.LastIndexOf(KeyDelimiter, StringComparison.OrdinalIgnoreCase);
-            return lastDelimiterIndex == -1 ? path : path.Substring(lastDelimiterIndex + 1);
+            return lastDelimiterIndex == -1 ? null : path.Substring(0, lastDelimiterIndex);
         }
     }
 }

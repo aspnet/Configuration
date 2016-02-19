@@ -39,7 +39,7 @@ namespace Microsoft.Extensions.Configuration
                 if (_key == null)
                 {
                     // Key is calculated lazily as last portion of Path
-                    _key = ConfigurationPath.GetLastSegment(_path);
+                    _key = ConfigurationPath.GetSectionKey(_path);
                 }
                 return _key;
             }
