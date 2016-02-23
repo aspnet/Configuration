@@ -88,17 +88,17 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables.Test
                     {"SQLAZURECONNSTR_Prefix:db4", "SQLAzureConnStr"},
                     {"CommonEnv", "CommonEnvValue"},
                 };
-            var envConfigSrc = new EnvironmentVariablesConfigurationProvider("Data:");
+            var envConfigSrc = new EnvironmentVariablesConfigurationProvider("Prefix:");
 
             envConfigSrc.Load(dict);
 
-            Assert.Equal("CustomConnStr", envConfigSrc.Get("Prefix:db1"));
-            Assert.Equal("SQLConnStr", envConfigSrc.Get("Prefix:db2"));
-            Assert.Equal("System.Data.SqlClient", envConfigSrc.Get("Prefix:db2:ProviderName"));
-            Assert.Equal("MySQLConnStr", envConfigSrc.Get("Prefix:db3"));
-            Assert.Equal("MySql.Data.MySqlClient", envConfigSrc.Get("Prefix:db3:ProviderName"));
-            Assert.Equal("SQLAzureConnStr", envConfigSrc.Get("Prefix:db4"));
-            Assert.Equal("System.Data.SqlClient", envConfigSrc.Get("Prefix:db4:ProviderName"));
+            Assert.Equal("CustomConnStr", envConfigSrc.Get("db1"));
+            Assert.Equal("SQLConnStr", envConfigSrc.Get("db2"));
+            Assert.Equal("System.Data.SqlClient", envConfigSrc.Get("db2:ProviderName"));
+            Assert.Equal("MySQLConnStr", envConfigSrc.Get("db3"));
+            Assert.Equal("MySql.Data.MySqlClient", envConfigSrc.Get("db3:ProviderName"));
+            Assert.Equal("SQLAzureConnStr", envConfigSrc.Get("db4"));
+            Assert.Equal("System.Data.SqlClient", envConfigSrc.Get("db4:ProviderName"));
         }
 
         [Fact]
