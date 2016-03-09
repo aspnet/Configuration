@@ -21,7 +21,7 @@ namespace Microsoft.Extensions.Configuration
             {
                 throw new ArgumentNullException(nameof(configurationBuilder));
             }
-            configurationBuilder.Add(new IncludedConfigurationProvider(includedConfiguration));
+            configurationBuilder.Add(new IncludedConfigurationSource { Source = includedConfiguration });
             return configurationBuilder;
         }
 
@@ -38,7 +38,7 @@ namespace Microsoft.Extensions.Configuration
             {
                 throw new ArgumentNullException(nameof(configurationBuilder));
             }
-            configurationBuilder.Add(new IncludedConfigurationProvider(includedConfiguration.GetSection(includedKey)));
+            configurationBuilder.Add(new IncludedConfigurationSource { Source = includedConfiguration.GetSection(includedKey) });
             return configurationBuilder;
         }
 
@@ -54,7 +54,7 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentNullException(nameof(configurationBuilder));
             }
 
-            configurationBuilder.Add(new MemoryConfigurationProvider());
+            configurationBuilder.Add(new MemoryConfigurationSource());
             return configurationBuilder;
         }
 
@@ -73,7 +73,7 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentNullException(nameof(configurationBuilder));
             }
 
-            configurationBuilder.Add(new MemoryConfigurationProvider(initialData));
+            configurationBuilder.Add(new MemoryConfigurationSource { InitialData = initialData });
             return configurationBuilder;
         }
     }

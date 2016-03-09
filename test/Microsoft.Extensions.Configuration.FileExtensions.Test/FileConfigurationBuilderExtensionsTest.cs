@@ -16,7 +16,7 @@ namespace Microsoft.Extensions.Configuration.Json
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act and Assert
-            var ex = Assert.Throws<ArgumentNullException>(() => configurationBuilder.SetBasePath(null));
+            var ex = Assert.Throws<ArgumentNullException>(() => configurationBuilder.SetFileProvider(null));
             Assert.Equal("basePath", ex.ParamName);
         }
 
@@ -26,7 +26,7 @@ namespace Microsoft.Extensions.Configuration.Json
             var expectedBasePath = @"C:\ExamplePath";
             var configurationBuilder = new ConfigurationBuilder();
 
-            configurationBuilder.SetBasePath(expectedBasePath);
+            configurationBuilder.SetFileProvider(expectedBasePath);
             Assert.Equal(expectedBasePath, configurationBuilder.Properties["BasePath"]);
         }
 
@@ -36,10 +36,10 @@ namespace Microsoft.Extensions.Configuration.Json
             // Arrange
             var testDir = Path.GetDirectoryName(Path.GetTempFileName());
             var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.SetBasePath(testDir);
+            configurationBuilder.SetFileProvider(testDir);
 
             // Act
-            var actualPath = configurationBuilder.GetBasePath();
+            var actualPath = configurationBuilder.GetFileProvider();
 
             // Assert
             Assert.Equal(testDir, actualPath);
@@ -52,7 +52,7 @@ namespace Microsoft.Extensions.Configuration.Json
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act
-            var actualPath = configurationBuilder.GetBasePath();
+            var actualPath = configurationBuilder.GetFileProvider();
 
             string expectedPath;
 

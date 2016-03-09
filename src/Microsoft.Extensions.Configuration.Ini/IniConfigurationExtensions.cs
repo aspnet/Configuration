@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.IO;
 using Microsoft.Extensions.Configuration.Ini;
 
 namespace Microsoft.Extensions.Configuration
@@ -13,34 +12,10 @@ namespace Microsoft.Extensions.Configuration
         /// Adds the INI configuration provider at <paramref name="path"/> to <paramref name="configurationBuilder"/>.
         /// </summary>
         /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="path">Absolute path or path relative to the base path store in 
+        /// <param name="path">Path relative to the base path stored in 
         /// <see cref="IConfigurationBuilder.Properties"/> of <paramref name="configurationBuilder"/>.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddIniFile(this IConfigurationBuilder configurationBuilder, string path)
-        {
-            if (configurationBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(configurationBuilder));
-            }
-
-            return AddIniFile(configurationBuilder, path, optional: false);
-        }
-
-        /// <summary>
-        /// Adds the INI configuration provider at <paramref name="path"/> to <paramref name="configurationBuilder"/>.
-        /// </summary>
-        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="path">Absolute path or path relative to the base path store in 
-        /// <see cref="IConfigurationBuilder.Properties"/> of <paramref name="configurationBuilder"/>.</param>
-        /// <param name="optional">Determines if loading the configuration provider is optional.</param>
-        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        /// <exception cref="ArgumentException">If <paramref name="path"/> is null or empty.</exception>
-        /// <exception cref="FileNotFoundException">If <paramref name="optional"/> is <c>false</c> and the file cannot
-        /// be resolved.</exception>
-        public static IConfigurationBuilder AddIniFile(
-            this IConfigurationBuilder configurationBuilder,
-            string path,
-            bool optional)
         {
             if (configurationBuilder == null)
             {
@@ -52,14 +27,33 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentException(Resources.Error_InvalidFilePath, nameof(path));
             }
 
-            var fullPath = Path.Combine(configurationBuilder.GetBasePath(), path);
+            return AddIniFile(configurationBuilder, source => source.Path = path);
+        }
 
-            if (!optional && !File.Exists(fullPath))
+        /// <summary>
+        /// Adds a INI configuration source to <paramref name="configurationBuilder"/>.
+        /// </summary>
+        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="configureSource">Configures the <see cref="IniConfigurationSource"/> to add.</param>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddIniFile(
+            this IConfigurationBuilder configurationBuilder,
+            Action<IniConfigurationSource> configureSource)
+        {
+            if (configurationBuilder == null)
             {
-                throw new FileNotFoundException(Resources.FormatError_FileNotFound(fullPath), fullPath);
+                throw new ArgumentNullException(nameof(configurationBuilder));
             }
 
-            configurationBuilder.Add(new IniConfigurationProvider(fullPath, optional: optional));
+            if (configureSource == null)
+            {
+                throw new ArgumentNullException(nameof(configureSource));
+            }
+
+            var source = new IniConfigurationSource();
+            source.FileProvider = configurationBuilder.GetFileProvider();
+            configureSource(source);
+            configurationBuilder.Add(source);
             return configurationBuilder;
         }
     }

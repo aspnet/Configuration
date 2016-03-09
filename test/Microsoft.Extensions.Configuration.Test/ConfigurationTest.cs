@@ -16,23 +16,23 @@ namespace Microsoft.Extensions.Configuration.Test
         {
             // Arrange
             var dic1 = new Dictionary<string, string>()
-                {
-                    {"Mem1:KeyInMem1", "ValueInMem1"}
-                };
-            var memConfigSrc1 = new MemoryConfigurationProvider(dic1);
+            {
+                {"Mem1:KeyInMem1", "ValueInMem1"}
+            };
+            var memConfigSrc1 = new MemoryConfigurationSource { InitialData = dic1 };
 
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act
-            configurationBuilder.Add(memConfigSrc1, load: false);
+            configurationBuilder.Add(memConfigSrc1);
 
             var dic2 = new Dictionary<string, string>()
-                {
-                    {"Mem2:KeyInMem2", "ValueInMem2"}
-                };
-            var memConfigSrc2 = new MemoryConfigurationProvider(dic2);
+            {
+                {"Mem2:KeyInMem2", "ValueInMem2"}
+            };
+            var memConfigSrc2 = new MemoryConfigurationSource { InitialData = dic2 };
             var configurationBuilder2 = new ConfigurationBuilder();
-            configurationBuilder2.Add(memConfigSrc2, load: false);
+            configurationBuilder2.Add(memConfigSrc2);
             configurationBuilder2.Include(configurationBuilder.Build());
 
             var config = configurationBuilder2.Build();
@@ -41,8 +41,8 @@ namespace Microsoft.Extensions.Configuration.Test
             var memVal2 = config["Mem2:KeyInMem2"];
 
             // Assert
-            Assert.Contains(memConfigSrc2, configurationBuilder2.Providers);
-            Assert.True(configurationBuilder2.Providers.ElementAt(1) is IncludedConfigurationProvider);
+            Assert.Contains(memConfigSrc2, configurationBuilder2.Sources);
+            Assert.True(configurationBuilder2.Sources.ElementAt(1) is IncludedConfigurationSource);
 
             Assert.Equal("ValueInMem1", memVal1);
             Assert.Equal("ValueInMem2", memVal2);
@@ -59,20 +59,20 @@ namespace Microsoft.Extensions.Configuration.Test
                 {"Data:DB1:Connection1", "MemVal1"},
                 {"Data:DB1:Connection2", "MemVal2"}
             };
-            var memConfigSrc1 = new MemoryConfigurationProvider(dic1);
+            var memConfigSrc1 = new MemoryConfigurationSource { InitialData = dic1 };
 
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act
-            configurationBuilder.Add(memConfigSrc1, load: false);
+            configurationBuilder.Add(memConfigSrc1);
 
             var dic2 = new Dictionary<string, string>()
             {
                 {"Mem2:KeyInMem2", "MemVal3"}
             };
-            var memConfigSrc2 = new MemoryConfigurationProvider(dic2);
+            var memConfigSrc2 = new MemoryConfigurationSource { InitialData = dic2 };
             var configurationBuilder2 = new ConfigurationBuilder();
-            configurationBuilder2.Add(memConfigSrc2, load: false);
+            configurationBuilder2.Add(memConfigSrc2);
             configurationBuilder2.Include("Data", configurationBuilder.Build());
 
             var config = configurationBuilder2.Build();
@@ -83,8 +83,8 @@ namespace Microsoft.Extensions.Configuration.Test
             var memVal3 = config["Mem2:KeyInMem2"];
 
             // Assert
-            Assert.Contains(memConfigSrc2, configurationBuilder2.Providers);
-            Assert.True(configurationBuilder2.Providers.ElementAt(1) is IncludedConfigurationProvider);
+            Assert.Contains(memConfigSrc2, configurationBuilder2.Sources);
+            Assert.True(configurationBuilder2.Sources.ElementAt(1) is IncludedConfigurationSource);
 
             Assert.Equal("Value", memVal0);
             Assert.Equal("MemVal1", memVal1);
@@ -99,27 +99,27 @@ namespace Microsoft.Extensions.Configuration.Test
         {
             // Arrange
             var dic1 = new Dictionary<string, string>()
-                {
-                    {"Mem1:KeyInMem1", "ValueInMem1"}
-                };
+            {
+                {"Mem1:KeyInMem1", "ValueInMem1"}
+            };
             var dic2 = new Dictionary<string, string>()
-                {
-                    {"Mem2:KeyInMem2", "ValueInMem2"}
-                };
+            {
+                {"Mem2:KeyInMem2", "ValueInMem2"}
+            };
             var dic3 = new Dictionary<string, string>()
-                {
-                    {"Mem3:KeyInMem3", "ValueInMem3"}
-                };
-            var memConfigSrc1 = new MemoryConfigurationProvider(dic1);
-            var memConfigSrc2 = new MemoryConfigurationProvider(dic2);
-            var memConfigSrc3 = new MemoryConfigurationProvider(dic3);
+            {
+                {"Mem3:KeyInMem3", "ValueInMem3"}
+            };
+            var memConfigSrc1 = new MemoryConfigurationSource { InitialData = dic1 };
+            var memConfigSrc2 = new MemoryConfigurationSource { InitialData = dic2 };
+            var memConfigSrc3 = new MemoryConfigurationSource { InitialData = dic3 };
 
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act
-            configurationBuilder.Add(memConfigSrc1, load: false);
-            configurationBuilder.Add(memConfigSrc2, load: false);
-            configurationBuilder.Add(memConfigSrc3, load: false);
+            configurationBuilder.Add(memConfigSrc1);
+            configurationBuilder.Add(memConfigSrc2);
+            configurationBuilder.Add(memConfigSrc3);
 
             var config = configurationBuilder.Build();
 
@@ -128,9 +128,9 @@ namespace Microsoft.Extensions.Configuration.Test
             var memVal3 = config["MEM3:KEYINMEM3"];
 
             // Assert
-            Assert.Contains(memConfigSrc1, configurationBuilder.Providers);
-            Assert.Contains(memConfigSrc2, configurationBuilder.Providers);
-            Assert.Contains(memConfigSrc3, configurationBuilder.Providers);
+            Assert.Contains(memConfigSrc1, configurationBuilder.Sources);
+            Assert.Contains(memConfigSrc2, configurationBuilder.Sources);
+            Assert.Contains(memConfigSrc3, configurationBuilder.Sources);
 
             Assert.Equal("ValueInMem1", memVal1);
             Assert.Equal("ValueInMem2", memVal2);
@@ -161,16 +161,16 @@ namespace Microsoft.Extensions.Configuration.Test
                 {"Mem3:KeyInMem3", "ValueInMem3"},
                 {"Mem3:KeyInMem3:Deep3", "ValueDeep3"}
             };
-            var memConfigSrc1 = new MemoryConfigurationProvider(dic1);
-            var memConfigSrc2 = new MemoryConfigurationProvider(dic2);
-            var memConfigSrc3 = new MemoryConfigurationProvider(dic3);
+            var memConfigSrc1 = new MemoryConfigurationSource { InitialData = dic1 };
+            var memConfigSrc2 = new MemoryConfigurationSource { InitialData = dic2 };
+            var memConfigSrc3 = new MemoryConfigurationSource { InitialData = dic3 };
 
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act
-            configurationBuilder.Add(memConfigSrc1, load: false);
-            configurationBuilder.Add(memConfigSrc2, load: false);
-            configurationBuilder.Add(memConfigSrc3, load: false);
+            configurationBuilder.Add(memConfigSrc1);
+            configurationBuilder.Add(memConfigSrc2);
+            configurationBuilder.Add(memConfigSrc3);
 
             var config = configurationBuilder.Build();
 
@@ -197,14 +197,14 @@ namespace Microsoft.Extensions.Configuration.Test
                 {
                     {"Key1:Key2", "ValueInMem2"}
                 };
-            var memConfigSrc1 = new MemoryConfigurationProvider(dic1);
-            var memConfigSrc2 = new MemoryConfigurationProvider(dic2);
+            var memConfigSrc1 = new MemoryConfigurationSource { InitialData = dic1 };
+            var memConfigSrc2 = new MemoryConfigurationSource { InitialData = dic2 };
 
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act
-            configurationBuilder.Add(memConfigSrc1, load: false);
-            configurationBuilder.Add(memConfigSrc2, load: false);
+            configurationBuilder.Add(memConfigSrc1);
+            configurationBuilder.Add(memConfigSrc2);
 
             var config = configurationBuilder.Build();
 
@@ -217,19 +217,20 @@ namespace Microsoft.Extensions.Configuration.Test
         {
             // Arrange
             var dict = new Dictionary<string, string>()
-                {
-                    {"Key1", "Value1"},
-                    {"Key2", "Value2"}
-                };
-            var memConfigSrc1 = new MemoryConfigurationProvider(dict);
-            var memConfigSrc2 = new MemoryConfigurationProvider(dict);
-            var memConfigSrc3 = new MemoryConfigurationProvider(dict);
+            {
+                {"Key1", "Value1"},
+                {"Key2", "Value2"}
+            };
+
+            var memConfigSrc1 = new MemoryConfigurationSource { InitialData = dict };
+            var memConfigSrc2 = new MemoryConfigurationSource { InitialData = dict };
+            var memConfigSrc3 = new MemoryConfigurationSource { InitialData = dict };
 
             var configurationBuilder = new ConfigurationBuilder();
 
-            configurationBuilder.Add(memConfigSrc1, load: false);
-            configurationBuilder.Add(memConfigSrc2, load: false);
-            configurationBuilder.Add(memConfigSrc3, load: false);
+            configurationBuilder.Add(memConfigSrc1);
+            configurationBuilder.Add(memConfigSrc2);
+            configurationBuilder.Add(memConfigSrc3);
 
             var config = configurationBuilder.Build();
 
@@ -237,15 +238,19 @@ namespace Microsoft.Extensions.Configuration.Test
             config["Key1"] = "NewValue1";
             config["Key2"] = "NewValue2";
 
+            var memConfigProvider1 = memConfigSrc1.Build(configurationBuilder);
+            var memConfigProvider2 = memConfigSrc2.Build(configurationBuilder);
+            var memConfigProvider3 = memConfigSrc3.Build(configurationBuilder);
+
             // Assert
             Assert.Equal("NewValue1", config["Key1"]);
-            Assert.Equal("NewValue1", memConfigSrc1.Get("Key1"));
-            Assert.Equal("NewValue1", memConfigSrc2.Get("Key1"));
-            Assert.Equal("NewValue1", memConfigSrc3.Get("Key1"));
+            Assert.Equal("NewValue1", memConfigProvider1.Get("Key1"));
+            Assert.Equal("NewValue1", memConfigProvider2.Get("Key1"));
+            Assert.Equal("NewValue1", memConfigProvider3.Get("Key1"));
             Assert.Equal("NewValue2", config["Key2"]);
-            Assert.Equal("NewValue2", memConfigSrc1.Get("Key2"));
-            Assert.Equal("NewValue2", memConfigSrc2.Get("Key2"));
-            Assert.Equal("NewValue2", memConfigSrc3.Get("Key2"));
+            Assert.Equal("NewValue2", memConfigProvider1.Get("Key2"));
+            Assert.Equal("NewValue2", memConfigProvider2.Get("Key2"));
+            Assert.Equal("NewValue2", memConfigProvider3.Get("Key2"));
         }
 
         [Fact]
@@ -253,26 +258,26 @@ namespace Microsoft.Extensions.Configuration.Test
         {
             // Arrange
             var dic1 = new Dictionary<string, string>()
-                {
-                    {"Data:DB1:Connection1", "MemVal1"},
-                    {"Data:DB1:Connection2", "MemVal2"}
-                };
+            {
+                {"Data:DB1:Connection1", "MemVal1"},
+                {"Data:DB1:Connection2", "MemVal2"}
+            };
             var dic2 = new Dictionary<string, string>()
-                {
-                    {"DataSource:DB2:Connection", "MemVal3"}
-                };
+            {
+                {"DataSource:DB2:Connection", "MemVal3"}
+            };
             var dic3 = new Dictionary<string, string>()
-                {
-                    {"Data", "MemVal4"}
-                };
-            var memConfigSrc1 = new MemoryConfigurationProvider(dic1);
-            var memConfigSrc2 = new MemoryConfigurationProvider(dic2);
-            var memConfigSrc3 = new MemoryConfigurationProvider(dic3);
+            {
+                {"Data", "MemVal4"}
+            };
+            var memConfigSrc1 = new MemoryConfigurationSource { InitialData = dic1 };
+            var memConfigSrc2 = new MemoryConfigurationSource { InitialData = dic2 };
+            var memConfigSrc3 = new MemoryConfigurationSource { InitialData = dic3 };
 
             var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.Add(memConfigSrc1, load: false);
-            configurationBuilder.Add(memConfigSrc2, load: false);
-            configurationBuilder.Add(memConfigSrc3, load: false);
+            configurationBuilder.Add(memConfigSrc1);
+            configurationBuilder.Add(memConfigSrc2);
+            configurationBuilder.Add(memConfigSrc3);
 
             var config = configurationBuilder.Build();
 
@@ -302,26 +307,26 @@ namespace Microsoft.Extensions.Configuration.Test
         {
             // Arrange
             var dic1 = new Dictionary<string, string>()
-                {
-                    {"Data:DB1:Connection1", "MemVal1"},
-                    {"Data:DB1:Connection2", "MemVal2"}
-                };
+            {
+                {"Data:DB1:Connection1", "MemVal1"},
+                {"Data:DB1:Connection2", "MemVal2"}
+            };
             var dic2 = new Dictionary<string, string>()
-                {
-                    {"Data:DB2Connection", "MemVal3"}
-                };
+            {
+                {"Data:DB2Connection", "MemVal3"}
+            };
             var dic3 = new Dictionary<string, string>()
-                {
-                    {"DataSource:DB3:Connection", "MemVal4"}
-                };
-            var memConfigSrc1 = new MemoryConfigurationProvider(dic1);
-            var memConfigSrc2 = new MemoryConfigurationProvider(dic2);
-            var memConfigSrc3 = new MemoryConfigurationProvider(dic3);
+            {
+                {"DataSource:DB3:Connection", "MemVal4"}
+            };
+            var memConfigSrc1 = new MemoryConfigurationSource { InitialData = dic1 };
+            var memConfigSrc2 = new MemoryConfigurationSource { InitialData = dic2 };
+            var memConfigSrc3 = new MemoryConfigurationSource { InitialData = dic3 };
 
             var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.Add(memConfigSrc1, load: false);
-            configurationBuilder.Add(memConfigSrc2, load: false);
-            configurationBuilder.Add(memConfigSrc3, load: false);
+            configurationBuilder.Add(memConfigSrc1);
+            configurationBuilder.Add(memConfigSrc2);
+            configurationBuilder.Add(memConfigSrc3);
 
             var config = configurationBuilder.Build();
 
@@ -345,11 +350,11 @@ namespace Microsoft.Extensions.Configuration.Test
             {
                 {"Mem:KeyInMem", "MemVal"}
             };
-            var memConfigSrc1 = new MemoryConfigurationProvider(dict);
-            var memConfigSrc2 = new MemoryConfigurationProvider(dict);
-            var memConfigSrc3 = new MemoryConfigurationProvider(dict);
+            var memConfigSrc1 = new MemoryConfigurationSource { InitialData = dict };
+            var memConfigSrc2 = new MemoryConfigurationSource { InitialData = dict };
+            var memConfigSrc3 = new MemoryConfigurationSource { InitialData = dict };
 
-            var srcSet = new HashSet<IConfigurationProvider>()
+            var srcSet = new HashSet<IConfigurationSource>()
             {
                 memConfigSrc1,
                 memConfigSrc2,
@@ -359,14 +364,14 @@ namespace Microsoft.Extensions.Configuration.Test
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act
-            configurationBuilder.Add(memConfigSrc1, load: false);
-            configurationBuilder.Add(memConfigSrc2, load: false);
-            configurationBuilder.Add(memConfigSrc3, load: false);
+            configurationBuilder.Add(memConfigSrc1);
+            configurationBuilder.Add(memConfigSrc2);
+            configurationBuilder.Add(memConfigSrc3);
 
             var config = configurationBuilder.Build();
 
             // Assert
-            Assert.Equal(new[] { memConfigSrc1, memConfigSrc2, memConfigSrc3 }, configurationBuilder.Providers);
+            Assert.Equal(new[] { memConfigSrc1, memConfigSrc2, memConfigSrc3 }, configurationBuilder.Sources);
         }
 
         [Fact]

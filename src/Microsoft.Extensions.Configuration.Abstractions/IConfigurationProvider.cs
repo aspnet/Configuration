@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Microsoft.Extensions.Configuration
 {
     /// <summary>
-    /// Represents a source of configuration key/values for an application.
+    /// Provides configuration key/values for an application.
     /// </summary>
     public interface IConfigurationProvider
     {

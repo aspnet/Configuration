@@ -28,12 +28,10 @@ namespace Microsoft.Extensions.Configuration.Ini.Test
         public void AddJsonFile_ThrowsIfFileDoesNotExistAtPath()
         {
             // Arrange
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "file-does-not-exist.ini");
-            var configurationBuilder = new ConfigurationBuilder();
-
+            var path = "file-does-not-exist.ini";
+ 
             // Act and Assert
-            var ex = Assert.Throws<FileNotFoundException>(
-                () => IniConfigurationExtensions.AddIniFile(configurationBuilder, path));
+            var ex = Assert.Throws<FileNotFoundException>(() => new ConfigurationBuilder().AddIniFile(path).Build());
             Assert.Equal($"The configuration file '{path}' was not found and is not optional.", ex.Message);
         }
     }
