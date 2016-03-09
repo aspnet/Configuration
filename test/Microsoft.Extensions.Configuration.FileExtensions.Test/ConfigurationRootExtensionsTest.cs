@@ -79,6 +79,16 @@ namespace Microsoft.Extensions.Configuration
                 OnReload?.Invoke();
                 ReloadCount++;
             }
+
+            public void RaiseChanged()
+            {
+                throw new NotImplementedException();
+            }
+
+            public IDisposable RegisterOnChanged(Action<object> callback, object state)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         private class MockFileProvider : IFileProvider

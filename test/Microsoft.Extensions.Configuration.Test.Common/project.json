@@ -4,7 +4,13 @@
     "keyFile": "../../tools/Key.snk"
   },
   "dependencies": {
+<<<<<<< 9230cdb59ad38b74435bc39c0c8699d6a07c5e39
     "Microsoft.Extensions.Configuration": "1.0.0-*"
+=======
+    "Microsoft.Extensions.Configuration": "1.0.0-*",
+    "Microsoft.Extensions.FileProviders.Abstractions": "1.0.0-*",
+    "Microsoft.NETCore.Platforms": "1.0.1-*"
+>>>>>>> Initial snapshot
   },
   "frameworks": {
     "netstandard1.1": {

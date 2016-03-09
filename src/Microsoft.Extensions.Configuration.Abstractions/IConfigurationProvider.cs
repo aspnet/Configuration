@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Microsoft.Extensions.Configuration
 {
     /// <summary>
-    /// Represents a source of configuration key/values for an application.
+    /// Provides configuration key/values for an application.
     /// </summary>
     public interface IConfigurationProvider
     {
@@ -24,6 +24,12 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="key">The key.</param>
         /// <param name="value">The value.</param>
         void Set(string key, string value);
+
+        /// <summary>
+        ///  Called by the root after it has finished being built so providers can do any initialization.
+        /// </summary>
+        /// <param name="root"></param>
+        void Initialize(IConfigurationRoot root);
 
         /// <summary>
         /// Loads configuration values from the source represented by this <see cref="IConfigurationProvider"/>.

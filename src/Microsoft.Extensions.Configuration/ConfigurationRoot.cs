@@ -22,6 +22,10 @@ namespace Microsoft.Extensions.Configuration
             }
 
             _providers = providers;
+            foreach (var p in providers)
+            {
+                p.Initialize(this);
+            }
         }
 
         public string this[string key]
@@ -82,8 +86,18 @@ namespace Microsoft.Extensions.Configuration
             {
                 provider.Load();
             }
+            RaiseChanged();
+        }
+
+        public void RaiseChanged()
+        {
             var previousReloadToken = Interlocked.Exchange(ref _reloadToken, new ConfigurationReloadToken());
             previousReloadToken.OnReload();
+        }
+
+        public IDisposable RegisterOnChanged(Action<object> callback, object state)
+        {
+            return _reloadToken.RegisterChangeCallback(callback, state);
         }
     }
 }
