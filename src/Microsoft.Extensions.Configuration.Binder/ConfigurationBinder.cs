@@ -43,15 +43,15 @@ namespace Microsoft.Extensions.Configuration
         public static object GetValue(this IConfiguration configuration, Type type, string key, object defaultValue)
         {
             var secion = configuration.GetSection(key);
-				if (secion.Value != null)
-				{
-					return ConvertValue(type, secion.Value);
-				}
-				else if (secion != null)
-				{
-					return BindInstance(type, defaultValue, secion);
-				}
-				return defaultValue;
+            if (secion.Value != null)
+            {
+               return ConvertValue(type, secion.Value);
+            }
+            else if (secion != null)
+            {
+               return BindInstance(type, defaultValue, secion);
+            }
+            return defaultValue;
         }
 
         private static void BindNonScalar(this IConfiguration configuration, object instance)
