@@ -38,7 +38,6 @@ namespace Microsoft.Extensions.Configuration
                 }
                 else
                 {
-                    // REVIEW: should this be detected at build time instead?
                     throw new FileNotFoundException($"The configuration file '{File.Name}' was not found and is not optional.");
                 }
             }

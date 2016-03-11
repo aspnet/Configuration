@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using Microsoft.Extensions.FileProviders;
 using Xunit;
 
 namespace Microsoft.Extensions.Configuration.Json
@@ -16,7 +17,7 @@ namespace Microsoft.Extensions.Configuration.Json
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act and Assert
-            var ex = Assert.Throws<ArgumentNullException>(() => configurationBuilder.SetFileProvider(null));
+            var ex = Assert.Throws<ArgumentNullException>(() => configurationBuilder.SetFileProvider(basePath: null));
             Assert.Equal("basePath", ex.ParamName);
         }
 
@@ -27,22 +28,9 @@ namespace Microsoft.Extensions.Configuration.Json
             var configurationBuilder = new ConfigurationBuilder();
 
             configurationBuilder.SetFileProvider(expectedBasePath);
-            Assert.Equal(expectedBasePath, configurationBuilder.Properties["BasePath"]);
-        }
-
-        [Fact]
-        public void GetBasePath_ReturnBaseBathIfSet()
-        {
-            // Arrange
-            var testDir = Path.GetDirectoryName(Path.GetTempFileName());
-            var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.SetFileProvider(testDir);
-
-            // Act
-            var actualPath = configurationBuilder.GetFileProvider();
-
-            // Assert
-            Assert.Equal(testDir, actualPath);
+            var physicalProvider = configurationBuilder.GetFileSourceDefaults().FileProvider as PhysicalFileProvider;
+            Assert.NotNull(physicalProvider);
+            Assert.Equal(expectedBasePath, physicalProvider.Root);
         }
 
         [Fact]
@@ -52,7 +40,7 @@ namespace Microsoft.Extensions.Configuration.Json
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act
-            var actualPath = configurationBuilder.GetFileProvider();
+            var physicalProvider = configurationBuilder.GetFileSourceDefaults().FileProvider as PhysicalFileProvider;
 
             string expectedPath;
 
@@ -63,8 +51,8 @@ namespace Microsoft.Extensions.Configuration.Json
                 AppDomain.CurrentDomain.BaseDirectory);
 #endif
 
-            // Assert
-            Assert.Equal(expectedPath, actualPath);
+            Assert.NotNull(physicalProvider);
+            Assert.Equal(expectedPath, physicalProvider.Root);
         }
     }
 }

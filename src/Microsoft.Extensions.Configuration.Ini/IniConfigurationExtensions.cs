@@ -9,17 +9,17 @@ namespace Microsoft.Extensions.Configuration
     public static class IniConfigurationExtensions
     {
         /// <summary>
-        /// Adds the INI configuration provider at <paramref name="path"/> to <paramref name="configurationBuilder"/>.
+        /// Adds the INI configuration provider at <paramref name="path"/> to <paramref name="builder"/>.
         /// </summary>
-        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="path">Path relative to the base path stored in 
-        /// <see cref="IConfigurationBuilder.Properties"/> of <paramref name="configurationBuilder"/>.</param>
+        /// <see cref="IConfigurationBuilder.Properties"/> of <paramref name="builder"/>.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddIniFile(this IConfigurationBuilder configurationBuilder, string path)
+        public static IConfigurationBuilder AddIniFile(this IConfigurationBuilder builder, string path)
         {
-            if (configurationBuilder == null)
+            if (builder == null)
             {
-                throw new ArgumentNullException(nameof(configurationBuilder));
+                throw new ArgumentNullException(nameof(builder));
             }
 
             if (string.IsNullOrEmpty(path))
@@ -27,34 +27,20 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentException(Resources.Error_InvalidFilePath, nameof(path));
             }
 
-            return AddIniFile(configurationBuilder, source => source.Path = path);
+            return AddIniFile(builder, source => source.Path = path);
         }
 
         /// <summary>
-        /// Adds a INI configuration source to <paramref name="configurationBuilder"/>.
+        /// Adds a INI configuration source to <paramref name="builder"/>.
         /// </summary>
-        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="configureSource">Configures the <see cref="IniConfigurationSource"/> to add.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddIniFile(
-            this IConfigurationBuilder configurationBuilder,
+            this IConfigurationBuilder builder,
             Action<IniConfigurationSource> configureSource)
         {
-            if (configurationBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(configurationBuilder));
-            }
-
-            if (configureSource == null)
-            {
-                throw new ArgumentNullException(nameof(configureSource));
-            }
-
-            var source = new IniConfigurationSource();
-            source.FileProvider = configurationBuilder.GetFileProvider();
-            configureSource(source);
-            configurationBuilder.Add(source);
-            return configurationBuilder;
+            return builder.AddFileSource(configureSource);
         }
     }
 }

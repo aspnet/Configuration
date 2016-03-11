@@ -16,7 +16,7 @@ namespace Microsoft.Extensions.Configuration
         public override IConfigurationProvider Build(IConfigurationBuilder builder)
         {
             var provider = new TProvider();
-            InitializeProvider(provider);
+            InitializeProvider(builder, provider);
             return provider;
         }
     }
@@ -51,12 +51,39 @@ namespace Microsoft.Extensions.Configuration
             return FileProvider?.GetFileInfo(Path);
         }
 
+        private static IFileProvider BuildDefaultFileProvider()
+        {
+#if NET451
+            var stringBasePath = AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY") as string ??
+                AppDomain.CurrentDomain.BaseDirectory ??
+                string.Empty;
+
+            return new PhysicalFileProvider(stringBasePath);
+#else
+            return new PhysicalFileProvider(AppContext.BaseDirectory ?? string.Empty);
+#endif
+        }
+
+        /// <summary>
+        /// Applies the defaults specified from the builder.
+        /// </summary>
+        /// <param name="builder"></param>
+        public virtual void ApplyFileSourceDefaults(IConfigurationBuilder builder)
+        {
+            var defaults = builder.GetFileSourceDefaults();
+            FileProvider = defaults.FileProvider ?? BuildDefaultFileProvider();
+            Optional = defaults.Optional;
+            ReloadOnChange = defaults.ReloadOnChange;
+        }
+
         /// <summary>
         /// Initializes the file based provider
         /// </summary>
-        /// <param name="provider"></param>
-        public virtual void InitializeProvider(FileConfigurationProvider provider)
+        /// <param name="builder">The builder for the configuration being built.</param>
+        /// <param name="provider">The provider to initialize.</param>
+        public virtual void InitializeProvider(IConfigurationBuilder builder, FileConfigurationProvider provider)
         {
+            ApplyFileSourceDefaults(builder);
             provider.File = GetFileInfo();
             provider.Optional = Optional;
 

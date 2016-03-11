@@ -3,7 +3,6 @@
 
 using System;
 using Microsoft.Extensions.Configuration.Json;
-using Microsoft.Extensions.FileProviders;
 
 namespace Microsoft.Extensions.Configuration
 {
@@ -13,17 +12,17 @@ namespace Microsoft.Extensions.Configuration
     public static class JsonConfigurationExtensions
     {
         /// <summary>
-        /// Adds the JSON configuration provider at <paramref name="path"/> to <paramref name="configurationBuilder"/>.
+        /// Adds the JSON configuration provider at <paramref name="path"/> to <paramref name="builder"/>.
         /// </summary>
-        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="path">Path relative to the base path stored in 
         /// <see cref="IConfigurationBuilder.Properties"/> of <paramref name="configurationBuilder"/>.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddJsonFile(this IConfigurationBuilder configurationBuilder, string path)
+        public static IConfigurationBuilder AddJsonFile(this IConfigurationBuilder builder, string path)
         {
-            if (configurationBuilder == null)
+            if (builder == null)
             {
-                throw new ArgumentNullException(nameof(configurationBuilder));
+                throw new ArgumentNullException(nameof(builder));
             }
 
             if (string.IsNullOrEmpty(path))
@@ -31,34 +30,18 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentException(Resources.Error_InvalidFilePath, nameof(path));
             }
 
-            return AddJsonFile(configurationBuilder, source => source.Path = path);
+            return AddJsonFile(builder, source => source.Path = path);
         }
 
         /// <summary>
-        /// Adds a JSON configuration source to <paramref name="configurationBuilder"/>.
+        /// Adds a JSON configuration source to <paramref name="builder"/>.
         /// </summary>
-        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="configureSource">Configures the <see cref="JsonConfigurationSource"/> to add.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddJsonFile(
-            this IConfigurationBuilder configurationBuilder,
-            Action<JsonConfigurationSource> configureSource)
+        public static IConfigurationBuilder AddJsonFile(this IConfigurationBuilder builder, Action<JsonConfigurationSource> configureSource)
         {
-            if (configurationBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(configurationBuilder));
-            }
-
-            if (configureSource == null)
-            {
-                throw new ArgumentNullException(nameof(configureSource));
-            }
-
-            var source = new JsonConfigurationSource();
-            source.FileProvider = configurationBuilder.GetFileProvider();
-            configureSource(source);
-            configurationBuilder.Add(source);
-            return configurationBuilder;
+            return builder.AddFileSource(configureSource);
         }
     }
 }
