@@ -215,7 +215,7 @@ CommonKey3:CommonKey4=IniValue6";
             var jsonFile = Path.GetRandomFileName();
             File.WriteAllText(jsonFile, json);
 
-            var builder = new ConfigurationBuilder().SetFileProvider(Directory.GetCurrentDirectory());
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory());
 
             // Act & Assert
             var exception = Assert.Throws<FormatException>(() => builder.AddJsonFile(jsonFile).Build());
@@ -235,7 +235,7 @@ CommonKey3:CommonKey4=IniValue6";
 
             // Act
             builder.AddXmlFile(Path.GetFileName(_xmlConfigFilePath))
-                .SetFileProvider(Directory.GetCurrentDirectory())
+                .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("test.json");
 
             var config = builder.Build();

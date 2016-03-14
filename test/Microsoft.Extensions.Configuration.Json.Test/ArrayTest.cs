@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.Configuration.Json.Test
                 ]
             }";
 
-            var jsonConfigSource = new JsonConfigurationProvider();
+            var jsonConfigSource = new JsonConfigurationProvider(new JsonConfigurationSource());
             jsonConfigSource.Load(TestStreamHelpers.StringToStream(json));
             
             Assert.Equal("1.2.3.4", jsonConfigSource.Get("ip:0"));
@@ -44,7 +44,7 @@ namespace Microsoft.Extensions.Configuration.Json.Test
                 ]
             }";
 
-            var jsonConfigSource = new JsonConfigurationProvider();
+            var jsonConfigSource = new JsonConfigurationProvider(new JsonConfigurationSource());
             jsonConfigSource.Load(TestStreamHelpers.StringToStream(json));
 
             Assert.Equal("1.2.3.4", jsonConfigSource.Get("ip:0:address"));
@@ -69,7 +69,7 @@ namespace Microsoft.Extensions.Configuration.Json.Test
                 ]
             }";
 
-            var jsonConfigSource = new JsonConfigurationProvider();
+            var jsonConfigSource = new JsonConfigurationProvider(new JsonConfigurationSource());
             jsonConfigSource.Load(TestStreamHelpers.StringToStream(json));
 
             Assert.Equal("1.2.3.4", jsonConfigSource.Get("ip:0:0"));

@@ -27,7 +27,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
                         </Inventory>
                     </Data.Setting>
                 </settings>";
-            var xmlConfigSrc = new XmlConfigurationProvider();
+            var xmlConfigSrc = new XmlConfigurationProvider(new XmlConfigurationSource());
 
             xmlConfigSrc.Load(TestStreamHelpers.StringToStream(xml));
 
@@ -47,7 +47,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
     <Key1></Key1>
     <Key2 Key3="""" />
 </settings>";
-            var xmlConfigSrc = new XmlConfigurationProvider();
+            var xmlConfigSrc = new XmlConfigurationProvider(new XmlConfigurationSource());
 
             xmlConfigSrc.Load(TestStreamHelpers.StringToStream(xml));
 
@@ -69,7 +69,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
             Provider=""MySql""/>
     </Data>
 </settings>";
-            var xmlConfigSrc = new XmlConfigurationProvider();
+            var xmlConfigSrc = new XmlConfigurationProvider(new XmlConfigurationSource());
 
             xmlConfigSrc.Load(TestStreamHelpers.StringToStream(xml));
 
@@ -94,7 +94,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
                         </Inventory>
                     </Data>
                 </settings>";
-            var xmlConfigSrc = new XmlConfigurationProvider();
+            var xmlConfigSrc = new XmlConfigurationProvider(new XmlConfigurationSource());
 
             xmlConfigSrc.Load(TestStreamHelpers.StringToStream(xml));
 
@@ -119,7 +119,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
                         <Provider>MySql</Provider>
                     </Data>
                 </settings>";
-            var xmlConfigSrc = new XmlConfigurationProvider();
+            var xmlConfigSrc = new XmlConfigurationProvider(new XmlConfigurationSource());
 
             xmlConfigSrc.Load(TestStreamHelpers.StringToStream(xml));
 
@@ -143,7 +143,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
                         <Provider>MySql</Provider>
                     </Inventory>
                 </settings>";
-            var xmlConfigSrc = new XmlConfigurationProvider();
+            var xmlConfigSrc = new XmlConfigurationProvider(new XmlConfigurationSource());
 
             xmlConfigSrc.Load(TestStreamHelpers.StringToStream(xml));
 
@@ -165,7 +165,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
                           <Provider>MySql</Provider>
                     </Data>
                 </settings>";
-            var xmlConfigSrc = new XmlConfigurationProvider();
+            var xmlConfigSrc = new XmlConfigurationProvider(new XmlConfigurationSource());
 
             xmlConfigSrc.Load(TestStreamHelpers.StringToStream(xml));
 
@@ -186,7 +186,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
                         </Inventory>
                     </Data>
                 </settings>";
-            var xmlConfigSrc = new XmlConfigurationProvider();
+            var xmlConfigSrc = new XmlConfigurationProvider(new XmlConfigurationSource());
 
             xmlConfigSrc.Load(TestStreamHelpers.StringToStream(xml));
 
@@ -209,7 +209,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
                         </Inventory>
                     </Data>
                 </settings><!-- Comments -->";
-            var xmlConfigSrc = new XmlConfigurationProvider();
+            var xmlConfigSrc = new XmlConfigurationProvider(new XmlConfigurationSource());
 
             xmlConfigSrc.Load(TestStreamHelpers.StringToStream(xml));
 
@@ -236,7 +236,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
                         </Inventory>
                     </Data>
                 </settings>";
-            var xmlConfigSrc = new XmlConfigurationProvider();
+            var xmlConfigSrc = new XmlConfigurationProvider(new XmlConfigurationSource());
 
             xmlConfigSrc.Load(TestStreamHelpers.StringToStream(xml));
 
@@ -265,7 +265,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
                             </Inventory>
                         </Data>
                     </settings>";
-            var xmlConfigSrc = new XmlConfigurationProvider();
+            var xmlConfigSrc = new XmlConfigurationProvider(new XmlConfigurationSource());
 
             xmlConfigSrc.Load(TestStreamHelpers.StringToStream(xml));
 
@@ -297,7 +297,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
                         </Inventory>
                     </Data>
                 </settings>";
-            var xmlConfigSrc = new XmlConfigurationProvider();
+            var xmlConfigSrc = new XmlConfigurationProvider(new XmlConfigurationSource());
             var isMono = Type.GetType("Mono.Runtime") != null;
             var expectedMsg = isMono ? "Document Type Declaration (DTD) is prohibited in this XML.  Line 1, position 10." : "For security reasons DTD is prohibited in this XML document. "
                 + "To enable DTD processing set the DtdProcessing property on XmlReaderSettings "
@@ -324,7 +324,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
                         </Inventory>
                     </MyNameSpace:Data>
                 </settings>";
-            var xmlConfigSrc = new XmlConfigurationProvider();
+            var xmlConfigSrc = new XmlConfigurationProvider(new XmlConfigurationSource());
             var expectedMsg = Resources.FormatError_NamespaceIsNotSupported(Resources.FormatMsg_LineInfo(1, 11));
 
             var exception = Assert.Throws<FormatException>(() => xmlConfigSrc.Load(TestStreamHelpers.StringToStream(xml)));
@@ -367,7 +367,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
                         <Provider>NewProvider</Provider>
                     </Data>
                 </settings>";
-            var xmlConfigSrc = new XmlConfigurationProvider();
+            var xmlConfigSrc = new XmlConfigurationProvider(new XmlConfigurationSource());
             var expectedMsg = Resources.FormatError_KeyIsDuplicated("Data:DefaultConnection:ConnectionString",
                 Resources.FormatMsg_LineInfo(8, 52));
 
@@ -383,11 +383,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
             {
                 try
                 {
-                    var config = new ConfigurationBuilder().AddXmlFile(source =>
-                    {
-                        source.Path = "NotExistingConfig.xml";
-                        source.Optional = false;
-                    }).Build();
+                    var config = new ConfigurationBuilder().AddXmlFile("NotExistingConfig.xml", optional: false).Build();
                 }
                 catch (FileNotFoundException exception)
                 {
@@ -400,11 +396,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
         [Fact]
         public void XmlConfiguration_Does_Not_Throw_On_Optional_Configuration()
         {
-            var config = new ConfigurationBuilder().AddXmlFile(source =>
-            {
-                source.Path = "NotExistingConfig.xml";
-                source.Optional = true;
-            }).Build();
+            var config = new ConfigurationBuilder().AddXmlFile("NotExistingConfig.xml", optional: true).Build();
         }
     }
 }

@@ -10,20 +10,6 @@ namespace Microsoft.Extensions.Configuration
     /// <summary>
     /// Represents a base class for file based <see cref="IConfigurationSource"/>.
     /// </summary>
-    /// <typeparam name="TProvider">The concrete FileConfigurationProvider to create.</typeparam>
-    public class FileConfigurationSource<TProvider> : FileConfigurationSource where TProvider : FileConfigurationProvider, new()
-    {
-        public override IConfigurationProvider Build(IConfigurationBuilder builder)
-        {
-            var provider = new TProvider();
-            InitializeProvider(builder, provider);
-            return provider;
-        }
-    }
-
-    /// <summary>
-    /// Represents a base class for file based <see cref="IConfigurationSource"/>.
-    /// </summary>
     public abstract class FileConfigurationSource : IConfigurationSource
     {
         /// <summary>
@@ -46,11 +32,6 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         public bool ReloadOnChange { get; set; }
 
-        public virtual IFileInfo GetFileInfo()
-        {
-            return FileProvider?.GetFileInfo(Path);
-        }
-
         private static IFileProvider BuildDefaultFileProvider()
         {
 #if NET451
@@ -62,36 +43,6 @@ namespace Microsoft.Extensions.Configuration
 #else
             return new PhysicalFileProvider(AppContext.BaseDirectory ?? string.Empty);
 #endif
-        }
-
-        /// <summary>
-        /// Applies the defaults specified from the builder.
-        /// </summary>
-        /// <param name="builder"></param>
-        public virtual void ApplyFileSourceDefaults(IConfigurationBuilder builder)
-        {
-            var defaults = builder.GetFileSourceDefaults();
-            FileProvider = defaults.FileProvider ?? BuildDefaultFileProvider();
-            Optional = defaults.Optional;
-            ReloadOnChange = defaults.ReloadOnChange;
-        }
-
-        /// <summary>
-        /// Initializes the file based provider
-        /// </summary>
-        /// <param name="builder">The builder for the configuration being built.</param>
-        /// <param name="provider">The provider to initialize.</param>
-        public virtual void InitializeProvider(IConfigurationBuilder builder, FileConfigurationProvider provider)
-        {
-            ApplyFileSourceDefaults(builder);
-            provider.File = GetFileInfo();
-            provider.Optional = Optional;
-
-            // TODO: aggregate watch?
-            if (ReloadOnChange && FileProvider != null)
-            {
-                ChangeToken.OnChange(() => FileProvider.Watch(Path), () => provider.Load());
-            }
         }
 
         public abstract IConfigurationProvider Build(IConfigurationBuilder builder);

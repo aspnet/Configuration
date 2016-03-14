@@ -21,6 +21,8 @@ namespace Microsoft.Extensions.Configuration.Ini
     /// </examples>
     public class IniConfigurationProvider : FileConfigurationProvider
     {
+        public IniConfigurationProvider(IniConfigurationSource source) : base(source) { }
+
         public override void Load(Stream stream)
         {
             var data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);

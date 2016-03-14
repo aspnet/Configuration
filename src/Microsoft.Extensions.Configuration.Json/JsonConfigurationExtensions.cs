@@ -16,7 +16,7 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="path">Path relative to the base path stored in 
-        /// <see cref="IConfigurationBuilder.Properties"/> of <paramref name="configurationBuilder"/>.</param>
+        /// <see cref="IConfigurationBuilder.Properties"/> of <paramref name="builder"/>.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddJsonFile(this IConfigurationBuilder builder, string path)
         {
@@ -34,6 +34,33 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
+        /// Adds the JSON configuration provider at <paramref name="path"/> to <paramref name="builder"/>.
+        /// </summary>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="path">Path relative to the base path stored in 
+        /// <see cref="IConfigurationBuilder.Properties"/> of <paramref name="builder"/>.</param>
+        /// <param name="optional">Whether the file is optional.</param>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddJsonFile(this IConfigurationBuilder builder, string path, bool optional)
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException(Resources.Error_InvalidFilePath, nameof(path));
+            }
+
+            return AddJsonFile(builder, source =>
+            {
+                source.Path = path;
+                source.Optional = optional;
+            });
+        }
+
+        /// <summary>
         /// Adds a JSON configuration source to <paramref name="builder"/>.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
@@ -41,7 +68,10 @@ namespace Microsoft.Extensions.Configuration
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddJsonFile(this IConfigurationBuilder builder, Action<JsonConfigurationSource> configureSource)
         {
-            return builder.AddFileSource(configureSource);
+            var source = new JsonConfigurationSource();
+            configureSource(source);
+            builder.Add(source);
+            return builder;
         }
     }
 }

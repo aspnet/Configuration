@@ -16,6 +16,8 @@ namespace Microsoft.Extensions.Configuration.Xml
     {
         private const string NameAttributeKey = "Name";
 
+        public XmlConfigurationProvider(XmlConfigurationSource source) : base(source) { }
+
         internal XmlDocumentDecryptor Decryptor { get; set; } = XmlDocumentDecryptor.Instance;
 
         public override void Load(Stream stream)

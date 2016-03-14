@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Extensions.Configuration
 {
@@ -13,37 +14,41 @@ namespace Microsoft.Extensions.Configuration
     /// </summary>
     public abstract class FileConfigurationProvider : ConfigurationProvider
     {
-        /// <summary>
-        /// Gets a value that determines if this instance of <see cref="FileConfigurationProvider"/> is optional.
-        /// </summary>
-        public bool Optional { get; set; }
+        private readonly FileConfigurationSource _source;
 
-        /// <summary>
-        /// The <see cref="IFileInfo"/> representing the file.
-        /// </summary>
-        public IFileInfo File { get; set; }
+        public FileConfigurationProvider(FileConfigurationSource source)
+        {
+            _source = source;
+
+            // TODO: aggregate watch?
+            if (_source.ReloadOnChange)
+            {
+                ChangeToken.OnChange(() => _source.FileProvider.Watch(_source.Path), () => Load());
+            }
+        }
 
         /// <summary>
         /// Loads the contents of the file at <see cref="Path"/>.
         /// </summary>
-        /// <exception cref="FileNotFoundException">If <see cref="Optional"/> is <c>false</c> and a
-        /// file does not exist at <see cref="Path"/>.</exception>
+        /// <exception cref="FileNotFoundException">If Optional is <c>false</c> on the source and a
+        /// file does not exist at specified Path.</exception>
         public override void Load()
         {
-            if (File == null || !File.Exists)
+            var file = _source.FileProvider.GetFileInfo(_source.Path);
+            if (file == null || !file.Exists)
             {
-                if (Optional)
+                if (_source.Optional)
                 {
                     Data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 }
                 else
                 {
-                    throw new FileNotFoundException($"The configuration file '{File.Name}' was not found and is not optional.");
+                    throw new FileNotFoundException($"The configuration file '{file.Name}' was not found and is not optional.");
                 }
             }
             else
             {
-                using (var stream = File.CreateReadStream())
+                using (var stream = file.CreateReadStream())
                 {
                     Load(stream);
                 }

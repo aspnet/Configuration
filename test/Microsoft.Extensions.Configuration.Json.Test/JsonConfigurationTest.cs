@@ -24,7 +24,7 @@ namespace Microsoft.Extensions.Configuration
             'zipcode': '12345'
         }
 }";
-            var jsonConfigSrc = new JsonConfigurationProvider();
+            var jsonConfigSrc = new JsonConfigurationProvider(new JsonConfigurationSource());
 
             jsonConfigSrc.Load(TestStreamHelpers.StringToStream(json));
 
@@ -41,7 +41,7 @@ namespace Microsoft.Extensions.Configuration
 {
     'name': ''
 }";
-            var jsonConfigSrc = new JsonConfigurationProvider();
+            var jsonConfigSrc = new JsonConfigurationProvider(new JsonConfigurationSource());
 
             jsonConfigSrc.Load(TestStreamHelpers.StringToStream(json));
 
@@ -52,7 +52,7 @@ namespace Microsoft.Extensions.Configuration
         public void NonObjectRootIsInvalid()
         {
             var json = @"'test'";
-            var jsonConfigSource = new JsonConfigurationProvider();
+            var jsonConfigSource = new JsonConfigurationProvider(new JsonConfigurationSource());
           
             var exception = Assert.Throws<FormatException>(
                 () => jsonConfigSource.Load(TestStreamHelpers.StringToStream(json)));
@@ -71,7 +71,7 @@ namespace Microsoft.Extensions.Configuration
                     ""zipcode"": ""12345""
                 }
             }";
-            var jsonConfigSrc = new JsonConfigurationProvider();
+            var jsonConfigSrc = new JsonConfigurationProvider(new JsonConfigurationSource());
 
             jsonConfigSrc.Load(TestStreamHelpers.StringToStream(json));
 
@@ -90,7 +90,7 @@ namespace Microsoft.Extensions.Configuration
                     'zipcode': '12345'
                 }
             /* Missing a right brace here*/";
-            var jsonConfigSource = new JsonConfigurationProvider();
+            var jsonConfigSource = new JsonConfigurationProvider(new JsonConfigurationSource());
            
             var exception = Assert.Throws<FormatException>(
                 () => jsonConfigSource.Load(TestStreamHelpers.StringToStream(json)));
@@ -145,7 +145,7 @@ namespace Microsoft.Extensions.Configuration
         public void ThrowFormatExceptionWhenFileIsEmpty()
         {
             var json = @"";
-            var jsonConfigSource = new JsonConfigurationProvider();
+            var jsonConfigSource = new JsonConfigurationProvider(new JsonConfigurationSource());
 
             var exception = Assert.Throws<FormatException>(
                 () => jsonConfigSource.Load(TestStreamHelpers.StringToStream(json)));

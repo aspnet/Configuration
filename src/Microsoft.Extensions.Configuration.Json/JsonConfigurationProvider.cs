@@ -14,6 +14,8 @@ namespace Microsoft.Extensions.Configuration.Json
     /// </summary>
     public class JsonConfigurationProvider : FileConfigurationProvider
     {
+        public JsonConfigurationProvider(JsonConfigurationSource source) : base(source) { }
+
         public override void Load(Stream stream)
         {
             var parser = new JsonConfigurationFileParser();

@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.Configuration
 {
     public static class FileConfigurationExtensions
     {
-        private static string FileSourceDefaultsKey = "FileSourceDefaults";
+        private static string FileProviderKey = "FileProvider";
 
         private class DefaultFileSource : FileConfigurationSource
         {
@@ -36,43 +36,36 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentNullException(nameof(fileProvider));
             }
 
-            builder.GetFileSourceDefaults().FileProvider = fileProvider;
+            builder.Properties[FileProviderKey] = fileProvider;
             return builder;
         }
 
         /// <summary>
-        /// Configures the default <see cref="FileConfigurationSource"/> settings to be used for file-based providers.
+        /// Gets the default <see cref="IFileProvider"/> to be used for file-based providers.
         /// </summary>
-        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="configureDefaults">Configures the default <see cref="FileConfigurationSource"/>.</param>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder ConfigureFileSourceDefaults(this IConfigurationBuilder builder, Action<FileConfigurationSource> configureDefaults)
+        public static IFileProvider GetFileProvider(this IConfigurationBuilder builder)
         {
             if (builder == null)
             {
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            if (configureDefaults == null)
+            object provider;
+            if (builder.Properties.TryGetValue(FileProviderKey, out provider))
             {
-                throw new ArgumentNullException(nameof(configureDefaults));
+                return builder.Properties[FileProviderKey] as IFileProvider;
             }
 
-            configureDefaults(builder.GetFileSourceDefaults());
-            return builder;
-        }
-
-        public static FileConfigurationSource GetFileSourceDefaults(this IConfigurationBuilder configurationBuilder)
-        {
-            object defaults;
-            if (configurationBuilder.Properties.TryGetValue(FileSourceDefaultsKey, out defaults))
-            {
-                return (FileConfigurationSource)defaults;
-            }
-            var newDefaults = new DefaultFileSource();
-            configurationBuilder.Properties[FileSourceDefaultsKey] = newDefaults;
-            return newDefaults;
-
+#if NET451
+            var stringBasePath = AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY") as string 
+                ?? AppDomain.CurrentDomain.BaseDirectory 
+                ?? string.Empty;
+            return new PhysicalFileProvider(stringBasePath);
+#else
+            return new PhysicalFileProvider(AppContext.BaseDirectory ?? string.Empty);
+#endif
         }
 
         /// <summary>
@@ -81,7 +74,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="basePath">The absolute path of file-based providers.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder SetFileProvider(this IConfigurationBuilder builder, string basePath)
+        public static IConfigurationBuilder SetBasePath(this IConfigurationBuilder builder, string basePath)
         {
             if (builder == null)
             {
@@ -94,32 +87,6 @@ namespace Microsoft.Extensions.Configuration
             }
 
             return builder.SetFileProvider(new PhysicalFileProvider(basePath));
-        }
-
-        /// <summary>
-        /// Adds a file configuration source to <paramref name="builder"/>.
-        /// </summary>
-        /// <typeparam name="TSource">The type of the file source.</typeparam>
-        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="configureSource">Configures the <see cref="IConfigurationSource"/> to add.</param>
-        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddFileSource<TSource>(this IConfigurationBuilder builder, Action<TSource> configureSource)
-            where TSource : IConfigurationSource, new()
-        {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            if (configureSource == null)
-            {
-                throw new ArgumentNullException(nameof(configureSource));
-            }
-
-            var source = new TSource();
-            configureSource(source);
-            builder.Add(source);
-            return builder;
         }
     }
 }

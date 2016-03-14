@@ -11,36 +11,36 @@ namespace Microsoft.Extensions.Configuration.Json
     public class FileConfigurationBuilderExtensionsTest
     {
         [Fact]
-        public void SetBasePath_ThrowsIfBasePathIsNull()
+        public void SetFileProvider_ThrowsIfBasePathIsNull()
         {
             // Arrange
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act and Assert
-            var ex = Assert.Throws<ArgumentNullException>(() => configurationBuilder.SetFileProvider(basePath: null));
+            var ex = Assert.Throws<ArgumentNullException>(() => configurationBuilder.SetBasePath(basePath: null));
             Assert.Equal("basePath", ex.ParamName);
         }
 
         [Fact]
-        public void SetBasePath_CheckPropertiesValueOnBuilder()
+        public void SetFileProvider_CheckPropertiesValueOnBuilder()
         {
-            var expectedBasePath = @"C:\ExamplePath";
+            var expectedBasePath = Directory.GetCurrentDirectory() + "\\";
             var configurationBuilder = new ConfigurationBuilder();
 
-            configurationBuilder.SetFileProvider(expectedBasePath);
-            var physicalProvider = configurationBuilder.GetFileSourceDefaults().FileProvider as PhysicalFileProvider;
+            configurationBuilder.SetBasePath(expectedBasePath);
+            var physicalProvider = configurationBuilder.GetFileProvider() as PhysicalFileProvider;
             Assert.NotNull(physicalProvider);
             Assert.Equal(expectedBasePath, physicalProvider.Root);
         }
 
         [Fact]
-        public void GetBasePath_ReturnBaseDirectoryIfNotSet()
+        public void GetFileProvider_ReturnPhysicalProviderWithBaseDirectoryIfNotSet()
         {
             // Arrange
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act
-            var physicalProvider = configurationBuilder.GetFileSourceDefaults().FileProvider as PhysicalFileProvider;
+            var physicalProvider = configurationBuilder.GetFileProvider() as PhysicalFileProvider;
 
             string expectedPath;
 
@@ -52,7 +52,7 @@ namespace Microsoft.Extensions.Configuration.Json
 #endif
 
             Assert.NotNull(physicalProvider);
-            Assert.Equal(expectedPath, physicalProvider.Root);
+            Assert.Equal(expectedPath + "\\", physicalProvider.Root);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
             Assert.Null(xmlDocument.SelectSingleNode("//Inventory"));
 
             // Arrange
-            var xmlConfigSrc = new XmlConfigurationProvider();
+            var xmlConfigSrc = new XmlConfigurationProvider(new XmlConfigurationSource());
             xmlConfigSrc.Decryptor = new EncryptedXmlDocumentDecryptor(doc =>
             {
                 var innerEncryptedXml = new EncryptedXml(doc);
