@@ -32,19 +32,6 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         public bool ReloadOnChange { get; set; }
 
-        private static IFileProvider BuildDefaultFileProvider()
-        {
-#if NET451
-            var stringBasePath = AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY") as string ??
-                AppDomain.CurrentDomain.BaseDirectory ??
-                string.Empty;
-
-            return new PhysicalFileProvider(stringBasePath);
-#else
-            return new PhysicalFileProvider(AppContext.BaseDirectory ?? string.Empty);
-#endif
-        }
-
         public abstract IConfigurationProvider Build(IConfigurationBuilder builder);
     }
 }

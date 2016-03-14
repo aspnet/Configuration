@@ -21,6 +21,7 @@ namespace Microsoft.Extensions.Configuration.Ini
     {
         public override IConfigurationProvider Build(IConfigurationBuilder builder)
         {
+            FileProvider = FileProvider ?? builder.GetFileProvider();
             return new IniConfigurationProvider(this);
         }
     }

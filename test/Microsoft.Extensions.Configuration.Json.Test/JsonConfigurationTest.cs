@@ -12,6 +12,13 @@ namespace Microsoft.Extensions.Configuration
 {
     public class JsonConfigurationTest
     {
+        private JsonConfigurationProvider LoadProvider(string json)
+        {
+            var p = new JsonConfigurationProvider(new JsonConfigurationSource { Optional = true });
+            p.Load(TestStreamHelpers.StringToStream(json));
+            return p;
+        }
+
         [Fact]
         public void LoadKeyValuePairsFromValidJson()
         {
@@ -24,9 +31,7 @@ namespace Microsoft.Extensions.Configuration
             'zipcode': '12345'
         }
 }";
-            var jsonConfigSrc = new JsonConfigurationProvider(new JsonConfigurationSource());
-
-            jsonConfigSrc.Load(TestStreamHelpers.StringToStream(json));
+            var jsonConfigSrc = LoadProvider(json);
 
             Assert.Equal("test", jsonConfigSrc.Get("firstname"));
             Assert.Equal("last.name", jsonConfigSrc.Get("test.last.name"));
@@ -41,10 +46,7 @@ namespace Microsoft.Extensions.Configuration
 {
     'name': ''
 }";
-            var jsonConfigSrc = new JsonConfigurationProvider(new JsonConfigurationSource());
-
-            jsonConfigSrc.Load(TestStreamHelpers.StringToStream(json));
-
+            var jsonConfigSrc = LoadProvider(json);
             Assert.Equal(string.Empty, jsonConfigSrc.Get("name"));
         }
 
@@ -52,10 +54,9 @@ namespace Microsoft.Extensions.Configuration
         public void NonObjectRootIsInvalid()
         {
             var json = @"'test'";
-            var jsonConfigSource = new JsonConfigurationProvider(new JsonConfigurationSource());
-          
+
             var exception = Assert.Throws<FormatException>(
-                () => jsonConfigSource.Load(TestStreamHelpers.StringToStream(json)));
+                () => LoadProvider(json));
 
             Assert.NotNull(exception.Message);
         }
@@ -71,10 +72,7 @@ namespace Microsoft.Extensions.Configuration
                     ""zipcode"": ""12345""
                 }
             }";
-            var jsonConfigSrc = new JsonConfigurationProvider(new JsonConfigurationSource());
-
-            jsonConfigSrc.Load(TestStreamHelpers.StringToStream(json));
-
+            var jsonConfigSrc = LoadProvider(json);
             Assert.Equal("test", jsonConfigSrc.Get("name"));
             Assert.Equal("Something street", jsonConfigSrc.Get("address:street"));
             Assert.Equal("12345", jsonConfigSrc.Get("address:zipcode"));
@@ -90,10 +88,7 @@ namespace Microsoft.Extensions.Configuration
                     'zipcode': '12345'
                 }
             /* Missing a right brace here*/";
-            var jsonConfigSource = new JsonConfigurationProvider(new JsonConfigurationSource());
-           
-            var exception = Assert.Throws<FormatException>(
-                () => jsonConfigSource.Load(TestStreamHelpers.StringToStream(json)));
+            var exception = Assert.Throws<FormatException>(() => LoadProvider(json));
             Assert.NotNull(exception.Message);
         }
 
@@ -120,11 +115,7 @@ namespace Microsoft.Extensions.Configuration
         [Fact]
         public void JsonConfiguration_Throws_On_Missing_Configuration_File()
         {
-            var config = new ConfigurationBuilder().AddJsonFile(source =>
-            {
-                source.Path = "NotExistingConfig.json";
-                source.Optional = false;
-            });
+            var config = new ConfigurationBuilder().AddJsonFile("NotExistingConfig.json", optional: false);
             var exception = Assert.Throws<FileNotFoundException>(() => config.Build());
 
             // Assert
@@ -134,21 +125,13 @@ namespace Microsoft.Extensions.Configuration
         [Fact]
         public void JsonConfiguration_Does_Not_Throw_On_Optional_Configuration()
         {
-            var config = new ConfigurationBuilder().AddJsonFile(source =>
-            {
-                source.Path = "NotExistingConfig.json";
-                source.Optional = true;
-            }).Build();
+            var config = new ConfigurationBuilder().AddJsonFile("NotExistingConfig.json", optional: true).Build();
         }
 
         [Fact]
         public void ThrowFormatExceptionWhenFileIsEmpty()
         {
-            var json = @"";
-            var jsonConfigSource = new JsonConfigurationProvider(new JsonConfigurationSource());
-
-            var exception = Assert.Throws<FormatException>(
-                () => jsonConfigSource.Load(TestStreamHelpers.StringToStream(json)));
+            var exception = Assert.Throws<FormatException>(() => LoadProvider(@""));
         }
     }
 }

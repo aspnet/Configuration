@@ -12,6 +12,7 @@ namespace Microsoft.Extensions.Configuration.Xml
     {
         public override IConfigurationProvider Build(IConfigurationBuilder builder)
         {
+            FileProvider = FileProvider ?? builder.GetFileProvider();
             return new XmlConfigurationProvider(this);
         }
     }

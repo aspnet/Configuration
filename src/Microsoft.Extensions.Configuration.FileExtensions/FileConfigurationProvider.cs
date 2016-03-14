@@ -18,6 +18,11 @@ namespace Microsoft.Extensions.Configuration
 
         public FileConfigurationProvider(FileConfigurationSource source)
         {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
             _source = source;
 
             // TODO: aggregate watch?
@@ -34,7 +39,7 @@ namespace Microsoft.Extensions.Configuration
         /// file does not exist at specified Path.</exception>
         public override void Load()
         {
-            var file = _source.FileProvider.GetFileInfo(_source.Path);
+            var file = _source.FileProvider?.GetFileInfo(_source.Path);
             if (file == null || !file.Exists)
             {
                 if (_source.Optional)
@@ -43,7 +48,7 @@ namespace Microsoft.Extensions.Configuration
                 }
                 else
                 {
-                    throw new FileNotFoundException($"The configuration file '{file.Name}' was not found and is not optional.");
+                    throw new FileNotFoundException($"The configuration file '{_source.Path}' was not found and is not optional.");
                 }
             }
             else

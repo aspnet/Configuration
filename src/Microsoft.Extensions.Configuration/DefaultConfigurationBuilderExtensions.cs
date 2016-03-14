@@ -10,39 +10,6 @@ namespace Microsoft.Extensions.Configuration
     public static class DefaultConfigurationBuilderExtensions
     {
         /// <summary>
-        /// Includes an existing IConfiguration as a configuration provider to <paramref name="configurationBuilder"/>.
-        /// </summary>
-        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="includedConfiguration">The <see cref="IConfiguration"/> to include.</param>
-        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder Include(this IConfigurationBuilder configurationBuilder, IConfiguration includedConfiguration)
-        {
-            if (configurationBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(configurationBuilder));
-            }
-            configurationBuilder.Add(new IncludedConfigurationSource { Source = includedConfiguration });
-            return configurationBuilder;
-        }
-
-        /// <summary>
-        /// Includes an existing IConfiguration as a configuration provider to <paramref name="configurationBuilder"/>.
-        /// </summary>
-        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="includedKey">Includes the configuration starting from the child section found with this key.</param>
-        /// <param name="includedConfiguration">The <see cref="IConfiguration"/> to include.</param>
-        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder Include(this IConfigurationBuilder configurationBuilder, string includedKey, IConfiguration includedConfiguration)
-        {
-            if (configurationBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(configurationBuilder));
-            }
-            configurationBuilder.Add(new IncludedConfigurationSource { Source = includedConfiguration.GetSection(includedKey) });
-            return configurationBuilder;
-        }
-
-        /// <summary>
         /// Adds the memory configuration provider to <paramref name="configurationBuilder"/>.
         /// </summary>
         /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>

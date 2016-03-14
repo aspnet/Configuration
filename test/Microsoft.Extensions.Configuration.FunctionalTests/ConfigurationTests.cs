@@ -225,16 +225,18 @@ CommonKey3:CommonKey4=IniValue6";
         }
 
         [Fact]
-        public void SetBasePathCalledMultipleTimesForEachSource()
+        public void SetBasePathCalledMultipleTimesForEachSourceLastOneWins()
         {
 
             // Arrange
             var builder = new ConfigurationBuilder();
             var jsonConfigFilePath = "test.json";
             File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), jsonConfigFilePath), _jsonConfigFileContent);
+            var xmlConfigFilePath = "test.xml";
+            File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), xmlConfigFilePath), _xmlConfigFileContent);
 
             // Act
-            builder.AddXmlFile(Path.GetFileName(_xmlConfigFilePath))
+            builder.AddXmlFile("test.xml")
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("test.json");
 
