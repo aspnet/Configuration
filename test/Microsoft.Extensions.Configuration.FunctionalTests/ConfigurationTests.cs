@@ -4,6 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Extensions.Configuration.Ini;
+using Microsoft.Extensions.Configuration.Json;
+using Microsoft.Extensions.Configuration.Xml;
 using Xunit;
 
 namespace Microsoft.Extensions.Configuration.Test
@@ -157,14 +160,53 @@ CommonKey3:CommonKey4=IniValue6";
             return configurationBuilder.Build();
         }
 
+        public class TestIniSourceProvider : IniConfigurationProvider, IConfigurationSource
+        {
+            public TestIniSourceProvider(string path)
+                : base(new IniConfigurationSource { Path = path })
+            { }
+
+            public IConfigurationProvider Build(IConfigurationBuilder builder)
+            {
+                Source.FileProvider = builder.GetFileProvider();
+                return this;
+            }
+        }
+
+        public class TestJsonSourceProvider : JsonConfigurationProvider, IConfigurationSource
+        {
+            public TestJsonSourceProvider(string path)
+                : base(new JsonConfigurationSource { Path = path })
+            { }
+
+            public IConfigurationProvider Build(IConfigurationBuilder builder)
+            {
+                Source.FileProvider = builder.GetFileProvider();
+                return this;
+            }
+        }
+
+        public class TestXmlSourceProvider : XmlConfigurationProvider, IConfigurationSource
+        {
+            public TestXmlSourceProvider(string path)
+                : base(new XmlConfigurationSource { Path = path })
+            { }
+
+            public IConfigurationProvider Build(IConfigurationBuilder builder)
+            {
+                Source.FileProvider = builder.GetFileProvider();
+                return this;
+            }
+        }
+
         [Fact]
         public void CanSetValuesAndReloadValues()
         {
             // Arrange
             var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.AddIniFile(Path.GetFileName(_iniConfigFilePath));
-            configurationBuilder.AddJsonFile(Path.GetFileName(_jsonConfigFilePath));
-            configurationBuilder.AddXmlFile(Path.GetFileName(_xmlConfigFilePath));
+            configurationBuilder.Add(new TestIniSourceProvider(Path.GetFileName(_iniConfigFilePath)));
+            configurationBuilder.Add(new TestJsonSourceProvider(Path.GetFileName(_jsonConfigFilePath)));
+            configurationBuilder.Add(new TestXmlSourceProvider(Path.GetFileName(_xmlConfigFilePath)));
 
             var config = configurationBuilder.Build();
 
@@ -173,12 +215,11 @@ CommonKey3:CommonKey4=IniValue6";
             config["CommonKey1:CommonKey2:CommonKey3:CommonKey4"] = "NewValue";
 
             // All config sources must be updated
-            // REVIEW: how to test
-            //foreach (var provider in configurationBuilder.Sources)
-            //{
-            //    Assert.Equal("NewValue",
-            //        (provider as ConfigurationProvider).Get("CommonKey1:CommonKey2:CommonKey3:CommonKey4"));
-            //}
+            foreach (var provider in configurationBuilder.Sources)
+            {
+                Assert.Equal("NewValue",
+                    (provider as FileConfigurationProvider).Get("CommonKey1:CommonKey2:CommonKey3:CommonKey4"));
+            }
 
             // Recover values by reloading
             config.Reload();
@@ -189,12 +230,11 @@ CommonKey3:CommonKey4=IniValue6";
             config["CommonKey1:CommonKey2:CommonKey3:CommonKey4"] = "NewValue";
 
             // All config sources must be updated
-            // REVIEW: how to test
-            //foreach (var provider in configurationBuilder.Sources)
-            //{
-            //    Assert.Equal("NewValue",
-            //        (provider as ConfigurationProvider).Get("CommonKey1:CommonKey2:CommonKey3:CommonKey4"));
-            //}
+            foreach (var provider in configurationBuilder.Sources)
+            {
+                Assert.Equal("NewValue",
+                    (provider as FileConfigurationProvider).Get("CommonKey1:CommonKey2:CommonKey3:CommonKey4"));
+            }
 
             // Recover values by reloading
             config.Reload();

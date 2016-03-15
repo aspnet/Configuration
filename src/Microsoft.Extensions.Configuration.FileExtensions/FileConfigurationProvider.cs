@@ -13,8 +13,6 @@ namespace Microsoft.Extensions.Configuration
     /// </summary>
     public abstract class FileConfigurationProvider : ConfigurationProvider
     {
-        private readonly FileConfigurationSource _source;
-
         public FileConfigurationProvider(FileConfigurationSource source)
         {
             if (source == null)
@@ -22,14 +20,17 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentNullException(nameof(source));
             }
 
-            _source = source;
+            Source = source;
 
             // TODO: aggregate watch?
-            if (_source.ReloadOnChange)
+            if (Source.ReloadOnChange)
             {
-                ChangeToken.OnChange(() => _source.FileProvider.Watch(_source.Path), () => Load());
+                ChangeToken.OnChange(() => Source.FileProvider.Watch(Source.Path), () => Load());
             }
         }
+
+        public FileConfigurationSource Source { get; }
+
 
         /// <summary>
         /// Loads the contents of the file at <see cref="Path"/>.
@@ -38,16 +39,16 @@ namespace Microsoft.Extensions.Configuration
         /// file does not exist at specified Path.</exception>
         public override void Load()
         {
-            var file = _source.FileProvider?.GetFileInfo(_source.Path);
+            var file = Source.FileProvider?.GetFileInfo(Source.Path);
             if (file == null || !file.Exists)
             {
-                if (_source.Optional)
+                if (Source.Optional)
                 {
                     Data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 }
                 else
                 {
-                    throw new FileNotFoundException($"The configuration file '{_source.Path}' was not found and is not optional.");
+                    throw new FileNotFoundException($"The configuration file '{Source.Path}' was not found and is not optional.");
                 }
             }
             else
