@@ -4,15 +4,21 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration.Ini;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Xml;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.FileProviders.Physical;
 using Xunit;
 
 namespace Microsoft.Extensions.Configuration.Test
 {
     public class ConfigurationTests : IDisposable
     {
+        private const int WaitTimeForTokenToFire = 2 * 100;
+
+        private readonly string _basePath;
         private readonly string _iniConfigFilePath;
         private readonly string _xmlConfigFilePath;
         private readonly string _jsonConfigFilePath;
@@ -69,20 +75,20 @@ CommonKey3:CommonKey4=IniValue6";
         public ConfigurationTests()
         {
 #if NET451
-            var basePath = AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY") as string ??
+            _basePath = AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY") as string ??
                 AppDomain.CurrentDomain.BaseDirectory ??
                 string.Empty;
 #else
-            var basePath = AppContext.BaseDirectory ?? string.Empty;
+            _basePath = AppContext.BaseDirectory ?? string.Empty;
 #endif
 
             _iniConfigFilePath = Path.GetRandomFileName();
             _xmlConfigFilePath = Path.GetRandomFileName();
             _jsonConfigFilePath = Path.GetRandomFileName();
 
-            File.WriteAllText(Path.Combine(basePath, _iniConfigFilePath), _iniConfigFileContent);
-            File.WriteAllText(Path.Combine(basePath, _xmlConfigFilePath), _xmlConfigFileContent);
-            File.WriteAllText(Path.Combine(basePath, _jsonConfigFilePath), _jsonConfigFileContent);
+            File.WriteAllText(Path.Combine(_basePath, _iniConfigFilePath), _iniConfigFileContent);
+            File.WriteAllText(Path.Combine(_basePath, _xmlConfigFilePath), _xmlConfigFileContent);
+            File.WriteAllText(Path.Combine(_basePath, _jsonConfigFilePath), _jsonConfigFileContent);
         }
 
         [Fact]
@@ -239,6 +245,50 @@ CommonKey3:CommonKey4=IniValue6";
             // Recover values by reloading
             config.Reload();
             Assert.Equal("XmlValue6", config["CommonKey1:CommonKey2:CommonKey3:CommonKey4"]);
+        }
+
+        [Fact]
+        public async Task TouchingFileWillReload()
+        {
+            // Arrange
+            File.WriteAllText(Path.Combine(_basePath, "reload.json"), @"{""JsonKey1"": ""JsonValue1""}");
+            File.WriteAllText(Path.Combine(_basePath, "reload.ini"), @"IniKey1 = IniValue1");
+            File.WriteAllText(Path.Combine(_basePath, "reload.xml"), @"<settings XmlKey1=""XmlValue1""/>");
+
+            var config = new ConfigurationBuilder().AddIniFile(source =>
+            {
+                source.Path = "reload.ini";
+                source.ReloadOnChange = true;
+            })
+            .AddJsonFile(source =>
+            {
+                source.Path = "reload.json";
+                source.ReloadOnChange = true;
+            })
+            .AddXmlFile(source =>
+            {
+                source.Path = "reload.xml";
+                source.ReloadOnChange = true;
+            }).Build();
+
+            Assert.Equal("JsonValue1", config["JsonKey1"]);
+            Assert.Equal("IniValue1", config["IniKey1"]);
+            Assert.Equal("XmlValue1", config["XmlKey1"]);
+
+            var token = config.GetReloadToken();
+
+            // Act & Assert
+            // Update files
+            File.WriteAllText(Path.Combine(_basePath, "reload.json"), @"{""JsonKey1"": ""JsonValue2""}");
+            File.WriteAllText(Path.Combine(_basePath, "reload.ini"), @"IniKey1 = IniValue2");
+            File.WriteAllText(Path.Combine(_basePath, "reload.xml"), @"<settings XmlKey1=""XmlValue2""/>");
+
+            await Task.Delay(WaitTimeForTokenToFire);
+
+            Assert.Equal("JsonValue2", config["JsonKey1"]);
+            Assert.Equal("IniValue2", config["IniKey1"]);
+            Assert.Equal("XmlValue2", config["XmlKey1"]);
+            Assert.True(token.HasChanged);
         }
 
         [Fact]
