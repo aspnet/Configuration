@@ -26,6 +26,12 @@ namespace Microsoft.Extensions.Configuration
         void Set(string key, string value);
 
         /// <summary>
+        ///  Called by the root after it has finished being built so providers can do any initialization.
+        /// </summary>
+        /// <param name="root"></param>
+        void Initialize(IConfigurationRoot root);
+
+        /// <summary>
         /// Loads configuration values from the source represented by this <see cref="IConfigurationProvider"/>.
         /// </summary>
         void Load();

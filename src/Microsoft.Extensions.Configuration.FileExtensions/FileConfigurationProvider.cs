@@ -19,18 +19,33 @@ namespace Microsoft.Extensions.Configuration
             {
                 throw new ArgumentNullException(nameof(source));
             }
-
             Source = source;
-
-            // TODO: aggregate watch?
-            if (Source.ReloadOnChange)
-            {
-                ChangeToken.OnChange(() => Source.FileProvider.Watch(Source.Path), () => Load());
-            }
         }
 
         public FileConfigurationSource Source { get; }
 
+        public override void Initialize(IConfigurationRoot root)
+        {
+            if (root == null)
+            {
+                throw new ArgumentNullException(nameof(root));
+            }
+
+            // TODO: aggregate watch?
+            // REVIEW: should providers validate the source here?
+            if (Source.ReloadOnChange && Source.FileProvider != null)
+            {
+                ChangeToken.OnChange(
+                    () => Source.FileProvider.Watch(Source.Path),
+                    () =>
+                    {
+                        Load();
+                        root.RaiseChanged();
+                    });
+            }
+
+            base.Initialize(root);
+        }
 
         /// <summary>
         /// Loads the contents of the file at <see cref="Path"/>.

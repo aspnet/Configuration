@@ -48,5 +48,10 @@ namespace Microsoft.Extensions.Configuration
             var indexOf = key.IndexOf(ConfigurationPath.KeyDelimiter, prefixLength, StringComparison.OrdinalIgnoreCase);
             return indexOf < 0 ? key.Substring(prefixLength) : key.Substring(prefixLength, indexOf - prefixLength);
         }
+
+        public virtual void Initialize(IConfigurationRoot root)
+        {
+            Load();
+        }
     }
 }
