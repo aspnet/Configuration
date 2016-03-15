@@ -129,6 +129,18 @@ namespace Microsoft.Extensions.Configuration.Test
             Assert.Equal("ValueInMem2", config["Key1:Key2"]);
         }
 
+        public class TestMemorySourceProvider : MemoryConfigurationProvider, IConfigurationSource
+        {
+            public TestMemorySourceProvider(Dictionary<string, string> initialData) 
+                : base(new MemoryConfigurationSource { InitialData = initialData })
+            { }
+
+            public IConfigurationProvider Build(IConfigurationBuilder builder)
+            {
+                return this;
+            }
+        }
+
         [Fact]
         public void SettingValueUpdatesAllConfigurationProviders()
         {
@@ -139,9 +151,9 @@ namespace Microsoft.Extensions.Configuration.Test
                 {"Key2", "Value2"}
             };
 
-            var memConfigSrc1 = new MemoryConfigurationSource { InitialData = dict };
-            var memConfigSrc2 = new MemoryConfigurationSource { InitialData = dict };
-            var memConfigSrc3 = new MemoryConfigurationSource { InitialData = dict };
+            var memConfigSrc1 = new TestMemorySourceProvider(dict);
+            var memConfigSrc2 = new TestMemorySourceProvider(dict);
+            var memConfigSrc3 = new TestMemorySourceProvider(dict);
 
             var configurationBuilder = new ConfigurationBuilder();
 

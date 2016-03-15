@@ -57,7 +57,6 @@ namespace Microsoft.Extensions.Configuration
             foreach (var source in _sources)
             {
                 var provider = source.Build(this);
-                // REVIEW: who should call load?  source.Build?
                 provider.Load();
                 providers.Add(provider);
             }

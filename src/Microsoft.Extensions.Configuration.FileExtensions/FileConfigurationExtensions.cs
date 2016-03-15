@@ -10,14 +10,6 @@ namespace Microsoft.Extensions.Configuration
     {
         private static string FileProviderKey = "FileProvider";
 
-        private class DefaultFileSource : FileConfigurationSource
-        {
-            public override IConfigurationProvider Build(IConfigurationBuilder builder)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         /// <summary>
         /// Sets the default <see cref="IFileProvider"/> to be used for file-based providers.
         /// </summary>

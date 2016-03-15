@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -12,39 +13,7 @@ namespace Microsoft.Extensions.Configuration.Memory
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new MemoryConfigurationProvider(InitialData);
+            return new MemoryConfigurationProvider(this);
         }
-
-        private class MemoryConfigurationProvider :
-            ConfigurationProvider,
-            IEnumerable<KeyValuePair<string, string>>
-        {
-            public MemoryConfigurationProvider(IEnumerable<KeyValuePair<string, string>> initialData)
-            {
-                if (initialData != null)
-                {
-                    foreach (var pair in initialData)
-                    {
-                        Data.Add(pair.Key, pair.Value);
-                    }
-                }
-            }
-
-            public void Add(string key, string value)
-            {
-                Data.Add(key, value);
-            }
-
-            public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
-            {
-                return Data.GetEnumerator();
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
-        }
-
     }
 }
