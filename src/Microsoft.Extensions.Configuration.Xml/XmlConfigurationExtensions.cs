@@ -70,6 +70,16 @@ namespace Microsoft.Extensions.Configuration
             this IConfigurationBuilder builder,
             Action<XmlConfigurationSource> configureSource)
         {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (configureSource == null)
+            {
+                throw new ArgumentNullException(nameof(configureSource));
+            }
+
             var source = new XmlConfigurationSource();
             configureSource(source);
             builder.Add(source);
