@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Extensions.Configuration
 {
@@ -11,7 +12,7 @@ namespace Microsoft.Extensions.Configuration
     {
         private IList<IConfigurationProvider> _providers;
 
-        public IConfigurationMonitor Monitor { get; }
+        public IChangeMonitor<IConfigurationRoot> Monitor { get; }
 
         public ConfigurationRoot(IList<IConfigurationProvider> providers)
         {
@@ -20,7 +21,7 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentNullException(nameof(providers));
             }
 
-            Monitor = new ConfigurationMonitor(this);
+            Monitor = new ChangeMonitor<IConfigurationRoot>(this);
 
             _providers = providers;
             foreach (var p in providers)

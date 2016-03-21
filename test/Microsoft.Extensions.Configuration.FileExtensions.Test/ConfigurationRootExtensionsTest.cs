@@ -46,7 +46,7 @@ namespace Microsoft.Extensions.Configuration
 
             public int ReloadCount { get; private set; }
 
-            public IConfigurationMonitor Monitor
+            public IChangeMonitor<IConfigurationRoot> Monitor
             {
                 get
                 {
@@ -84,11 +84,6 @@ namespace Microsoft.Extensions.Configuration
             }
 
             public void RaiseChanged()
-            {
-                throw new NotImplementedException();
-            }
-
-            public IDisposable RegisterOnChanged(Action<object> callback, object state)
             {
                 throw new NotImplementedException();
             }

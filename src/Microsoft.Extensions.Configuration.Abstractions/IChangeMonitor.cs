@@ -4,19 +4,20 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Microsoft.Extensions.Primitives;
 
-namespace Microsoft.Extensions.Configuration
+// These would move to primitives
+namespace Microsoft.Extensions.Primitives
 {
-    public class ConfigurationMonitor : IConfigurationMonitor
+    public class ChangeMonitor<TSource> : IChangeMonitor<TSource> where TSource : class
     {
         private bool _disposed;
-        private readonly IConfigurationRoot _root;
+        private readonly TSource _root;
         private IDisposable _event;
-        private ConfigurationReloadToken _reloadToken = new ConfigurationReloadToken();
-        private readonly List<Action<IConfigurationRoot>> _listeners = new List<Action<IConfigurationRoot>>();
+        private ConfigChangeToken _reloadToken = new ConfigChangeToken();
+        private readonly List<Action<TSource>> _listeners = new List<Action<TSource>>();
 
-        public ConfigurationMonitor(IConfigurationRoot root) {
+        public ChangeMonitor(TSource root)
+        {
             if (root == null)
             {
                 throw new ArgumentNullException(nameof(root));
@@ -30,7 +31,7 @@ namespace Microsoft.Extensions.Configuration
 
         private IChangeToken ProduceToken()
         {
-            Interlocked.Exchange(ref _reloadToken, new ConfigurationReloadToken());
+            Interlocked.Exchange(ref _reloadToken, new ConfigChangeToken());
             return _reloadToken;
         }
 
@@ -54,9 +55,9 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Used to monitor changes to an <see cref="IConfigurationRoot"/>.
+        /// Used to monitor changes to a source..
         /// </summary>
-        public void RegisterOnChanged(Action<IConfigurationRoot> listener)
+        public void RegisterOnChanged(Action<TSource> listener)
         {
             if (listener == null)
             {
@@ -76,5 +77,34 @@ namespace Microsoft.Extensions.Configuration
                 _reloadToken = null;
             }
         }
+
+        private class ConfigChangeToken : IChangeToken
+        {
+            private CancellationTokenSource _cts = new CancellationTokenSource();
+
+            public bool ActiveChangeCallbacks => true;
+
+            public bool HasChanged => _cts.IsCancellationRequested;
+
+            public IDisposable RegisterChangeCallback(Action<object> callback, object state) => _cts.Token.Register(callback, state);
+
+            public void OnReload() => _cts.Cancel();
+        }
+    }
+
+    /// <summary>
+    /// Used to monitor changes. />.
+    /// </summary>
+    public interface IChangeMonitor<TSource> : IDisposable where TSource : class 
+    {
+        /// <summary>
+        /// Explicitly trigger the listeners for the changed event.
+        /// </summary>
+        void RaiseChanged();
+
+        /// <summary>
+        /// Used to register for changes./>.
+        /// </summary>
+        void RegisterOnChanged(Action<TSource> listener);
     }
 }
