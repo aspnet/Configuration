@@ -298,11 +298,20 @@ CommonKey3:CommonKey4=IniValue6";
             Assert.Equal(2, firedCount);
             Assert.Equal(1, firedCount2);
 
+            // Explicity fire the event
+            config.Monitor.RaiseChanged();
+            Assert.Equal(3, firedCount);
+            Assert.Equal(2, firedCount2);
+
             // Verify disposed stops incrementing
             config.Monitor.Dispose();
             config.Reload();
-            Assert.Equal(2, firedCount);
-            Assert.Equal(1, firedCount2);
+            Assert.Equal(3, firedCount);
+            Assert.Equal(2, firedCount2);
+
+            config.Monitor.RaiseChanged();
+            Assert.Equal(3, firedCount);
+            Assert.Equal(2, firedCount2);
         }
 
         [Fact]

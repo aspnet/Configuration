@@ -14,7 +14,6 @@ namespace Microsoft.Extensions.Configuration
         private readonly IConfigurationRoot _root;
         private IDisposable _event;
         private ConfigurationReloadToken _reloadToken = new ConfigurationReloadToken();
-        private ConfigurationReloadToken _previousToken = new ConfigurationReloadToken();
         private readonly List<Action<IConfigurationRoot>> _listeners = new List<Action<IConfigurationRoot>>();
 
         public ConfigurationMonitor(IConfigurationRoot root) {
@@ -25,8 +24,14 @@ namespace Microsoft.Extensions.Configuration
             _root = root;
 
             _event = ChangeToken.OnChange(
-                () => _previousToken = Interlocked.Exchange(ref _reloadToken, new ConfigurationReloadToken()),
+                () => ProduceToken(),
                 () => NotifyListeners());
+        }
+
+        private IChangeToken ProduceToken()
+        {
+            Interlocked.Exchange(ref _reloadToken, new ConfigurationReloadToken());
+            return _reloadToken;
         }
 
         private void NotifyListeners()
@@ -44,7 +49,7 @@ namespace Microsoft.Extensions.Configuration
         {
             if (!_disposed)
             {
-                _previousToken.OnReload();
+                _reloadToken.OnReload();
             }
         }
 
@@ -68,7 +73,6 @@ namespace Microsoft.Extensions.Configuration
             {
                 _event.Dispose();
                 _event = null;
-                _previousToken = null;
                 _reloadToken = null;
             }
         }
