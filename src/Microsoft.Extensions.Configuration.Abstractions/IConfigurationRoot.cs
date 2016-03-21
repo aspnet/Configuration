@@ -16,10 +16,8 @@ namespace Microsoft.Extensions.Configuration
         void Reload();
 
         /// <summary>
-        /// Explicitly trigger OnChanged, used by the providers to raise changes.
+        /// Used to listen and raise change events when configuration has changed.
         /// </summary>
-        void RaiseChanged();
-
-        IDisposable RegisterOnChanged(Action<object> callback, object state);
+        IConfigurationMonitor Monitor { get; }
     }
 }

@@ -4,15 +4,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Extensions.Configuration
 {
     public class ConfigurationRoot : IConfigurationRoot
     {
         private IList<IConfigurationProvider> _providers;
-        private ConfigurationReloadToken _reloadToken = new ConfigurationReloadToken();
+
+        public IConfigurationMonitor Monitor { get; }
 
         public ConfigurationRoot(IList<IConfigurationProvider> providers)
         {
@@ -20,6 +19,8 @@ namespace Microsoft.Extensions.Configuration
             {
                 throw new ArgumentNullException(nameof(providers));
             }
+
+            Monitor = new ConfigurationMonitor(this);
 
             _providers = providers;
             foreach (var p in providers)
@@ -70,11 +71,6 @@ namespace Microsoft.Extensions.Configuration
                 .Select(key => GetSection(path == null ? key : ConfigurationPath.Combine(path, key)));
         }
 
-        public IChangeToken GetReloadToken()
-        {
-            return _reloadToken;
-        }
-
         public IConfigurationSection GetSection(string key)
         {
             return new ConfigurationSection(this, key);
@@ -86,18 +82,7 @@ namespace Microsoft.Extensions.Configuration
             {
                 provider.Load();
             }
-            RaiseChanged();
-        }
-
-        public void RaiseChanged()
-        {
-            var previousReloadToken = Interlocked.Exchange(ref _reloadToken, new ConfigurationReloadToken());
-            previousReloadToken.OnReload();
-        }
-
-        public IDisposable RegisterOnChanged(Action<object> callback, object state)
-        {
-            return _reloadToken.RegisterChangeCallback(callback, state);
+            Monitor.RaiseChanged();
         }
     }
 }

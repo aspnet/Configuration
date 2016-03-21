@@ -40,7 +40,7 @@ namespace Microsoft.Extensions.Configuration
                     () =>
                     {
                         Load();
-                        root.RaiseChanged();
+                        root.Monitor.RaiseChanged();
                     });
             }
 

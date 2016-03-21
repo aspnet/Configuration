@@ -34,7 +34,5 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <returns>The configuration sub-sections.</returns>
         IEnumerable<IConfigurationSection> GetChildren();
-
-        IChangeToken GetReloadToken();
     }
 }

@@ -73,7 +73,5 @@ namespace Microsoft.Extensions.Configuration
         public IConfigurationSection GetSection(string key) => _root.GetSection(ConfigurationPath.Combine(Path, key));
 
         public IEnumerable<IConfigurationSection> GetChildren() => _root.GetChildrenImplementation(Path);
-
-        public IChangeToken GetReloadToken() => _root.GetReloadToken();
     }
 }
