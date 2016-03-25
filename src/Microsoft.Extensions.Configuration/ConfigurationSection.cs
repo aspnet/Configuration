@@ -73,5 +73,14 @@ namespace Microsoft.Extensions.Configuration
         public IConfigurationSection GetSection(string key) => _root.GetSection(ConfigurationPath.Combine(Path, key));
 
         public IEnumerable<IConfigurationSection> GetChildren() => _root.GetChildrenImplementation(Path);
+
+        public IChangeMonitor<IConfigurationRoot> Monitor
+        {
+            get
+            {
+                return _root.Monitor;
+            }
+        }
+
     }
 }

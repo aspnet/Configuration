@@ -15,10 +15,5 @@ namespace Microsoft.Extensions.Configuration
         /// Force the configuration values to be reloaded from the underlying <see cref="IConfigurationProvider"/>s.
         /// </summary>
         void Reload();
-
-        /// <summary>
-        /// Used to listen and raise change events when configuration has changed.
-        /// </summary>
-        IChangeMonitor<IConfigurationRoot> Monitor { get; }
     }
 }

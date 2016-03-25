@@ -34,5 +34,11 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <returns>The configuration sub-sections.</returns>
         IEnumerable<IConfigurationSection> GetChildren();
+
+        // REVIEW should this live on Root?
+        /// <summary>
+        /// Used to listen and raise change events when configuration has changed.
+        /// </summary>
+        IChangeMonitor<IConfigurationRoot> Monitor { get; }
     }
 }

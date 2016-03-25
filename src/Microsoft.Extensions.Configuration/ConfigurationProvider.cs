@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Extensions.Configuration
 {
@@ -15,6 +16,8 @@ namespace Microsoft.Extensions.Configuration
         }
 
         protected IDictionary<string, string> Data { get; set; }
+
+        public IChangeMonitor<IConfigurationProvider> Monitor { get; set; }
 
         public virtual bool TryGet(string key, out string value)
         {
@@ -47,11 +50,6 @@ namespace Microsoft.Extensions.Configuration
         {
             var indexOf = key.IndexOf(ConfigurationPath.KeyDelimiter, prefixLength, StringComparison.OrdinalIgnoreCase);
             return indexOf < 0 ? key.Substring(prefixLength) : key.Substring(prefixLength, indexOf - prefixLength);
-        }
-
-        public virtual void Initialize(IConfigurationRoot root)
-        {
-            Load();
         }
     }
 }

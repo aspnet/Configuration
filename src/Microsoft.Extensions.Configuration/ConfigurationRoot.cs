@@ -26,7 +26,12 @@ namespace Microsoft.Extensions.Configuration
             _providers = providers;
             foreach (var p in providers)
             {
-                p.Initialize(this);
+                if (p.Monitor != null)
+                {
+                    // Raise the change event for the whole root when any provider changes
+                    p.Monitor.RegisterOnChanged(_ => Monitor.RaiseChanged());
+                }
+                p.Load();
             }
         }
 

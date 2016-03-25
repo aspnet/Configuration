@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Extensions.Configuration
 {
@@ -26,10 +27,9 @@ namespace Microsoft.Extensions.Configuration
         void Set(string key, string value);
 
         /// <summary>
-        ///  Called by the root after it has finished being built so providers can do any initialization.
+        /// Used to track changes for key/values in this provider.
         /// </summary>
-        /// <param name="root"></param>
-        void Initialize(IConfigurationRoot root);
+        IChangeMonitor<IConfigurationProvider> Monitor { get; }
 
         /// <summary>
         /// Loads configuration values from the source represented by this <see cref="IConfigurationProvider"/>.
