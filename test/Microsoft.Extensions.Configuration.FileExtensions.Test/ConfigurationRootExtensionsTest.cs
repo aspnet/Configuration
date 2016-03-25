@@ -46,6 +46,14 @@ namespace Microsoft.Extensions.Configuration
 
             public int ReloadCount { get; private set; }
 
+            public IChangeMonitor<IConfigurationRoot> Monitor
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
             public string this[string key]
             {
                 get
@@ -64,11 +72,6 @@ namespace Microsoft.Extensions.Configuration
                 throw new NotImplementedException();
             }
 
-            public IChangeToken GetReloadToken()
-            {
-                throw new NotImplementedException();
-            }
-
             public IConfigurationSection GetSection(string key)
             {
                 throw new NotImplementedException();
@@ -81,11 +84,6 @@ namespace Microsoft.Extensions.Configuration
             }
 
             public void RaiseChanged()
-            {
-                throw new NotImplementedException();
-            }
-
-            public IDisposable RegisterOnChanged(Action<object> callback, object state)
             {
                 throw new NotImplementedException();
             }

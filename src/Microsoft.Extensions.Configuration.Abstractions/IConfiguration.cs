@@ -35,6 +35,10 @@ namespace Microsoft.Extensions.Configuration
         /// <returns>The configuration sub-sections.</returns>
         IEnumerable<IConfigurationSection> GetChildren();
 
-        IChangeToken GetReloadToken();
+        // REVIEW should this live on Root?
+        /// <summary>
+        /// Used to listen and raise change events when configuration has changed.
+        /// </summary>
+        IChangeMonitor<IConfigurationRoot> Monitor { get; }
     }
 }

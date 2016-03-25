@@ -74,6 +74,13 @@ namespace Microsoft.Extensions.Configuration
 
         public IEnumerable<IConfigurationSection> GetChildren() => _root.GetChildrenImplementation(Path);
 
-        public IChangeToken GetReloadToken() => _root.GetReloadToken();
+        public IChangeMonitor<IConfigurationRoot> Monitor
+        {
+            get
+            {
+                return _root.Monitor;
+            }
+        }
+
     }
 }

@@ -8,15 +8,13 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration.Ini;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Xml;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.FileProviders.Physical;
 using Xunit;
 
 namespace Microsoft.Extensions.Configuration.Test
 {
     public class ConfigurationTests : IDisposable
     {
-        private const int WaitTimeForTokenToFire = 2 * 100;
+        private const int WaitTimeForTokenToFire = 2 * 500;
 
         private readonly string _basePath;
         private readonly string _iniConfigFilePath;
@@ -275,8 +273,6 @@ CommonKey3:CommonKey4=IniValue6";
             Assert.Equal("IniValue1", config["IniKey1"]);
             Assert.Equal("XmlValue1", config["XmlKey1"]);
 
-            var token = config.GetReloadToken();
-
             // Act & Assert
             // Update files
             File.WriteAllText(Path.Combine(_basePath, "reload.json"), @"{""JsonKey1"": ""JsonValue2""}");
@@ -288,7 +284,34 @@ CommonKey3:CommonKey4=IniValue6";
             Assert.Equal("JsonValue2", config["JsonKey1"]);
             Assert.Equal("IniValue2", config["IniKey1"]);
             Assert.Equal("XmlValue2", config["XmlKey1"]);
-            Assert.True(token.HasChanged);
+
+            int firedCount = 0;
+            config.Monitor.RegisterOnChanged(_ => firedCount++);
+            config.Reload();
+
+            Assert.Equal(1, firedCount);
+
+            // Add a second listener and ensure both fire
+            int firedCount2 = 0;
+            config.Monitor.RegisterOnChanged(_ => firedCount2++);
+            config.Reload();
+            Assert.Equal(2, firedCount);
+            Assert.Equal(1, firedCount2);
+
+            // Explicity fire the event
+            config.Monitor.RaiseChanged();
+            Assert.Equal(3, firedCount);
+            Assert.Equal(2, firedCount2);
+
+            // Verify disposed stops incrementing
+            config.Monitor.Dispose();
+            config.Reload();
+            Assert.Equal(3, firedCount);
+            Assert.Equal(2, firedCount2);
+
+            config.Monitor.RaiseChanged();
+            Assert.Equal(3, firedCount);
+            Assert.Equal(2, firedCount2);
         }
 
         [Fact]
