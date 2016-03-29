@@ -85,7 +85,7 @@ namespace Microsoft.Extensions.Configuration
                 throw new NotImplementedException();
             }
 
-            public IDisposable RegisterOnChanged(Action<object> callback, object state)
+            public IDisposable RegisterOnChange(Action<object> callback, object state)
             {
                 throw new NotImplementedException();
             }
