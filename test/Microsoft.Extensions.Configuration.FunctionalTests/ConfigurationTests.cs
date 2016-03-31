@@ -8,15 +8,13 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration.Ini;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Xml;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.FileProviders.Physical;
 using Xunit;
 
 namespace Microsoft.Extensions.Configuration.Test
 {
     public class ConfigurationTests : IDisposable
     {
-        private const int WaitTimeForTokenToFire = 2 * 100;
+        private const int WaitTimeForTokenToFire = 2 * 750;
 
         private readonly string _basePath;
         private readonly string _iniConfigFilePath;
