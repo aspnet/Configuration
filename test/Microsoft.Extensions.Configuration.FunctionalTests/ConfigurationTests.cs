@@ -14,8 +14,6 @@ namespace Microsoft.Extensions.Configuration.Test
 {
     public class ConfigurationTests : IDisposable
     {
-        private const int WaitTimeForTokenToFire = 2 * 750;
-
         private readonly string _basePath;
         private readonly string _iniConfigFilePath;
         private readonly string _xmlConfigFilePath;
@@ -281,7 +279,8 @@ CommonKey3:CommonKey4=IniValue6";
             File.WriteAllText(Path.Combine(_basePath, "reload.ini"), @"IniKey1 = IniValue2");
             File.WriteAllText(Path.Combine(_basePath, "reload.xml"), @"<settings XmlKey1=""XmlValue2""/>");
 
-            await Task.Delay(WaitTimeForTokenToFire);
+            // NOTE: we'd like to wait for file notification here, but its flaky on CI so we force it
+            config.Reload();
 
             Assert.Equal("JsonValue2", config["JsonKey1"]);
             Assert.Equal("IniValue2", config["IniKey1"]);
