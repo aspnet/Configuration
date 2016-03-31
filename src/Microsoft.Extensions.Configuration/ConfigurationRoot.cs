@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.Configuration
             foreach (var p in providers)
             {
                 p.Load();
-                ChangeToken.OnChange(() => p.GetChangeToken(), () => RaiseChanged());
+                ChangeToken.OnChange(() => p.GetReloadToken(), () => RaiseChanged());
             }
         }
 

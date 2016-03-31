@@ -58,7 +58,7 @@ namespace Microsoft.Extensions.Configuration
                 }
             }
             // REVIEW: Should we raise this in the base as well / instead?
-            RaiseChanged();
+            OnReload();
         }
 
         public abstract void Load(Stream stream);

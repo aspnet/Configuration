@@ -30,7 +30,7 @@ namespace Microsoft.Extensions.Configuration
         /// Returns a change token if this provider supports change tracking, null otherwise.
         /// </summary>
         /// <returns></returns>
-        IChangeToken GetChangeToken();
+        IChangeToken GetReloadToken();
 
         /// <summary>
         /// Loads configuration values from the source represented by this <see cref="IConfigurationProvider"/>.

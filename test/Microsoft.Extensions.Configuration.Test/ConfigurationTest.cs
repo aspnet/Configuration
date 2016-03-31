@@ -236,20 +236,20 @@ namespace Microsoft.Extensions.Configuration.Test
         {
             // Arrange
             var dic1 = new Dictionary<string, string>()
-                {
-                    {"ConnectionStrings:DB1:Connection1", "MemVal1"},
-                    {"ConnectionStrings:DB1:Connection2", "MemVal2"}
-                };
+            {
+                {"ConnectionStrings:DB1:Connection1", "MemVal1"},
+                {"ConnectionStrings:DB1:Connection2", "MemVal2"}
+            };
             var dic2 = new Dictionary<string, string>()
-                {
-                    {"ConnectionStrings:DB2:Connection", "MemVal3"}
-                };
-            var memConfigSrc1 = new MemoryConfigurationProvider(dic1);
-            var memConfigSrc2 = new MemoryConfigurationProvider(dic2);
+            {
+                {"ConnectionStrings:DB2:Connection", "MemVal3"}
+            };
+            var memConfigSrc1 = new MemoryConfigurationSource { InitialData = dic1 };
+            var memConfigSrc2 = new MemoryConfigurationSource { InitialData = dic2 };
 
             var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.Add(memConfigSrc1, load: false);
-            configurationBuilder.Add(memConfigSrc2, load: false);
+            configurationBuilder.Add(memConfigSrc1);
+            configurationBuilder.Add(memConfigSrc2);
 
             var config = configurationBuilder.Build();
 
@@ -403,6 +403,39 @@ namespace Microsoft.Extensions.Configuration.Test
             // Assert
             Assert.False(hasChanged1);
             Assert.True(hasChanged2);
+        }
+
+        [Fact]
+        public void MultipleCallbacksCanBeRegisteredToReload()
+        {
+            // Arrange
+            var configurationBuilder = new ConfigurationBuilder();
+            var config = configurationBuilder.Build();
+
+            // Act
+            var token1 = config.GetReloadToken();
+            var called1 = 0;
+            token1.RegisterChangeCallback(_ => called1++, state: null);
+            var called2 = 0;
+            token1.RegisterChangeCallback(_ => called2++, state: null);
+
+            // Assert
+            Assert.Equal(0, called1);
+            Assert.Equal(0, called2);
+
+            config.Reload();
+            Assert.Equal(1, called1);
+            Assert.Equal(1, called2);
+
+            var token2 = config.GetReloadToken();
+            var cleanup1 = token2.RegisterChangeCallback(_ => called1++, state: null);
+            token2.RegisterChangeCallback(_ => called2++, state: null);
+
+            cleanup1.Dispose();
+
+            config.Reload();
+            Assert.Equal(1, called1);
+            Assert.Equal(2, called2);
         }
 
         [Fact]

@@ -11,7 +11,7 @@ namespace Microsoft.Extensions.Configuration
 {
     public abstract class ConfigurationProvider : IConfigurationProvider
     {
-        private ConfigurationReloadToken _changeToken = new ConfigurationReloadToken();
+        private ConfigurationReloadToken _reloadToken = new ConfigurationReloadToken();
 
         protected ConfigurationProvider()
         {
@@ -53,17 +53,17 @@ namespace Microsoft.Extensions.Configuration
             return indexOf < 0 ? key.Substring(prefixLength) : key.Substring(prefixLength, indexOf - prefixLength);
         }
 
-        public IChangeToken GetChangeToken()
+        public IChangeToken GetReloadToken()
         {
-            return _changeToken;
+            return _reloadToken;
         }
 
         /// <summary>
         /// Fires the Change Token
         /// </summary>
-        protected void RaiseChanged()
+        protected void OnReload()
         {
-            var previousToken = Interlocked.Exchange(ref _changeToken, new ConfigurationReloadToken());
+            var previousToken = Interlocked.Exchange(ref _reloadToken, new ConfigurationReloadToken());
             previousToken.OnReload();
         }
     }
