@@ -18,6 +18,7 @@
           "version": "1.0.0-*",
           "type": "platform"
         },
+        "System.Collections.NonGeneric": "4.0.1-*",
         "System.Diagnostics.Process": "4.1.0-*"
       },
       "imports": [

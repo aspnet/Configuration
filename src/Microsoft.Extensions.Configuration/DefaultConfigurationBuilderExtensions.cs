@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration.CommandLine;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Memory;
 
 namespace Microsoft.Extensions.Configuration
@@ -41,6 +43,59 @@ namespace Microsoft.Extensions.Configuration
             }
 
             configurationBuilder.Add(new MemoryConfigurationSource { InitialData = initialData });
+            return configurationBuilder;
+        }
+
+        /// <summary>
+        /// Adds the command line configuration provider to <paramref name="configurationBuilder"/>.
+        /// </summary>
+        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="args">The command line arguments to use.</param>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddCommandLine(this IConfigurationBuilder configurationBuilder, string[] args)
+        {
+            return configurationBuilder.AddCommandLine(args, switchMappings: null);
+        }
+
+        /// <summary>
+        /// Adds the command line configuration provider to <paramref name="configurationBuilder"/>.
+        /// </summary>
+        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="args">The command line arguments to use.</param>
+        /// <param name="switchMappings">The switch mappings.</param>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddCommandLine(
+            this IConfigurationBuilder configurationBuilder,
+            string[] args,
+            IDictionary<string, string> switchMappings)
+        {
+            configurationBuilder.Add(new CommandLineConfigurationSource { Args = args, SwitchMappings = switchMappings });
+            return configurationBuilder;
+        }
+
+        /// <summary>
+        /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from environment variables.
+        /// </summary>
+        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddEnvironmentVariables(this IConfigurationBuilder configurationBuilder)
+        {
+            configurationBuilder.Add(new EnvironmentVariablesConfigurationSource());
+            return configurationBuilder;
+        }
+
+        /// <summary>
+        /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from environment variables
+        /// with a specified prefix.
+        /// </summary>
+        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="prefix">The prefix that environment variable names must start with.</param>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddEnvironmentVariables(
+            this IConfigurationBuilder configurationBuilder,
+            string prefix)
+        {
+            configurationBuilder.Add(new EnvironmentVariablesConfigurationSource { Prefix = prefix });
             return configurationBuilder;
         }
     }
