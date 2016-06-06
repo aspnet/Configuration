@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Extensions.Configuration
@@ -42,7 +43,13 @@ namespace Microsoft.Extensions.Configuration
                 }
                 else
                 {
-                    throw new FileNotFoundException($"The configuration file '{Source.Path}' was not found and is not optional.");
+                    var path = Source.Path;
+                    var physicalFileProvider = Source.FileProvider as PhysicalFileProvider;
+                    if (physicalFileProvider != null)
+                    {
+                        path = Path.Combine(physicalFileProvider.Root, path);
+                    }
+                    throw new FileNotFoundException($"The configuration file '{path}' was not found and is not optional.");
                 }
             }
             else

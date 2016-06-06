@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration.Ini;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Xml;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Primitives;
 using Xunit;
 
 namespace Microsoft.Extensions.Configuration.Test
@@ -86,6 +87,47 @@ CommonKey3:CommonKey4=IniValue6";
             File.WriteAllText(Path.Combine(_basePath, _iniConfigFilePath), _iniConfigFileContent);
             File.WriteAllText(Path.Combine(_basePath, _xmlConfigFilePath), _xmlConfigFileContent);
             File.WriteAllText(Path.Combine(_basePath, _jsonConfigFilePath), _jsonConfigFileContent);
+        }
+
+        [Fact]
+        public void MissingFileIncludesAbsolutePathIfPhysicalFileProvider()
+        {
+            var error = Assert.Throws<FileNotFoundException>(() => new ConfigurationBuilder().AddIniFile("missing.ini").Build());
+            Assert.True(error.Message.Contains(_basePath), error.Message);
+            error = Assert.Throws<FileNotFoundException>(() => new ConfigurationBuilder().AddJsonFile("missing.json").Build());
+            Assert.True(error.Message.Contains(_basePath), error.Message);
+            error = Assert.Throws<FileNotFoundException>(() => new ConfigurationBuilder().AddXmlFile("missing.xml").Build());
+            Assert.True(error.Message.Contains(_basePath), error.Message);
+        }
+
+        private class NotVeryGoodFileProvider : IFileProvider
+        {
+            public IDirectoryContents GetDirectoryContents(string subpath)
+            {
+                return null;
+            }
+
+            public IFileInfo GetFileInfo(string subpath)
+            {
+                return null;
+            }
+
+            public IChangeToken Watch(string filter)
+            {
+                return null;
+            }
+        }
+
+        [Fact]
+        public void MissingFileDoesNotIncludesAbsolutePathIfNotPhysicalFileProvider()
+        {
+            var provider = new NotVeryGoodFileProvider();
+            var error = Assert.Throws<FileNotFoundException>(() => new ConfigurationBuilder().AddIniFile(provider, "missing.ini", optional: false, reloadOnChange: false).Build());
+            Assert.False(error.Message.Contains(_basePath), error.Message);
+            error = Assert.Throws<FileNotFoundException>(() => new ConfigurationBuilder().AddJsonFile(provider, "missing.json", optional: false, reloadOnChange: false).Build());
+            Assert.False(error.Message.Contains(_basePath), error.Message);
+            error = Assert.Throws<FileNotFoundException>(() => new ConfigurationBuilder().AddXmlFile(provider, "missing.xml", optional: false, reloadOnChange: false).Build());
+            Assert.False(error.Message.Contains(_basePath), error.Message);
         }
 
         [Fact]
