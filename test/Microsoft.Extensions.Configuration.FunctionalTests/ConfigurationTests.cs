@@ -118,10 +118,96 @@ CommonKey3:CommonKey4=IniValue6";
             }
         }
 
+        private class MissingFile : IFileInfo
+        {
+            public bool Exists
+            {
+                get
+                {
+                    return false;
+                }
+            }
+
+            public bool IsDirectory
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public DateTimeOffset LastModified
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public long Length
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public string Name
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public string PhysicalPath
+            {
+                get
+                {
+                    return null;
+                }
+            }
+
+            public Stream CreateReadStream()
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        private class AlwaysMissingFileProvider : IFileProvider
+        {
+            public IDirectoryContents GetDirectoryContents(string subpath)
+            {
+                return null;
+            }
+
+            public IFileInfo GetFileInfo(string subpath)
+            {
+                return new MissingFile();
+            }
+
+            public IChangeToken Watch(string filter)
+            {
+                return null;
+            }
+        }
+
         [Fact]
-        public void MissingFileDoesNotIncludesAbsolutePathIfNotPhysicalFileProvider()
+        public void MissingFileDoesNotIncludesAbsolutePathIfWithNullFileInfo()
         {
             var provider = new NotVeryGoodFileProvider();
+            var error = Assert.Throws<FileNotFoundException>(() => new ConfigurationBuilder().AddIniFile(provider, "missing.ini", optional: false, reloadOnChange: false).Build());
+            Assert.False(error.Message.Contains(_basePath), error.Message);
+            error = Assert.Throws<FileNotFoundException>(() => new ConfigurationBuilder().AddJsonFile(provider, "missing.json", optional: false, reloadOnChange: false).Build());
+            Assert.False(error.Message.Contains(_basePath), error.Message);
+            error = Assert.Throws<FileNotFoundException>(() => new ConfigurationBuilder().AddXmlFile(provider, "missing.xml", optional: false, reloadOnChange: false).Build());
+            Assert.False(error.Message.Contains(_basePath), error.Message);
+        }
+
+        [Fact]
+        public void MissingFileDoesNotIncludesAbsolutePathIfWithNoPhysicalPath()
+        {
+            var provider = new AlwaysMissingFileProvider();
             var error = Assert.Throws<FileNotFoundException>(() => new ConfigurationBuilder().AddIniFile(provider, "missing.ini", optional: false, reloadOnChange: false).Build());
             Assert.False(error.Message.Contains(_basePath), error.Message);
             error = Assert.Throws<FileNotFoundException>(() => new ConfigurationBuilder().AddJsonFile(provider, "missing.json", optional: false, reloadOnChange: false).Build());

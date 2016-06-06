@@ -43,12 +43,7 @@ namespace Microsoft.Extensions.Configuration
                 }
                 else
                 {
-                    var path = Source.Path;
-                    var physicalFileProvider = Source.FileProvider as PhysicalFileProvider;
-                    if (physicalFileProvider != null)
-                    {
-                        path = Path.Combine(physicalFileProvider.Root, path);
-                    }
+                    var path = file?.PhysicalPath ?? Source.Path;
                     throw new FileNotFoundException($"The configuration file '{path}' was not found and is not optional.");
                 }
             }
