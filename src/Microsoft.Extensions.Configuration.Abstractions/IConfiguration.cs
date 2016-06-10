@@ -35,6 +35,10 @@ namespace Microsoft.Extensions.Configuration
         /// <returns>The configuration sub-sections.</returns>
         IEnumerable<IConfigurationSection> GetChildren();
 
+        /// <summary>
+        /// Returns a <see cref="IChangeToken"/> that can be used to listen when this configuration is reloaded.
+        /// </summary>
+        /// <returns></returns>
         IChangeToken GetReloadToken();
     }
 }

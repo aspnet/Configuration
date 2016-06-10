@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 namespace Microsoft.Extensions.Configuration.CommandLine
 {
+    /// <summary>
+    /// A command line based <see cref="ConfigurationProvider"/>.
+    /// </summary>
     public class CommandLineConfigurationProvider : ConfigurationProvider
     {
         private readonly Dictionary<string, string> _switchMappings;
