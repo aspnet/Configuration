@@ -3,6 +3,9 @@
 
 namespace Microsoft.Extensions.Configuration.EnvironmentVariables
 {
+    /// <summary>
+    /// A environment variable based <see cref="IConfigurationSource"/>.
+    /// </summary>
     public class EnvironmentVariablesConfigurationSource : IConfigurationSource
     {
         /// <summary>

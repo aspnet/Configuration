@@ -13,6 +13,11 @@ namespace Microsoft.Extensions.Configuration.CommandLine
     {
         private readonly Dictionary<string, string> _switchMappings;
 
+        /// <summary>
+        /// Initializes a new instance.
+        /// </summary>
+        /// <param name="args">The command line args.</param>
+        /// <param name="switchMappings">The switch mappings.</param>
         public CommandLineConfigurationProvider(IEnumerable<string> args, IDictionary<string, string> switchMappings = null)
         {
             if (args == null)
@@ -28,8 +33,14 @@ namespace Microsoft.Extensions.Configuration.CommandLine
             }
         }
 
+        /// <summary>
+        /// The command line arguments.
+        /// </summary>
         protected IEnumerable<string> Args { get; private set; }
 
+        /// <summary>
+        /// Loads the configuration data from the command line args.
+        /// </summary>
         public override void Load()
         {
             var data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);

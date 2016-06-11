@@ -110,7 +110,7 @@ namespace Microsoft.Extensions.Configuration
         public IEnumerable<IConfigurationSection> GetChildren() => _root.GetChildrenImplementation(Path);
 
         /// <summary>
-        /// Returns a <see cref="IChangeToken"/> that can be used to listen when this configuration is reloaded.
+        /// Returns a <see cref="IChangeToken"/> that can be used to observe when this configuration is reloaded.
         /// </summary>
         /// <returns></returns>
         public IChangeToken GetReloadToken() => _root.GetReloadToken();
