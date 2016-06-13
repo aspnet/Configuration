@@ -59,7 +59,7 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Extracts the value with the specified key and converts it to type.
+        /// Extracts the value with the specified key and converts it to the specified type.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="type">The type to convert the value to.</param>
@@ -71,7 +71,7 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Extracts the value with the specified key and converts it to type.
+        /// Extracts the value with the specified key and converts it to the specified type.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="type">The type to convert the value to.</param>

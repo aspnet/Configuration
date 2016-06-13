@@ -6,7 +6,7 @@ using System;
 namespace Microsoft.Extensions.Configuration.Json
 {
     /// <summary>
-    /// A JSON file based <see cref="FileConfigurationSource"/>.
+    /// Represents a JSON file as an <see cref="IConfigurationSource"/>.
     /// </summary>
     public class JsonConfigurationSource : FileConfigurationSource
     {

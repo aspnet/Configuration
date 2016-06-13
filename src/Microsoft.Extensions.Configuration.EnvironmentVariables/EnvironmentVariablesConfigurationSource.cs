@@ -9,7 +9,7 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables
     public class EnvironmentVariablesConfigurationSource : IConfigurationSource
     {
         /// <summary>
-        /// The prefix to append to the keys.
+        /// A prefix used to filter environment variables.
         /// </summary>
         public string Prefix { get; set; }
 

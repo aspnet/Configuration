@@ -1,12 +1,10 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
-
 namespace Microsoft.Extensions.Configuration.Ini
 {
     /// <summary>
-    /// An INI file based <see cref="IConfigurationSource"/>.
+    /// Represents an INI file as an <see cref="IConfigurationSource"/>.
     /// Files are simple line structures (<a href="http://en.wikipedia.org/wiki/INI_file">INI Files on Wikipedia</a>)
     /// </summary>
     /// <examples>

@@ -10,7 +10,7 @@ using System.Xml;
 namespace Microsoft.Extensions.Configuration.Xml
 {
     /// <summary>
-    /// An XML file based <see cref="FileConfigurationProvider"/>.
+    /// Represents an XML file as an <see cref="IConfigurationSource"/>.
     /// </summary>
     public class XmlConfigurationProvider : FileConfigurationProvider
     {
