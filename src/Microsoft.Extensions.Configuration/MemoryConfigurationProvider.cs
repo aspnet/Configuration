@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace Microsoft.Extensions.Configuration.Memory
 {
     /// <summary>
-    /// In memory implementation of <see cref="IConfigurationProvider"/>
+    /// In-memory implementation of <see cref="IConfigurationProvider"/>
     /// </summary>
     public class MemoryConfigurationProvider : ConfigurationProvider, IEnumerable<KeyValuePair<string, string>>
     {

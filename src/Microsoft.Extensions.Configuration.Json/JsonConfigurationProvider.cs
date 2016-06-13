@@ -21,7 +21,7 @@ namespace Microsoft.Extensions.Configuration.Json
         public JsonConfigurationProvider(JsonConfigurationSource source) : base(source) { }
 
         /// <summary>
-        /// Load the JSON data from the stream.
+        /// Loads the JSON data from a stream.
         /// </summary>
         /// <param name="stream">The stream to read.</param>
         public override void Load(Stream stream)

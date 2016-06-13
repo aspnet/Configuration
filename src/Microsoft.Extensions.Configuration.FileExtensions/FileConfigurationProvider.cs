@@ -74,7 +74,7 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Load this providers data from the stream.
+        /// Loads this provider's data from a stream.
         /// </summary>
         /// <param name="stream">The stream to read.</param>
         public abstract void Load(Stream stream);

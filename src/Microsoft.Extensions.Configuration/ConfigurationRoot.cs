@@ -37,7 +37,7 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Gets or sets a configuration value.
+        /// Gets or sets the value corresponding to a configuration key.
         /// </summary>
         /// <param name="key">The configuration key.</param>
         /// <returns>The configuration value.</returns>
@@ -73,7 +73,7 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Returns the immediate children 
+        /// Gets the immediate children sub-sections.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<IConfigurationSection> GetChildren() => GetChildrenImplementation(null);
@@ -111,7 +111,7 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Force the configuration values to be reloaded from the underlying <see cref="IConfigurationProvider"/>s.
+        /// Force the configuration values to be reloaded from the underlying sources.
         /// </summary>
         public void Reload()
         {

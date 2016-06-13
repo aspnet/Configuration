@@ -32,7 +32,7 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables
         /// <summary>
         /// Initializes a new instance with the specified prefix.
         /// </summary>
-        /// <param name="prefix">The prefix to append to the keys.</param>
+        /// <param name="prefix">The prefix used to filter the keys.</param>
         public EnvironmentVariablesConfigurationProvider(string prefix)
         {
             _prefix = prefix ?? string.Empty;

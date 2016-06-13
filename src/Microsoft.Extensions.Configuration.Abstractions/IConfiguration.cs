@@ -36,9 +36,9 @@ namespace Microsoft.Extensions.Configuration
         IEnumerable<IConfigurationSection> GetChildren();
 
         /// <summary>
-        /// Returns a <see cref="IChangeToken"/> that can be used to obseve when this configuration is reloaded.
+        /// Returns a <see cref="IChangeToken"/> that can be used to observe when this configuration is reloaded.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A <see cref="IChangeToken"/>.</returns>
         IChangeToken GetReloadToken();
     }
 }

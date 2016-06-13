@@ -39,7 +39,7 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Gets the full path to this section within the <see cref="IConfiguration"/>.
+        /// Gets the full path to this section from the <see cref="IConfigurationRoot"/>.
         /// </summary>
         public string Path => _path;
 
@@ -75,7 +75,7 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Gets or sets a configuration value.
+        /// Gets or sets the value corresponding to a configuration key.
         /// </summary>
         /// <param name="key">The configuration key.</param>
         /// <returns>The configuration value.</returns>

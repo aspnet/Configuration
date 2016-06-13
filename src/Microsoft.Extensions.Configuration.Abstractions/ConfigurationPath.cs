@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.Configuration
         public static readonly string KeyDelimiter = ":";
 
         /// <summary>
-        /// Combines all several path segments into one path.
+        /// Combines path segments into one path.
         /// </summary>
         /// <param name="pathSegments">The path segments to combine.</param>
         /// <returns>The combined path.</returns>
@@ -45,10 +45,10 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Extracts the section key from a path.
+        /// Gets the last path segment from the path.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <returns>The section key part of the path.</returns>
+        /// <returns>The last path segment of the path.</returns>
         public static string GetSectionKey(string path)
         {
             if (string.IsNullOrEmpty(path))
@@ -61,10 +61,10 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Extracts the parent path from a path.
+        /// Extracts the path corresponding to the parent node for a given path.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <returns>The parent part of the path.</returns>
+        /// <returns>The original path minus the last individual key found in it. Null if the original path corresponds to a top level node.</returns>
         public static string GetParentPath(string path)
         {
             if (string.IsNullOrEmpty(path))

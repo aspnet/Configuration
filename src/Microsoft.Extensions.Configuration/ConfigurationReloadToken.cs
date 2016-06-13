@@ -15,7 +15,7 @@ namespace Microsoft.Extensions.Configuration
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
         /// <summary>
-        /// Indicates if this token will pro-actively raise callbacks. Callbacks are still guaranteed to fire, eventually.
+        /// Indicates if this token will proactively raise callbacks. Callbacks are still guaranteed to be invoked, eventually.
         /// </summary>
         public bool ActiveChangeCallbacks => true;
 
@@ -28,13 +28,13 @@ namespace Microsoft.Extensions.Configuration
         /// Registers for a callback that will be invoked when the entry has changed. Microsoft.Extensions.Primitives.IChangeToken.HasChanged
         /// MUST be set before the callback is invoked.
         /// </summary>
-        /// <param name="callback">The System.Action`1 to invoke.</param>
+        /// <param name="callback">The callback to invoke.</param>
         /// <param name="state">State to be passed into the callback.</param>
         /// <returns></returns>
         public IDisposable RegisterChangeCallback(Action<object> callback, object state) => _cts.Token.Register(callback, state);
 
         /// <summary>
-        /// Used to fires the change token when a reload occurs.
+        /// Used to trigger the change token when a reload occurs.
         /// </summary>
         public void OnReload() => _cts.Cancel();
     }

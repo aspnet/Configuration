@@ -23,12 +23,12 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from the command line.
+        /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from the command line using the specified switch mappings.
         /// </summary>
         /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="args">The command line args.</param>
         /// <param name="switchMappings">The switch mappings.</param>
-        /// <returns></returns>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddCommandLine(
             this IConfigurationBuilder configurationBuilder,
             string[] args,

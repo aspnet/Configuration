@@ -92,7 +92,7 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Fires the reload change token and creates a new one.
+        /// Triggers the reload change token and creates a new one.
         /// </summary>
         protected void OnReload()
         {

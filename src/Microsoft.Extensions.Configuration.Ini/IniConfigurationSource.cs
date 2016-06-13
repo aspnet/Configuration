@@ -23,7 +23,7 @@ namespace Microsoft.Extensions.Configuration.Ini
         /// Builds the <see cref="IniConfigurationProvider"/> for this source.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
-        /// <returns>A <see cref="IniConfigurationProvider"/></returns>
+        /// <returns>An <see cref="IniConfigurationProvider"/></returns>
         public override IConfigurationProvider Build(IConfigurationBuilder builder)
         {
             FileProvider = FileProvider ?? builder.GetFileProvider();

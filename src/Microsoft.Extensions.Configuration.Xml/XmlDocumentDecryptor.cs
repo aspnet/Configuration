@@ -8,7 +8,7 @@ using System.Xml;
 namespace Microsoft.Extensions.Configuration.Xml
 {
     /// <summary>
-    /// Class responsible for encrypting and decrypting xml.
+    /// Class responsible for encrypting and decrypting XML.
     /// </summary>
     public class XmlDocumentDecryptor
     {
@@ -22,7 +22,7 @@ namespace Microsoft.Extensions.Configuration.Xml
 #endif
 
         /// <summary>
-        /// Constructor
+        /// Initializes a XmlDocumentDecryptor.
         /// </summary>
         // don't create an instance of this directly
         protected XmlDocumentDecryptor()

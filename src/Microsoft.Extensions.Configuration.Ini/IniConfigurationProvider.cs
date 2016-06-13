@@ -28,7 +28,7 @@ namespace Microsoft.Extensions.Configuration.Ini
         public IniConfigurationProvider(IniConfigurationSource source) : base(source) { }
 
         /// <summary>
-        /// Load the INI data from the stream.
+        /// Loads the INI data from a stream.
         /// </summary>
         /// <param name="stream">The stream to read.</param>
         public override void Load(Stream stream)

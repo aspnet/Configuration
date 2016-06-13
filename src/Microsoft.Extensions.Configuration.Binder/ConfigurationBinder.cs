@@ -11,13 +11,12 @@ using Microsoft.Extensions.Configuration.Binder;
 namespace Microsoft.Extensions.Configuration
 {
     /// <summary>
-    /// Static helper class that provides methods to bind types against configuration.
+    /// Static helper class that allows binding strongly typed objects to configuration values.
     /// </summary>
     public static class ConfigurationBinder
     {
         /// <summary>
-        /// Attempts to bind the instance against configuration using reflection matching
-        /// property names against values recursively.
+        /// Attempts to bind the given object instance to configuration values by matching property names against configuration keys recursively.
         /// </summary>
         /// <param name="configuration">The configuration instance to bind.</param>
         /// <param name="instance">The object to bind.</param>
@@ -35,7 +34,7 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Converts the value at the specified key to type T.
+        /// Extracts the value with the specified key and converts it to type T.
         /// </summary>
         /// <typeparam name="T">The type to convert the value to.</typeparam>
         /// <param name="configuration">The configuration.</param>
@@ -47,7 +46,7 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Converts the value at the specified key to type T.
+        /// Extracts the value with the specified key and converts it to type T.
         /// </summary>
         /// <typeparam name="T">The type to convert the value to.</typeparam>
         /// <param name="configuration">The configuration.</param>
@@ -60,7 +59,7 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Converts the value at the specified key to type T.
+        /// Extracts the value with the specified key and converts it to type.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="type">The type to convert the value to.</param>
@@ -72,7 +71,7 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Converts the value at the specified key to type T.
+        /// Extracts the value with the specified key and converts it to type.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="type">The type to convert the value to.</param>

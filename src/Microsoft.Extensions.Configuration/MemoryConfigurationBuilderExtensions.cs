@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration.Memory;
 namespace Microsoft.Extensions.Configuration
 {
     /// <summary>
-    /// Adds extension methods for the MemoryConfigurationProvider.
+    /// IConfigurationBuilder extension methods for the MemoryConfigurationProvider.
     /// </summary>
     public static class MemoryConfigurationBuilderExtensions
     {

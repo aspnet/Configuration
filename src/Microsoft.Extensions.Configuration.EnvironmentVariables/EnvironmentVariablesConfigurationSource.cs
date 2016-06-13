@@ -4,7 +4,7 @@
 namespace Microsoft.Extensions.Configuration.EnvironmentVariables
 {
     /// <summary>
-    /// A environment variable based <see cref="IConfigurationSource"/>.
+    /// Represents environment variables as an <see cref="IConfigurationSource"/>.
     /// </summary>
     public class EnvironmentVariablesConfigurationSource : IConfigurationSource
     {

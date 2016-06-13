@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Microsoft.Extensions.Configuration.CommandLine
 {
     /// <summary>
-    /// Settings for the <see cref="CommandLineConfigurationProvider"/>
+    /// Represents command line arguments as an <see cref="IConfigurationSource"/>.
     /// </summary>
     public class CommandLineConfigurationSource : IConfigurationSource
     {

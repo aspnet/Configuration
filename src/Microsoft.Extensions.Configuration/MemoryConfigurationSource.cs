@@ -6,12 +6,12 @@ using System.Collections.Generic;
 namespace Microsoft.Extensions.Configuration.Memory
 {
     /// <summary>
-    /// Settings for the <see cref="MemoryConfigurationProvider"/>
+    /// Represents in-memory data as an <see cref="IConfigurationSource"/>.
     /// </summary>
     public class MemoryConfigurationSource : IConfigurationSource
     {
         /// <summary>
-        /// The intial key value configuration pairs.
+        /// The initial key value configuration pairs.
         /// </summary>
         public IEnumerable<KeyValuePair<string, string>> InitialData { get; set; }
 

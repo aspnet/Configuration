@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.Configuration.Xml
         internal XmlDocumentDecryptor Decryptor { get; set; } = XmlDocumentDecryptor.Instance;
 
         /// <summary>
-        /// Load the xml from the stream.
+        /// Loads the XML data from a stream.
         /// </summary>
         /// <param name="stream">The stream to read.</param>
         public override void Load(Stream stream)
