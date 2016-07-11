@@ -92,14 +92,65 @@ namespace Microsoft.Extensions.Configuration.Test
             var config = configurationBuilder.Build();
 
             var dict = config.AsEnumerable().ToDictionary(k => k.Key, v => v.Value);
-            Assert.Equal("ValueInMem1", config["Mem1:KeyInMem1"]);
-            Assert.Equal("ValueDeep1", config["Mem1:KeyInMem1:Deep1"]);
-            Assert.Equal("ValueInMem2", config["Mem2:KeyInMem2"]);
-            Assert.Equal("ValueDeep2", config["Mem2:KeyInMem2:Deep2"]);
-            Assert.Equal("ValueInMem3", config["Mem3:KeyInMem3"]);
-            Assert.Equal("ValueDeep3", config["Mem3:KeyInMem3:Deep3"]);
+            Assert.Equal("ValueInMem1", dict["Mem1:KeyInMem1"]);
+            Assert.Equal("ValueDeep1", dict["Mem1:KeyInMem1:Deep1"]);
+            Assert.Equal("ValueInMem2", dict["Mem2:KeyInMem2"]);
+            Assert.Equal("ValueDeep2", dict["Mem2:KeyInMem2:Deep2"]);
+            Assert.Equal("ValueInMem3", dict["Mem3:KeyInMem3"]);
+            Assert.Equal("ValueDeep3", dict["Mem3:KeyInMem3:Deep3"]);
         }
 
+        [Fact]
+        public void AsEnumerateStripsKeyFromChildren()
+        {
+            // Arrange
+            var dic1 = new Dictionary<string, string>()
+            {
+                {"Mem1:KeyInMem1", "ValueInMem1"},
+                {"Mem1:KeyInMem1:Deep1", "ValueDeep1"}
+            };
+            var dic2 = new Dictionary<string, string>()
+            {
+                {"Mem2:KeyInMem2", "ValueInMem2"},
+                {"Mem2:KeyInMem2:Deep2", "ValueDeep2"}
+            };
+            var dic3 = new Dictionary<string, string>()
+            {
+                {"Mem3:KeyInMem3", "ValueInMem3"},
+                {"Mem3:KeyInMem4", "ValueInMem4"},
+                {"Mem3:KeyInMem3:Deep3", "ValueDeep3"},
+                {"Mem3:KeyInMem3:Deep4", "ValueDeep4"}
+            };
+            var memConfigSrc1 = new MemoryConfigurationSource { InitialData = dic1 };
+            var memConfigSrc2 = new MemoryConfigurationSource { InitialData = dic2 };
+            var memConfigSrc3 = new MemoryConfigurationSource { InitialData = dic3 };
+
+            var configurationBuilder = new ConfigurationBuilder();
+
+            // Act
+            configurationBuilder.Add(memConfigSrc1);
+            configurationBuilder.Add(memConfigSrc2);
+            configurationBuilder.Add(memConfigSrc3);
+
+            var config = configurationBuilder.Build();
+
+            var dict = config.GetSection("Mem1").AsEnumerable().ToDictionary(k => k.Key, v => v.Value);
+            Assert.Equal(2, dict.Count);
+            Assert.Equal("ValueInMem1", dict["KeyInMem1"]);
+            Assert.Equal("ValueDeep1", dict["KeyInMem1:Deep1"]);
+
+            var dict2 = config.GetSection("Mem2").AsEnumerable().ToDictionary(k => k.Key, v => v.Value);
+            Assert.Equal(2, dict2.Count);
+            Assert.Equal("ValueInMem2", dict2["KeyInMem2"]);
+            Assert.Equal("ValueDeep2", dict2["KeyInMem2:Deep2"]);
+
+            var dict3 = config.GetSection("Mem3").AsEnumerable().ToDictionary(k => k.Key, v => v.Value);
+            Assert.Equal(4, dict3.Count);
+            Assert.Equal("ValueInMem3", dict3["KeyInMem3"]);
+            Assert.Equal("ValueInMem4", dict3["KeyInMem4"]);
+            Assert.Equal("ValueDeep3", dict3["KeyInMem3:Deep3"]);
+            Assert.Equal("ValueDeep4", dict3["KeyInMem3:Deep4"]);
+        }
 
 
         [Fact]

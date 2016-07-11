@@ -30,13 +30,15 @@ namespace Microsoft.Extensions.Configuration
         {
             var stack = new Stack<IConfiguration>();
             stack.Push(configuration);
+            var rootSection = configuration as IConfigurationSection;
+            var prefixLength = rootSection != null ? rootSection.Path.Length + 1 : 0;
             while (stack.Count > 0)
             {
                 var config = stack.Pop();
                 var section = config as IConfigurationSection;
-                if (section != null)
+                if (section != null && config != configuration)
                 {
-                    yield return new KeyValuePair<string, string>(section.Path, section.Value);
+                    yield return new KeyValuePair<string, string>(section.Path.Substring(prefixLength), section.Value);
                 }
                 foreach (var child in config.GetChildren())
                 {
