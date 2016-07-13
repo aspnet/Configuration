@@ -66,18 +66,21 @@ namespace Microsoft.Extensions.Configuration.Test
             var dic1 = new Dictionary<string, string>()
             {
                 {"Mem1", "Value1"},
+                {"Mem1:", "NoKeyValue1"},
                 {"Mem1:KeyInMem1", "ValueInMem1"},
                 {"Mem1:KeyInMem1:Deep1", "ValueDeep1"}
             };
             var dic2 = new Dictionary<string, string>()
             {
                 {"Mem2", "Value2"},
+                {"Mem2:", "NoKeyValue2"},
                 {"Mem2:KeyInMem2", "ValueInMem2"},
                 {"Mem2:KeyInMem2:Deep2", "ValueDeep2"}
             };
             var dic3 = new Dictionary<string, string>()
             {
                 {"Mem3", "Value3"},
+                {"Mem3:", "NoKeyValue3"},
                 {"Mem3:KeyInMem3", "ValueInMem3"},
                 {"Mem3:KeyInMem3:Deep3", "ValueDeep3"}
             };
@@ -96,11 +99,14 @@ namespace Microsoft.Extensions.Configuration.Test
 
             // Assert
             Assert.Equal("Value1", dict["Mem1"]);
+            Assert.Equal("NoKeyValue1", dict["Mem1:"]);
             Assert.Equal("ValueDeep1", dict["Mem1:KeyInMem1:Deep1"]);
             Assert.Equal("ValueInMem2", dict["Mem2:KeyInMem2"]);
             Assert.Equal("Value2", dict["Mem2"]);
+            Assert.Equal("NoKeyValue2", dict["Mem2:"]);
             Assert.Equal("ValueDeep2", dict["Mem2:KeyInMem2:Deep2"]);
             Assert.Equal("Value3", dict["Mem3"]);
+            Assert.Equal("NoKeyValue3", dict["Mem3:"]);
             Assert.Equal("ValueInMem3", dict["Mem3:KeyInMem3"]);
             Assert.Equal("ValueDeep3", dict["Mem3:KeyInMem3:Deep3"]);
         }
@@ -112,18 +118,21 @@ namespace Microsoft.Extensions.Configuration.Test
             var dic1 = new Dictionary<string, string>()
             {
                 {"Mem1", "Value1"},
+                {"Mem1:", "NoKeyValue1"},
                 {"Mem1:KeyInMem1", "ValueInMem1"},
                 {"Mem1:KeyInMem1:Deep1", "ValueDeep1"}
             };
             var dic2 = new Dictionary<string, string>()
             {
                 {"Mem2", "Value2"},
+                {"Mem2:", "NoKeyValue2"},
                 {"Mem2:KeyInMem2", "ValueInMem2"},
                 {"Mem2:KeyInMem2:Deep2", "ValueDeep2"}
             };
             var dic3 = new Dictionary<string, string>()
             {
                 {"Mem3", "Value3"},
+                {"Mem3:", "NoKeyValue3"},
                 {"Mem3:KeyInMem3", "ValueInMem3"},
                 {"Mem3:KeyInMem4", "ValueInMem4"},
                 {"Mem3:KeyInMem3:Deep3", "ValueDeep3"},
@@ -143,17 +152,20 @@ namespace Microsoft.Extensions.Configuration.Test
             var config = configurationBuilder.Build();
 
             var dict = config.GetSection("Mem1").AsEnumerable(removePathFromChildKeys: true).ToDictionary(k => k.Key, v => v.Value);
-            Assert.Equal(2, dict.Count);
+            Assert.Equal(3, dict.Count);
+            Assert.Equal("NoKeyValue1", dict[""]);
             Assert.Equal("ValueInMem1", dict["KeyInMem1"]);
             Assert.Equal("ValueDeep1", dict["KeyInMem1:Deep1"]);
 
             var dict2 = config.GetSection("Mem2").AsEnumerable(removePathFromChildKeys: true).ToDictionary(k => k.Key, v => v.Value);
-            Assert.Equal(2, dict2.Count);
+            Assert.Equal(3, dict2.Count);
+            Assert.Equal("NoKeyValue2", dict2[""]);
             Assert.Equal("ValueInMem2", dict2["KeyInMem2"]);
             Assert.Equal("ValueDeep2", dict2["KeyInMem2:Deep2"]);
 
             var dict3 = config.GetSection("Mem3").AsEnumerable(removePathFromChildKeys: true).ToDictionary(k => k.Key, v => v.Value);
-            Assert.Equal(4, dict3.Count);
+            Assert.Equal(5, dict3.Count);
+            Assert.Equal("NoKeyValue3", dict3[""]);
             Assert.Equal("ValueInMem3", dict3["KeyInMem3"]);
             Assert.Equal("ValueInMem4", dict3["KeyInMem4"]);
             Assert.Equal("ValueDeep3", dict3["KeyInMem3:Deep3"]);
