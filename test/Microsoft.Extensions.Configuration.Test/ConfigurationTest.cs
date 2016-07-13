@@ -59,8 +59,10 @@ namespace Microsoft.Extensions.Configuration.Test
             Assert.Null(config["NotExist"]);
         }
 
-        [Fact]
-        public void AsEnumerateFlattensIntoDictionaryTest()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void AsEnumerateFlattensIntoDictionaryTest(bool removePath)
         {
             // Arrange
             var dic1 = new Dictionary<string, string>()
@@ -95,7 +97,7 @@ namespace Microsoft.Extensions.Configuration.Test
             configurationBuilder.Add(memConfigSrc2);
             configurationBuilder.Add(memConfigSrc3);
             var config = configurationBuilder.Build();
-            var dict = config.AsEnumerable().ToDictionary(k => k.Key, v => v.Value);
+            var dict = config.AsEnumerable(removePathFromChildKeys: removePath).ToDictionary(k => k.Key, v => v.Value);
 
             // Assert
             Assert.Equal("Value1", dict["Mem1"]);
