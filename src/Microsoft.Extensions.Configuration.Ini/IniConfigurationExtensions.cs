@@ -75,8 +75,12 @@ namespace Microsoft.Extensions.Configuration
 
             if (provider == null && Path.IsPathRooted(path))
             {
-                provider = new PhysicalFileProvider(Path.GetDirectoryName(path));
-                path = Path.GetFileName(path);
+                string pathToFile;
+                provider = FileConfigurationProvider.ResolvePhysicalFileProvider(path, out pathToFile);
+                if (provider != null)
+                {
+                    path = pathToFile;
+                }
             } 
             var source = new IniConfigurationSource
             {

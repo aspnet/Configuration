@@ -40,6 +40,32 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         public FileConfigurationSource Source { get; }
 
+        /// <summary>
+        /// Creates a physical file provider for the nearest existing directory in the absolute path.
+        /// </summary>
+        /// <param name="absolutePath">The absolute path to search.</param>
+        /// <param name="pathToFile">Returns the relative path to the file.</param>
+        /// <returns>The nearest existing directory path, or null if none exists.</returns>
+        public static PhysicalFileProvider ResolvePhysicalFileProvider(string absolutePath, out string pathToFile)
+        {
+            var directory = Path.GetDirectoryName(absolutePath);
+            pathToFile = Path.GetFileName(absolutePath);
+            while (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                pathToFile = Path.Combine(Path.GetFileName(directory), pathToFile);
+                directory = Path.GetDirectoryName(directory);
+            }
+            if (Directory.Exists(directory))
+            {
+                return new PhysicalFileProvider(directory);
+            }
+            else
+            {
+                pathToFile = null;
+                return null;
+            }
+        }
+
         private void Load(bool reload)
         {
             var file = Source.FileProvider?.GetFileInfo(Source.Path);
