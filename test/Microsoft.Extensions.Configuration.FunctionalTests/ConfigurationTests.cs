@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration.Ini;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Xml;
@@ -482,7 +483,7 @@ CommonKey3:CommonKey4=IniValue6";
         }
 
         [Fact]
-        public void CreatingOptionalFileInNonExistentDirectoryWillReload()
+        public async Task CreatingOptionalFileInNonExistentDirectoryWillReload()
         {
             var directory = Path.Combine(_basePath, Path.GetRandomFileName());
 
@@ -509,7 +510,7 @@ CommonKey3:CommonKey4=IniValue6";
             File.WriteAllText(iniFile, @"IniKey1 = IniValue1");
             File.WriteAllText(xmlFile, @"<settings XmlKey1=""XmlValue1""/>");
 
-            Thread.Sleep(500);
+            await Task.Delay(500);
 
             Assert.Equal("JsonValue1", config["JsonKey1"]);
             Assert.Equal("IniValue1", config["IniKey1"]);

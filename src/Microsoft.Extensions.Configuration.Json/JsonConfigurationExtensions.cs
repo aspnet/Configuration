@@ -73,15 +73,6 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentException(Resources.Error_InvalidFilePath, nameof(path));
             }
 
-            if (provider == null && Path.IsPathRooted(path))
-            {
-                string pathToFile;
-                provider = FileConfigurationProvider.ResolvePhysicalFileProvider(path, out pathToFile);
-                if (provider != null)
-                {
-                    path = pathToFile;
-                }
-            }
             var source = new JsonConfigurationSource
             {
                 FileProvider = provider,
@@ -89,6 +80,7 @@ namespace Microsoft.Extensions.Configuration
                 Optional = optional,
                 ReloadOnChange = reloadOnChange
             };
+            source.ResolveFileProvider();
             builder.Add(source);
             return builder;
         }
