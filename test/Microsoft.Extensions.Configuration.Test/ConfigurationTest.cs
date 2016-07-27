@@ -265,6 +265,50 @@ namespace Microsoft.Extensions.Configuration.Test
         }
 
         [Fact]
+        public void CanGetAppConfigConnectionStrings()
+        {
+            // Arrange
+            var dic = new Dictionary<string, string>()
+            {
+                {"connectionStrings:add:DefaultConnection:connectionString", "MemVal"},
+            };
+
+            var memConfigSrc = new MemoryConfigurationSource { InitialData = dic };
+
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.Add(memConfigSrc);
+
+            var config = configurationBuilder.Build();
+
+            // Act
+            var memVal = config.GetConnectionString("DefaultConnection");
+
+            // Assert
+            Assert.Equal("MemVal", memVal);
+        }
+
+        [Fact]
+        public void GetConnectionStringReturnsNullIfDoesntExist()
+        {
+            // Arrange
+            var dic = new Dictionary<string, string>()
+            {};
+
+            var memConfigSrc = new MemoryConfigurationSource { InitialData = dic };
+
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.Add(memConfigSrc);
+
+            var config = configurationBuilder.Build();
+
+            // Act
+            var memVal = config.GetConnectionString("DefaultConnection");
+
+            // Assert
+            Assert.Null(memVal);
+        }
+
+        [Fact]
         public void CanGetConfigurationChildren()
         {
             // Arrange

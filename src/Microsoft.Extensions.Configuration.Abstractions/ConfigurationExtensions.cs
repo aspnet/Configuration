@@ -18,7 +18,18 @@ namespace Microsoft.Extensions.Configuration
         /// <returns></returns>
         public static string GetConnectionString(this IConfiguration configuration, string name)
         {
-            return configuration?.GetSection("ConnectionStrings")?[name];
+            var section = configuration?.GetSection("ConnectionStrings");
+            var result = section?[name];
+
+            if (result != null)
+                return result;
+
+            section = configuration?.GetSection($"connectionStrings:add:{name}:connectionString");
+            if (section != null)
+            {
+                result = section.Value;
+            }
+            return result;
         }
 
         /// <summary>
