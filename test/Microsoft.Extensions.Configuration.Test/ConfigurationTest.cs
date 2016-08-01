@@ -97,7 +97,7 @@ namespace Microsoft.Extensions.Configuration.Test
             configurationBuilder.Add(memConfigSrc2);
             configurationBuilder.Add(memConfigSrc3);
             var config = configurationBuilder.Build();
-            var dict = config.AsEnumerable(removePathFromChildKeys: removePath).ToDictionary(k => k.Key, v => v.Value);
+            var dict = config.AsEnumerable(makePathsRelative: removePath).ToDictionary(k => k.Key, v => v.Value);
 
             // Assert
             Assert.Equal("Value1", dict["Mem1"]);
@@ -153,19 +153,19 @@ namespace Microsoft.Extensions.Configuration.Test
 
             var config = configurationBuilder.Build();
 
-            var dict = config.GetSection("Mem1").AsEnumerable(removePathFromChildKeys: true).ToDictionary(k => k.Key, v => v.Value);
+            var dict = config.GetSection("Mem1").AsEnumerable(makePathsRelative: true).ToDictionary(k => k.Key, v => v.Value);
             Assert.Equal(3, dict.Count);
             Assert.Equal("NoKeyValue1", dict[""]);
             Assert.Equal("ValueInMem1", dict["KeyInMem1"]);
             Assert.Equal("ValueDeep1", dict["KeyInMem1:Deep1"]);
 
-            var dict2 = config.GetSection("Mem2").AsEnumerable(removePathFromChildKeys: true).ToDictionary(k => k.Key, v => v.Value);
+            var dict2 = config.GetSection("Mem2").AsEnumerable(makePathsRelative: true).ToDictionary(k => k.Key, v => v.Value);
             Assert.Equal(3, dict2.Count);
             Assert.Equal("NoKeyValue2", dict2[""]);
             Assert.Equal("ValueInMem2", dict2["KeyInMem2"]);
             Assert.Equal("ValueDeep2", dict2["KeyInMem2:Deep2"]);
 
-            var dict3 = config.GetSection("Mem3").AsEnumerable(removePathFromChildKeys: true).ToDictionary(k => k.Key, v => v.Value);
+            var dict3 = config.GetSection("Mem3").AsEnumerable(makePathsRelative: true).ToDictionary(k => k.Key, v => v.Value);
             Assert.Equal(5, dict3.Count);
             Assert.Equal("NoKeyValue3", dict3[""]);
             Assert.Equal("ValueInMem3", dict3["KeyInMem3"]);
