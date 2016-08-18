@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.Configuration
     /// <summary>
     /// Extension methods for <see cref="IConfiguration" />.
     /// </summary>
-    public static class ConfigurationExtensions
+    public static partial class ConfigurationExtensions
     {
         /// <summary>
         /// Shorthand for GetSection("ConnectionStrings")[name].
