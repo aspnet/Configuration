@@ -93,6 +93,17 @@ namespace Microsoft.Extensions.Configuration
         }
 
         [Fact]
+        public void ThrowExceptionWhenMissingCurlyBeforeFinishParsing()
+        {
+            var json = @"
+{
+  'Data': {
+";
+    var exception = Assert.Throws<FormatException>(() => LoadProvider(json));
+            Assert.NotNull(exception.Message);
+        }
+
+        [Fact]
         public void ThrowExceptionWhenPassingNullAsFilePath()
         {
             var expectedMsg = new ArgumentException(Resources.Error_InvalidFilePath, "path").Message;
