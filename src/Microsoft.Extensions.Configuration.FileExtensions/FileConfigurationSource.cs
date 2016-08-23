@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.IO;
 using Microsoft.Extensions.FileProviders;
 
@@ -30,6 +31,11 @@ namespace Microsoft.Extensions.Configuration
         /// Determines whether the source will be loaded if the underlying file changes.
         /// </summary>
         public bool ReloadOnChange { get; set; }
+
+        /// <summary>
+        /// Will be called if an uncaught exception occurs in FileConfigurationProvider.Load.
+        /// </summary>
+        public Action<Exception> OnLoadError { get; set; }
 
         /// <summary>
         /// Builds the <see cref="IConfigurationProvider"/> for this source.

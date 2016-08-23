@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Extensions.Configuration
@@ -63,7 +62,15 @@ namespace Microsoft.Extensions.Configuration
             {
                 using (var stream = file.CreateReadStream())
                 {
-                    Load(stream);
+                    try
+                    {
+                        Load(stream);
+                    }
+                    catch (Exception e)
+                    {
+                        Source?.OnLoadError(e);
+                        throw e;
+                    }
                 }
             }
             // REVIEW: Should we raise this in the base as well / instead?

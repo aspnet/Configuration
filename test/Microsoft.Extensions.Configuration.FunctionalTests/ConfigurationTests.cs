@@ -261,17 +261,6 @@ CommonKey3:CommonKey4=IniValue6";
         }
 
         [Fact]
-        public void CanReadUnicodeString()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            var fileJson = Path.Combine(_basePath, Path.GetRandomFileName());
-            File.WriteAllText(fileJson, @"{ ""SiteTitle"" : ""???""}");
-
-            var config = configurationBuilder.AddJsonFile(fileJson).Build();
-            Assert.Equal("???", config.GetSection("SiteTitle").Value);
-        }
-
-        [Fact]
         public void LoadAndCombineKeyValuePairsFromDifferentConfigurationProvidersWithAbsolutePath()
         {
             // Arrange
@@ -312,7 +301,6 @@ CommonKey3:CommonKey4=IniValue6";
 
             Assert.Equal("MemValue6", config["CommonKey1:CommonKey2:CommonKey3:CommonKey4"]);
         }
-
 
         [Fact]
         public void CanOverrideValuesWithNewConfigurationProvider()
@@ -383,6 +371,27 @@ CommonKey3:CommonKey4=IniValue6";
             {
                 Source.FileProvider = builder.GetFileProvider();
                 return this;
+            }
+        }
+
+        [Fact]
+        public void OnLoadErrorWillBeCalledOnParseError()
+        {
+            // Arrange
+            File.WriteAllText(Path.Combine(_basePath, "error.json"), @"{""JsonKey1"": ");
+
+            Exception jsonError = null;
+            Action<Exception> jsonLoadError = ex => jsonError = ex;
+
+            try
+            {
+                new ConfigurationBuilder()
+                    .Add(new JsonConfigurationSource { Path = "error.json", OnLoadError = jsonLoadError })
+                    .Build();
+            }
+            catch (FormatException e)
+            {
+                Assert.Equal(e, jsonError);
             }
         }
 
