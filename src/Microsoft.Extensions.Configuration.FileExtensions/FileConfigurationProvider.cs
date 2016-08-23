@@ -68,7 +68,7 @@ namespace Microsoft.Extensions.Configuration
                     }
                     catch (Exception e)
                     {
-                        Source?.OnLoadError(e);
+                        Source.OnLoadError?.Invoke(e);
                         throw e;
                     }
                 }
