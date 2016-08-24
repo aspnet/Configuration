@@ -95,7 +95,7 @@ namespace Microsoft.Extensions.Configuration.Json
             {
                 throw new FormatException(Resources.FormatError_KeyIsDuplicated(key));
             }
-            _data[key] = data.ToString();
+            _data[key] = data.Value<string>();
         }
 
         private void EnterContext(string context)
