@@ -22,14 +22,31 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="vault">The Azure KeyVault uri.</param>
         /// <param name="clientId">The application client id.</param>
         /// <param name="clientSecret">The client secret to use for authentication.</param>
-        /// <param name="filter">The predicate to filter secret entries before loading value, <code>null</code> to load all.</param>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddAzureKeyVault(
+            this IConfigurationBuilder configurationBuilder,
+            string vault,
+            string clientId,
+            string clientSecret)
+        {
+            return AddAzureKeyVault(configurationBuilder, vault, clientId, clientSecret, new DefaultKeyVaultSecretManager());
+        }
+
+        /// <summary>
+        /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from the Azure KeyVault.
+        /// </summary>
+        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="vault">The Azure KeyVault uri.</param>
+        /// <param name="clientId">The application client id.</param>
+        /// <param name="clientSecret">The client secret to use for authentication.</param>
+        /// <param name="manager">The <see cref="IKeyVaultSecretManager"/> instance used to control secret loading.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddAzureKeyVault(
             this IConfigurationBuilder configurationBuilder,
             string vault,
             string clientId,
             string clientSecret,
-            Func<SecretItem, bool> filter)
+            IKeyVaultSecretManager manager)
         {
             if (clientId == null)
             {
@@ -42,7 +59,7 @@ namespace Microsoft.Extensions.Configuration
             KeyVaultClient.AuthenticationCallback callback =
                 (authority, resource, scope) => GetTokenFromClientSecret(authority, resource, scope, clientId, clientSecret);
 
-            return configurationBuilder.AddAzureKeyVault(vault, callback, filter);
+            return configurationBuilder.AddAzureKeyVault(vault, callback, manager);
         }
 
 
@@ -53,14 +70,31 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="vault">Azure KeyVault uri.</param>
         /// <param name="clientId">The application client id.</param>
         /// <param name="certificate">The <see cref="X509Certificate2"/> to use for authentication.</param>
-        /// <param name="filter">The predicate to filter secret entries before loading value, <code>null</code> to load all.</param>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddAzureKeyVault(
+            this IConfigurationBuilder configurationBuilder,
+            string vault,
+            string clientId,
+            X509Certificate2 certificate)
+        {
+            return AddAzureKeyVault(configurationBuilder, vault, clientId, certificate, new DefaultKeyVaultSecretManager());
+        }
+
+        /// <summary>
+        /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from the Azure KeyVault.
+        /// </summary>
+        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="vault">Azure KeyVault uri.</param>
+        /// <param name="clientId">The application client id.</param>
+        /// <param name="certificate">The <see cref="X509Certificate2"/> to use for authentication.</param>
+        /// <param name="manager">The <see cref="IKeyVaultSecretManager"/> instance used to control secret loading.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddAzureKeyVault(
             this IConfigurationBuilder configurationBuilder,
             string vault,
             string clientId,
             X509Certificate2 certificate,
-            Func<SecretItem, bool> filter)
+            IKeyVaultSecretManager manager)
         {
             if (clientId == null)
             {
@@ -73,7 +107,7 @@ namespace Microsoft.Extensions.Configuration
             KeyVaultClient.AuthenticationCallback callback =
                 (authority, resource, scope) => GetTokenFromClientCertificate(authority, resource, scope, clientId, certificate);
 
-            return configurationBuilder.AddAzureKeyVault(vault, callback, filter);
+            return configurationBuilder.AddAzureKeyVault(vault, callback, manager);
         }
 
         /// <summary>
@@ -82,19 +116,19 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="vault">Azure KeyVault uri.</param>
         /// <param name="authenticationCallback">The <see cref="KeyVaultClient.AuthenticationCallback"/> to use for authentication.</param>
-        /// <param name="filter">The predicate to filter secret entries before loading value, <code>null</code> to load all.</param>
+        /// <param name="manager">The <see cref="IKeyVaultSecretManager"/> instance used to control secret loading.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddAzureKeyVault(
             this IConfigurationBuilder configurationBuilder,
             string vault,
             KeyVaultClient.AuthenticationCallback authenticationCallback,
-            Func<SecretItem, bool> filter)
+            IKeyVaultSecretManager manager)
         {
             if (authenticationCallback == null)
             {
                 throw new ArgumentNullException(nameof(authenticationCallback));
             }
-            return configurationBuilder.AddAzureKeyVault(vault, new KeyVaultClient(authenticationCallback), filter);
+            return configurationBuilder.AddAzureKeyVault(vault, new KeyVaultClient(authenticationCallback), manager);
         }
 
         /// <summary>
@@ -103,13 +137,13 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="vault">Azure KeyVault uri.</param>
         /// <param name="client">The <see cref="KeyVaultClient"/> to use for retrieving values.</param>
-        /// <param name="filter">The predicate to filter secret entries before loading value, <code>null</code> to load all.</param>
+        /// <param name="manager">The <see cref="IKeyVaultSecretManager"/> instance used to control secret loading.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddAzureKeyVault(
             this IConfigurationBuilder configurationBuilder,
             string vault,
             KeyVaultClient client,
-            Func<SecretItem, bool> filter)
+            IKeyVaultSecretManager manager)
         {
             if (configurationBuilder == null)
             {
@@ -128,7 +162,7 @@ namespace Microsoft.Extensions.Configuration
             {
                 Client = client,
                 Vault = vault,
-                Filter = filter
+                Manager = manager
             });
 
             return configurationBuilder;

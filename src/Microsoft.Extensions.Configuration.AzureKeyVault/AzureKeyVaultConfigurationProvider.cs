@@ -15,15 +15,15 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault
     {
         private readonly IKeyVaultClient _client;
         private readonly string _vault;
-        private readonly Func<SecretItem, bool> _filter;
+        private readonly IKeyVaultSecretManager _manager;
 
         /// <summary>
         /// Creates a new instance of <see cref="AzureKeyVaultConfigurationProvider"/>.
         /// </summary>
         /// <param name="client">The <see cref="KeyVaultClient"/> to use for retrieving values.</param>
         /// <param name="vault">Azure KeyVault uri.</param>
-        /// <param name="filter">The predicate to filter secret entries before loading value, <code>null</code> to load all.</param>
-        public AzureKeyVaultConfigurationProvider(IKeyVaultClient client, string vault, Func<SecretItem, bool> filter)
+        /// <param name="manager"></param>
+        public AzureKeyVaultConfigurationProvider(IKeyVaultClient client, string vault, IKeyVaultSecretManager manager)
         {
             if (client == null)
             {
@@ -35,7 +35,7 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault
             }
             _client = client;
             _vault = vault;
-            _filter = filter;
+            _manager = manager;
         }
 
         /// <inheritdoc />
@@ -53,13 +53,13 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault
             {
                 foreach (var secretItem in secrets.Value)
                 {
-                    if (_filter?.Invoke(secretItem) == false)
+                    if (!_manager.Load(secretItem))
                     {
                         continue;
                     }
 
                     var value = await _client.GetSecretAsync(secretItem.Id);
-                    var key = NormalizeKey(value.SecretIdentifier.Name);
+                    var key = _manager.GetKey(value);
                     data.Add(key, value.Value);
                 }
 
@@ -69,11 +69,6 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault
             } while (secrets != null);
 
             Data = data;
-        }
-
-        private static string NormalizeKey(string key)
-        {
-            return key.Replace("__", ConfigurationPath.KeyDelimiter);
         }
     }
 }
