@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
@@ -74,7 +75,6 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault.Test
             Assert.Equal("Value1", provider.Get("Secret1"));
         }
 
-
         [Fact]
         public void SupportsReload()
         {
@@ -99,8 +99,31 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault.Test
             value = "Value2";
             provider.Load();
             Assert.Equal("Value2", provider.Get("Secret1"));
-
         }
+
+        [Fact]
+        public void ReplaceDoubleUnderscoreInKeyName()
+        {
+            var client = new Mock<IKeyVaultClient>(MockBehavior.Strict);
+            var secret1Id = GetSecretId("Section__Secret1");
+
+            client.Setup(c => c.GetSecretsAsync(VaultUri)).ReturnsAsync(new ListSecretsResponseMessage()
+            {
+                Value = new[] { new SecretItem { Id = secret1Id } }
+            });
+
+            client.Setup(c => c.GetSecretAsync(secret1Id)).ReturnsAsync(new Secret() { Value = "Value1", Id = secret1Id });
+
+            // Act
+            var provider = new AzureKeyVaultConfigurationProvider(client.Object, VaultUri, null);
+            provider.Load();
+
+            // Assert
+            client.VerifyAll();
+
+            Assert.Equal("Value1", provider.Get("Section:Secret1"));
+        }
+
 
         private string GetSecretId(string name) => new SecretIdentifier(VaultUri, name).Identifier;
     }

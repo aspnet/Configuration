@@ -59,7 +59,8 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault
                     }
 
                     var value = await _client.GetSecretAsync(secretItem.Id);
-                    data.Add(value.SecretIdentifier.Name, value.Value);
+                    var key = NormalizeKey(value.SecretIdentifier.Name);
+                    data.Add(key, value.Value);
                 }
 
                 secrets = secrets.NextLink != null ?
@@ -68,6 +69,11 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault
             } while (secrets != null);
 
             Data = data;
+        }
+
+        private static string NormalizeKey(string key)
+        {
+            return key.Replace("__", ConfigurationPath.KeyDelimiter);
         }
     }
 }
