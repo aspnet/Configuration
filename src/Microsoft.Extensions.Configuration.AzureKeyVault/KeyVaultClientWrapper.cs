@@ -33,6 +33,12 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault
         }
 
         /// <inheritdoc />
+        public Task<Secret> GetSecretAsync(string vaultUri, string secretName)
+        {
+            return _keyVaultClientImplementation.GetSecretAsync(vaultUri, secretName);
+        }
+
+        /// <inheritdoc />
         public Task<ListSecretsResponseMessage> GetSecretsNextAsync(string nextLink)
         {
             return _keyVaultClientImplementation.GetSecretsNextAsync(nextLink);
