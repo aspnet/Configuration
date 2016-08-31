@@ -380,8 +380,13 @@ CommonKey3:CommonKey4=IniValue6";
             // Arrange
             File.WriteAllText(Path.Combine(_basePath, "error.json"), @"{""JsonKey1"": ");
 
+            FileConfigurationProvider provider = null;
             Exception jsonError = null;
-            Action<FileLoadExceptionContext> jsonLoadError = c => jsonError = c.Exception;
+            Action<FileLoadExceptionContext> jsonLoadError = c =>
+            {
+                jsonError = c.Exception;
+                provider = c.Provider;
+            };
 
             try
             {
@@ -393,6 +398,7 @@ CommonKey3:CommonKey4=IniValue6";
             {
                 Assert.Equal(e, jsonError);
             }
+            Assert.NotNull(provider);
         }
 
         [Fact]
@@ -401,13 +407,18 @@ CommonKey3:CommonKey4=IniValue6";
             // Arrange
             File.WriteAllText(Path.Combine(_basePath, "error.json"), @"{""JsonKey1"": ");
 
-            Action<FileLoadExceptionContext> jsonLoadError = c => c.Ignore = true;
+            FileConfigurationProvider provider = null;
+            Action<FileLoadExceptionContext> jsonLoadError = c =>
+            {
+                provider = c.Provider;
+                c.Ignore = true;
+            };
 
             new ConfigurationBuilder()
                 .Add(new JsonConfigurationSource { Path = "error.json", OnLoadException = jsonLoadError })
                 .Build();
 
-            Assert.True(true, "No exception thrown.");
+            Assert.NotNull(provider);
         }
 
         [Fact]
