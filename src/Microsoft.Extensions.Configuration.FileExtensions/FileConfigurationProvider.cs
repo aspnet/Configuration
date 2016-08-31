@@ -68,8 +68,17 @@ namespace Microsoft.Extensions.Configuration
                     }
                     catch (Exception e)
                     {
-                        Source.OnLoadError?.Invoke(e);
-                        throw e;
+                        bool ignoreException = false;
+                        if (Source.OnLoadException != null)
+                        {
+                            var exceptionContext = new FileLoadExceptionContext { Exception = e };
+                            Source.OnLoadException.Invoke(exceptionContext);
+                            ignoreException = exceptionContext.Ignore;
+                        }
+                        if (!ignoreException)
+                        {
+                            throw e;
+                        }
                     }
                 }
             }

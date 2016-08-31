@@ -381,18 +381,33 @@ CommonKey3:CommonKey4=IniValue6";
             File.WriteAllText(Path.Combine(_basePath, "error.json"), @"{""JsonKey1"": ");
 
             Exception jsonError = null;
-            Action<Exception> jsonLoadError = ex => jsonError = ex;
+            Action<FileLoadExceptionContext> jsonLoadError = c => jsonError = c.Exception;
 
             try
             {
                 new ConfigurationBuilder()
-                    .Add(new JsonConfigurationSource { Path = "error.json", OnLoadError = jsonLoadError })
+                    .Add(new JsonConfigurationSource { Path = "error.json", OnLoadException = jsonLoadError })
                     .Build();
             }
             catch (FormatException e)
             {
                 Assert.Equal(e, jsonError);
             }
+        }
+
+        [Fact]
+        public void OnLoadErrorCanIgnoreErrors()
+        {
+            // Arrange
+            File.WriteAllText(Path.Combine(_basePath, "error.json"), @"{""JsonKey1"": ");
+
+            Action<FileLoadExceptionContext> jsonLoadError = c => c.Ignore = true;
+
+            new ConfigurationBuilder()
+                .Add(new JsonConfigurationSource { Path = "error.json", OnLoadException = jsonLoadError })
+                .Build();
+
+            Assert.True(true, "No exception thrown.");
         }
 
         [Fact]

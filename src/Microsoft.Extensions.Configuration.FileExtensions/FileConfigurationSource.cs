@@ -35,7 +35,7 @@ namespace Microsoft.Extensions.Configuration
         /// <summary>
         /// Will be called if an uncaught exception occurs in FileConfigurationProvider.Load.
         /// </summary>
-        public Action<Exception> OnLoadError { get; set; }
+        public Action<FileLoadExceptionContext> OnLoadException { get; set; }
 
         /// <summary>
         /// Builds the <see cref="IConfigurationProvider"/> for this source.
