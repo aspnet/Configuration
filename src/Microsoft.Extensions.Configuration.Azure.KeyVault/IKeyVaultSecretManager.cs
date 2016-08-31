@@ -3,7 +3,7 @@
 
 using Microsoft.Azure.KeyVault;
 
-namespace Microsoft.Extensions.Configuration.AzureKeyVault
+namespace Microsoft.Extensions.Configuration.Azure.KeyVault
 {
     /// <summary>
     /// The <see cref="IKeyVaultSecretManager"/> instance used to control secret loading.

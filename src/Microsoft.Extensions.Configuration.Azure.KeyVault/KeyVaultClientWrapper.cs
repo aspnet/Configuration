@@ -4,10 +4,10 @@
 using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
 
-namespace Microsoft.Extensions.Configuration.AzureKeyVault
+namespace Microsoft.Extensions.Configuration.Azure.KeyVault
 {
     /// <inheritdoc />
-    public class KeyVaultClientWrapper : IKeyVaultClient
+    internal class KeyVaultClientWrapper : IKeyVaultClient
     {
         private readonly KeyVaultClient _keyVaultClientImplementation;
 

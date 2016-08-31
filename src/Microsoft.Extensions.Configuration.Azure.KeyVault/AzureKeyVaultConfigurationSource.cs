@@ -3,12 +3,12 @@
 
 using Microsoft.Azure.KeyVault;
 
-namespace Microsoft.Extensions.Configuration.AzureKeyVault
+namespace Microsoft.Extensions.Configuration.Azure.KeyVault
 {
     /// <summary>
     /// Represents Azure KeyVault secrets as an <see cref="IConfigurationSource"/>.
     /// </summary>
-    public class AzureKeyVaultConfigurationSource : IConfigurationSource
+    internal class AzureKeyVaultConfigurationSource : IConfigurationSource
     {
         /// <summary>
         /// Gets or sets the <see cref="KeyVaultClient"/> to use for retrieving values.

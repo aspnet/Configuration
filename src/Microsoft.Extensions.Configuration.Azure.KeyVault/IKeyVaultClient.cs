@@ -4,14 +4,14 @@
 using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
 
-namespace Microsoft.Extensions.Configuration.AzureKeyVault
+namespace Microsoft.Extensions.Configuration.Azure.KeyVault
 {
     /// <summary>
     /// Client class to perform cryptographic key operations and vault operations
     /// against the Key Vault service.
     /// Thread safety: This class is thread-safe.
     /// </summary>
-    public interface IKeyVaultClient
+    internal interface IKeyVaultClient
     {
         /// <summary>List secrets in the specified vault</summary>
         /// <param name="vault">The URL for the vault containing the secrets.</param>

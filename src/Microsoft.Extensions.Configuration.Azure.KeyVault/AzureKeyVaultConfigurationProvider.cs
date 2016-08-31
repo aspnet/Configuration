@@ -6,12 +6,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
 
-namespace Microsoft.Extensions.Configuration.AzureKeyVault
+namespace Microsoft.Extensions.Configuration.Azure.KeyVault
 {
     /// <summary>
     /// An AzureKeyVault based <see cref="ConfigurationProvider"/>.
     /// </summary>
-    public class AzureKeyVaultConfigurationProvider : ConfigurationProvider
+    internal class AzureKeyVaultConfigurationProvider : ConfigurationProvider
     {
         private readonly IKeyVaultClient _client;
         private readonly string _vault;
