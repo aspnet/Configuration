@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault.Test
             client.Setup(c => c.GetSecretAsync(secret2Id)).ReturnsAsync(new Secret() { Value = "Value2", Id = secret2Id });
 
             // Act
-            var provider = new AzureKeyVaultConfigurationProvider(client.Object, VaultUri, null);
+            var provider = new AzureKeyVaultConfigurationProvider(client.Object, VaultUri, new DefaultKeyVaultSecretManager());
             provider.Load();
 
             // Assert
@@ -64,7 +65,7 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault.Test
             client.Setup(c => c.GetSecretAsync(secret1Id)).ReturnsAsync(new Secret() { Value = "Value1", Id = secret1Id });
 
             // Act
-            var provider = new AzureKeyVaultConfigurationProvider(client.Object, VaultUri, s => s.Identifier.Name.EndsWith("1"));
+            var provider = new AzureKeyVaultConfigurationProvider(client.Object, VaultUri, new EndsWithOneKeyVaultSecretManager());
             provider.Load();
 
             // Assert
@@ -90,7 +91,7 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault.Test
             client.Setup(c => c.GetSecretAsync(secret1Id)).Returns((string id) => Task.FromResult(new Secret() { Value = value, Id = id }));
 
             // Act & Assert
-            var provider = new AzureKeyVaultConfigurationProvider(client.Object, VaultUri, s => s.Identifier.Name.EndsWith("1"));
+            var provider = new AzureKeyVaultConfigurationProvider(client.Object, VaultUri, new DefaultKeyVaultSecretManager());
             provider.Load();
 
             client.VerifyAll();
@@ -115,7 +116,7 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault.Test
             client.Setup(c => c.GetSecretAsync(secret1Id)).ReturnsAsync(new Secret() { Value = "Value1", Id = secret1Id });
 
             // Act
-            var provider = new AzureKeyVaultConfigurationProvider(client.Object, VaultUri, null);
+            var provider = new AzureKeyVaultConfigurationProvider(client.Object, VaultUri, new DefaultKeyVaultSecretManager());
             provider.Load();
 
             // Assert
@@ -124,7 +125,14 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault.Test
             Assert.Equal("Value1", provider.Get("Section:Secret1"));
         }
 
-
         private string GetSecretId(string name) => new SecretIdentifier(VaultUri, name).Identifier;
+
+        private class EndsWithOneKeyVaultSecretManager : DefaultKeyVaultSecretManager
+        {
+            public override bool Load(SecretItem secret)
+            {
+                return secret.Identifier.Name.EndsWith("1");
+            }
+        }
     }
 }
