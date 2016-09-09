@@ -45,6 +45,16 @@ namespace Microsoft.Extensions.Configuration
         public abstract IConfigurationProvider Build(IConfigurationBuilder builder);
 
         /// <summary>
+        /// Called to use any default settings on the builder like the FileProvider or FileLoadExceptionHandler.
+        /// </summary>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
+        public void EnsureDefaults(IConfigurationBuilder builder)
+        {
+            FileProvider = FileProvider ?? builder.GetFileProvider();
+            OnLoadException = OnLoadException ?? builder.GetFileLoadExceptionHandler();
+        }
+
+        /// <summary>
         /// If no file provider has been set, for absolute Path, this will creates a physical file provider 
         /// for the nearest existing directory.
         /// </summary>

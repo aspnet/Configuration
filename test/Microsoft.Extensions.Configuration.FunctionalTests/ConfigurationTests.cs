@@ -375,7 +375,7 @@ CommonKey3:CommonKey4=IniValue6";
         }
 
         [Fact]
-        public void OnLoadErrorWillBeCalledOnParseError()
+        public void OnLoadErrorWillBeCalledOnJsonParseError()
         {
             // Arrange
             File.WriteAllText(Path.Combine(_basePath, "error.json"), @"{""JsonKey1"": ");
@@ -390,13 +390,68 @@ CommonKey3:CommonKey4=IniValue6";
 
             try
             {
-                new ConfigurationBuilder()
-                    .Add(new JsonConfigurationSource { Path = "error.json", OnLoadException = jsonLoadError })
+                new ConfigurationBuilder().AddJsonFile("error.json")
+                    .SetFileLoadExceptionHandler(jsonLoadError)
                     .Build();
             }
             catch (FormatException e)
             {
                 Assert.Equal(e, jsonError);
+            }
+            Assert.NotNull(provider);
+        }
+
+        [Fact]
+        public void OnLoadErrorWillBeCalledOnXmlParseError()
+        {
+            // Arrange
+            File.WriteAllText(Path.Combine(_basePath, "error.xml"), @"gobblygook");
+
+            FileConfigurationProvider provider = null;
+            Exception error = null;
+            Action<FileLoadExceptionContext> loadError = c =>
+            {
+                error = c.Exception;
+                provider = c.Provider;
+            };
+
+            try
+            {
+                new ConfigurationBuilder().AddJsonFile("error.xml")
+                    .SetFileLoadExceptionHandler(loadError)
+                    .Build();
+            }
+            catch (FormatException e)
+            {
+                Assert.Equal(e, error);
+            }
+            Assert.NotNull(provider);
+        }
+
+        [Fact]
+        public void OnLoadErrorWillBeCalledOnIniLoadError()
+        {
+            // Arrange
+            File.WriteAllText(Path.Combine(_basePath, "error.ini"), @"IniKey1=IniValue1
+IniKey1=IniValue2");
+
+            FileConfigurationProvider provider = null;
+            Exception error = null;
+            Action<FileLoadExceptionContext> loadError = c =>
+            {
+                error = c.Exception;
+                provider = c.Provider;
+            };
+
+            try
+            {
+                new ConfigurationBuilder().AddIniFile("error.ini")
+                    .SetFileLoadExceptionHandler(loadError)
+                    .Build();
+            }
+            catch (FormatException e)
+            {
+                Assert.Equal(e, error);
             }
             Assert.NotNull(provider);
         }
