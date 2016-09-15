@@ -33,6 +33,12 @@ namespace Microsoft.Extensions.Configuration
         public bool ReloadOnChange { get; set; }
 
         /// <summary>
+        /// Number of milliseconds that reload will wait before calling Load.  This helps
+        /// avoid triggering reload before a file is completely written. Default is 250.
+        /// </summary>
+        public int ReloadDelay { get; set; } = 250;
+
+        /// <summary>
         /// Will be called if an uncaught exception occurs in FileConfigurationProvider.Load.
         /// </summary>
         public Action<FileLoadExceptionContext> OnLoadException { get; set; }

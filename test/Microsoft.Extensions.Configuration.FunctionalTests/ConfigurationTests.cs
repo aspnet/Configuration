@@ -519,6 +519,26 @@ IniKey1=IniValue2");
         }
 
         [Fact]
+        public async Task ReloadOnChangeWorksAfterError()
+        {
+            File.WriteAllText(Path.Combine(_basePath, "reload.json"), @"{""JsonKey1"": ""JsonValue1""}");
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("reload.json", optional: false, reloadOnChange: true)
+                .Build();
+            Assert.Equal("JsonValue1", config["JsonKey1"]);
+
+            // Introduce an error and make sure the old key is removed
+            File.WriteAllText(Path.Combine(_basePath, "reload.json"), @"{""JsonKey1"": ");
+            await Task.Delay(2000); // wait for notification
+            Assert.Null(config["JsonKey1"]);
+
+            // Update the file again to make sure the config is updated
+            File.WriteAllText(Path.Combine(_basePath, "reload.json"), @"{""JsonKey1"": ""JsonValue2""}");
+            await Task.Delay(1100); // wait for notification
+            Assert.Equal("JsonValue2", config["JsonKey1"]);
+        }
+
+        [Fact]
         public void TouchingFileWillReload()
         {
             // Arrange
@@ -573,8 +593,7 @@ IniKey1=IniValue2");
             //Assert.True(token2.HasChanged, "Deleted");
         }
 
-        [ConditionalFact]
-        [OSSkipCondition(OperatingSystems.Linux)] // File watching is flaky on Linux CI
+        [Fact]
         public async Task CreatingOptionalFileInNonExistentDirectoryWillReload()
         {
             var directory = Path.Combine(_basePath, Path.GetRandomFileName());
@@ -602,7 +621,7 @@ IniKey1=IniValue2");
             File.WriteAllText(iniFile, @"IniKey1 = IniValue1");
             File.WriteAllText(xmlFile, @"<settings XmlKey1=""XmlValue1""/>");
 
-            await Task.Delay(2000);
+            await Task.Delay(1100);
 
             Assert.Equal("JsonValue1", config["JsonKey1"]);
             Assert.Equal("IniValue1", config["IniKey1"]);
@@ -641,7 +660,7 @@ IniKey1=IniValue2");
             File.Delete(iniFile);
             File.Delete(xmlFile);
 
-            await Task.Delay(2000);
+            await Task.Delay(1100);
 
             Assert.Null(config["JsonKey1"]);
             Assert.Null(config["IniKey1"]);
@@ -649,8 +668,7 @@ IniKey1=IniValue2");
             Assert.True(token.HasChanged);
         }
 
-        [ConditionalFact]
-        [OSSkipCondition(OperatingSystems.Linux)] // File watching is flaky on Linux CI
+        [Fact]
         public async Task CreatingWritingDeletingCreatingFileWillReload()
         {
             var iniFile = Path.Combine(_basePath, Path.GetRandomFileName());
@@ -674,7 +692,7 @@ IniKey1=IniValue2");
             File.WriteAllText(iniFile, @"IniKey1 = IniValue1");
             File.WriteAllText(xmlFile, @"<settings XmlKey1=""XmlValue1""/>");
 
-            await Task.Delay(2000);
+            await Task.Delay(1100);
 
             Assert.Equal("JsonValue1", config["JsonKey1"]);
             Assert.Equal("IniValue1", config["IniKey1"]);
@@ -687,7 +705,7 @@ IniKey1=IniValue2");
             File.WriteAllText(iniFile, @"IniKey1 = IniValue2");
             File.WriteAllText(xmlFile, @"<settings XmlKey1=""XmlValue2""/>");
 
-            await Task.Delay(2000);
+            await Task.Delay(1100);
 
             Assert.Equal("JsonValue2", config["JsonKey1"]);
             Assert.Equal("IniValue2", config["IniKey1"]);
@@ -702,7 +720,7 @@ IniKey1=IniValue2");
             File.Delete(iniFile);
             File.Delete(xmlFile);
 
-            await Task.Delay(2000);
+            await Task.Delay(1100);
 
             Assert.Null(config["JsonKey1"]);
             Assert.Null(config["IniKey1"]);
@@ -715,7 +733,7 @@ IniKey1=IniValue2");
             File.WriteAllText(iniFile, @"IniKey1 = IniValue1");
             File.WriteAllText(xmlFile, @"<settings XmlKey1=""XmlValue1""/>");
 
-            await Task.Delay(2000);
+            await Task.Delay(1100);
 
             Assert.Equal("JsonValue1", config["JsonKey1"]);
             Assert.Equal("IniValue1", config["IniKey1"]);

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Extensions.Configuration
@@ -30,7 +31,10 @@ namespace Microsoft.Extensions.Configuration
             {
                 ChangeToken.OnChange(
                     () => Source.FileProvider.Watch(Source.Path),
-                    () => Load(reload: true));
+                    () => {
+                        Thread.Sleep(Source.ReloadDelay);
+                        Load(reload: true);
+                    });
             }
         }
 
@@ -60,6 +64,11 @@ namespace Microsoft.Extensions.Configuration
             }
             else
             {
+                // Always create new Data on reload to drop old keys
+                if (reload)
+                {
+                    Data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                }
                 using (var stream = file.CreateReadStream())
                 {
                     try
