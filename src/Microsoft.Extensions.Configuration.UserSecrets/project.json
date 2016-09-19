@@ -12,7 +12,7 @@
   "packOptions": {
     "repository": {
       "type": "git",
-      "url": "git://github.com/aspnet/usersecrets"
+      "url": "https://github.com/aspnet/Configuration"
     },
     "tags": [
       "configuration",
