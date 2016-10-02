@@ -600,5 +600,63 @@ namespace Microsoft.Extensions.Configuration.Test
             Assert.Equal(1, children.First().GetChildren().Count());
             Assert.Equal(string.Empty, children.First().GetChildren().First().Key);
         }
+
+        [Fact]
+        public void GetRequiredValueReturnsTheValueWhenItExists()
+        {
+            // Arrange
+            var dict = new Dictionary<string, string>()
+            {
+                {"Mem1", "Value1"},
+                {"Mem1:", "NoKeyValue1"},
+                {"Mem1:KeyInMem1", "ValueInMem1"},
+                {"Mem1:KeyInMem1:Deep1", "ValueDeep1"},
+                {"Mem1:KeyInMem1:Empty", ""},
+                {"Mem1:KeyInMem1:Whitespace", " "}
+            };
+            var memConfigSrc = new MemoryConfigurationSource { InitialData = dict };
+
+            var configurationBuilder = new ConfigurationBuilder();
+
+            // Act
+            configurationBuilder.Add(memConfigSrc);
+            var config = configurationBuilder.Build();
+
+            // Assert
+            Assert.Equal("Value1", config.GetRequiredValue("Mem1"));
+            Assert.Equal("NoKeyValue1", config.GetRequiredValue("Mem1:"));
+            Assert.Equal("ValueInMem1", config.GetRequiredValue("Mem1:KeyInMem1"));
+            Assert.Equal("ValueDeep1", config.GetRequiredValue("Mem1:KeyInMem1:Deep1"));
+            Assert.Equal("", config.GetRequiredValue("Mem1:KeyInMem1:Empty"));
+            Assert.Equal(" ", config.GetRequiredValue("Mem1:KeyInMem1:Whitespace"));
+        }
+
+        [Fact]
+        public void GetRequiredValueForUnSetKeyThrowsInvalidOperationsValue()
+        {
+            // Arrange
+            var dic1 = new Dictionary<string, string>()
+            {
+                {"Mem1", null},
+                {"Mem1:", null},
+                {"Mem1:KeyInMem1", null},
+                {"Mem1:KeyInMem1:Deep1", null}
+            };
+            var memConfigSrc1 = new MemoryConfigurationSource { InitialData = dic1 };
+
+            var configurationBuilder = new ConfigurationBuilder();
+
+            // Act
+            configurationBuilder.Add(memConfigSrc1);
+            var config = configurationBuilder.Build();
+
+            // Assert
+            Assert.Throws<InvalidOperationException>(() => config.GetRequiredValue("Mem1"));
+            Assert.Throws<InvalidOperationException>(() => config.GetRequiredValue("Mem1:"));
+            Assert.Throws<InvalidOperationException>(() => config.GetRequiredValue("Mem1:KeyInMem1"));
+            Assert.Throws<InvalidOperationException>(() => config.GetRequiredValue("Mem1:KeyInMem2"));
+            Assert.Throws<InvalidOperationException>(() => config.GetRequiredValue("Mem1:KeyInMem1:Deep1"));
+            Assert.Throws<InvalidOperationException>(() => config.GetRequiredValue("Mem2:MissingValue"));
+        }
     }
 }

@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 
 namespace Microsoft.Extensions.Configuration
@@ -54,6 +55,23 @@ namespace Microsoft.Extensions.Configuration
                     stack.Push(child);
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets a required value corresponding to a configuration key,
+        /// </summary>
+        /// <param name="configuration">The <see cref="IConfiguration"/>.</param>
+        /// <param name="key">The configuration key.</param>
+        /// <returns>The configuration value.</returns>
+        /// <exception cref="InvalidOperationException">If the key does not exist or the key value is null</exception>
+        public static string GetRequiredValue(this IConfiguration configuration, string key)
+        {
+            var value = configuration[key];
+            if (value == null)
+            {
+                throw new InvalidOperationException(Resources.FormatError_RequiredKeyNotFound(key));
+            }
+            return value;
         }
     }
 }
