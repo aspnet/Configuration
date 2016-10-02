@@ -609,6 +609,40 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
                 exception.Message);
         }
 
+        [Fact]
+        public void GetRequiredValueReturnsTheConvertedValueWhenItIsNotNull()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                {"Integer", "-2"},
+                {"Boolean", "TRUe"},
+                {"Nested:Integer", "11"}
+            };
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddInMemoryCollection(dic);
+            var config = configurationBuilder.Build();
+
+            Assert.True(config.GetRequiredValue<bool?>("Boolean"));
+            Assert.Equal(-2, config.GetRequiredValue<int?>("Integer"));
+            Assert.Equal(11, config.GetRequiredValue<int?>("Nested:Integer"));
+        }
+
+        [Fact]
+        public void GetRequiredValueThrowsWhenValueIsNull()
+        {
+            var dic = new Dictionary<string, string>
+            {
+            };
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddInMemoryCollection(dic);
+            var config = configurationBuilder.Build();
+
+            Assert.Throws<InvalidOperationException>(() => config.GetRequiredValue<bool>("Boolean"));
+            Assert.Throws<InvalidOperationException>(() => config.GetRequiredValue<int>("Integer"));
+            Assert.Throws<InvalidOperationException>(() => config.GetRequiredValue<int>("Nested:Integer"));
+            Assert.Throws<InvalidOperationException>(() => config.GetRequiredValue<ComplexOptions>("Object"));
+        }
+
         private interface ISomeInterface
         {
         }

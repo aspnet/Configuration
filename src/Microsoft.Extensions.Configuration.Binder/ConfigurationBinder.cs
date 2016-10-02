@@ -438,5 +438,31 @@ namespace Microsoft.Extensions.Configuration
 
             return allProperties;
         }
+
+        /// <summary>
+        /// Extracts the value with the specified key and converts it to type T.
+        /// </summary>
+        /// <typeparam name="T">The type to convert the value to.</typeparam>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="key">The configuration key for the value to convert.</param>
+        /// <returns>The converted value.</returns>
+        public static T GetRequiredValue<T>(this IConfiguration configuration, string key)
+        {
+            return (T) GetRequiredValue(configuration, typeof(T), key);
+        }
+
+        /// <summary>
+        /// Extracts the value with the specified key and converts it to the specified type.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="type">The type to convert the value to.</param>
+        /// <param name="key">The configuration key for the value to convert.</param>
+        /// <returns>The converted value.</returns>
+        public static object GetRequiredValue(this IConfiguration configuration, Type type, string key)
+        {
+            var value = configuration.GetRequiredValue(key);
+
+            return ConvertValue(type, value);
+        }
     }
 }
