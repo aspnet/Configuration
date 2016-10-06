@@ -612,6 +612,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
         [Fact]
         public void GetRequiredValueReturnsTheConvertedValueWhenItIsNotNull()
         {
+            //Arrange
             var dic = new Dictionary<string, string>
             {
                 {"Integer", "-2"},
@@ -620,8 +621,11 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             };
             var configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddInMemoryCollection(dic);
+            
+            //Act
             var config = configurationBuilder.Build();
 
+            //Assert
             Assert.True(config.GetRequiredValue<bool?>("Boolean"));
             Assert.Equal(-2, config.GetRequiredValue<int?>("Integer"));
             Assert.Equal(11, config.GetRequiredValue<int?>("Nested:Integer"));
@@ -630,13 +634,17 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
         [Fact]
         public void GetRequiredValueThrowsWhenValueIsNull()
         {
+            //Arrange
             var dic = new Dictionary<string, string>
             {
             };
             var configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddInMemoryCollection(dic);
+            
+            //Act
             var config = configurationBuilder.Build();
 
+            //Assert
             Assert.Throws<InvalidOperationException>(() => config.GetRequiredValue<bool>("Boolean"));
             Assert.Throws<InvalidOperationException>(() => config.GetRequiredValue<int>("Integer"));
             Assert.Throws<InvalidOperationException>(() => config.GetRequiredValue<int>("Nested:Integer"));
