@@ -16,6 +16,47 @@ namespace Microsoft.Extensions.Configuration
     public static class ConfigurationBinder
     {
         /// <summary>
+        /// Attempts to bind the configuration instance to a new instance of type T.
+        /// If this configuration section has a value, that will be used.
+        /// Otherwise binding by matching property names against configuration keys recursively.
+        /// </summary>
+        /// <typeparam name="T">The type of the new instance to bind.</typeparam>
+        /// <param name="configuration">The configuration instance to bind.</param>
+        /// <returns>The new instance of T if successful, default(T) otherwise.</returns>
+        public static T Get<T>(this IConfiguration configuration)
+        {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
+            var result = configuration.Get(typeof(T));
+            if (result == null)
+            {
+                return default(T);
+            }
+            return (T)result;
+        }
+
+        /// <summary>
+        /// Attempts to bind the configuration instance to a new instance of type T.
+        /// If this configuration section has a value, that will be used.
+        /// Otherwise binding by matching property names against configuration keys recursively.
+        /// </summary>
+        /// <param name="configuration">The configuration instance to bind.</param>
+        /// <param name="type">The type of the new instance to bind.</param>
+        /// <returns>The new instance if successful, null otherwise.</returns>
+        public static object Get(this IConfiguration configuration, Type type)
+        {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
+            return BindInstance(type, instance: null, config: configuration);
+        }
+
+        /// <summary>
         /// Attempts to bind the given object instance to configuration values by matching property names against configuration keys recursively.
         /// </summary>
         /// <param name="configuration">The configuration instance to bind.</param>
@@ -31,24 +72,6 @@ namespace Microsoft.Extensions.Configuration
             {
                 BindInstance(instance.GetType(), instance, configuration);
             }
-        }
-
-        /// <summary>
-        /// Attempts to bind a new instance of T to configuration values by matching property names against configuration keys recursively.
-        /// </summary>
-        /// <typeparam name="T">The type of the new instance to bind.</typeparam>
-        /// <param name="configuration">The configuration instance to bind.</param>
-        /// <returns>The new instance of T</returns>
-        public static T Bind<T>(this IConfiguration configuration) where T : new()
-        {
-            if (configuration == null)
-            {
-                throw new ArgumentNullException(nameof(configuration));
-            }
-
-            var instance = new T();
-            BindInstance(instance.GetType(), instance, configuration);
-            return instance;
         }
 
         /// <summary>
@@ -221,10 +244,16 @@ namespace Microsoft.Extensions.Configuration
 
             var section = config as IConfigurationSection;
             var configValue = section?.Value;
-            if (configValue != null)
+            object convertedValue;
+            Exception error;
+            if (configValue != null && TryConvertValue(type, configValue, out convertedValue, out error))
             {
+                if (error != null)
+                {
+                    throw error;
+                }
                 // Leaf nodes are always reinitialized
-                return ConvertValue(type, configValue);
+                return convertedValue;
             }
 
             if (config != null && config.GetChildren().Any())
@@ -394,6 +423,42 @@ namespace Microsoft.Extensions.Configuration
             }
 
             return newArray;
+        }
+
+        private static bool TryConvertValue(Type type, string value, out object result, out Exception error)
+        {
+            error = null;
+            result = null;
+            if (type == typeof(object))
+            {
+                result = value;
+                return true;
+            }
+
+            if (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    return true;
+                }
+                return TryConvertValue(Nullable.GetUnderlyingType(type), value, out result, out error);
+            }
+
+            var converter = TypeDescriptor.GetConverter(type);
+            if (converter.CanConvertFrom(typeof(string)))
+            {
+                try
+                {
+                    result = converter.ConvertFromInvariantString(value);
+                }
+                catch (Exception ex)
+                {
+                    error = new InvalidOperationException(Resources.FormatError_FailedBinding(value, type), ex);
+                }
+                return true;
+            }
+
+            return false;
         }
 
         private static object ConvertValue(Type type, string value)
