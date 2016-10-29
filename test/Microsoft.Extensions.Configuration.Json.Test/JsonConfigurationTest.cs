@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using Microsoft.AspNetCore.Testing;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Test;
 using Newtonsoft.Json;
@@ -17,6 +18,23 @@ namespace Microsoft.Extensions.Configuration
             var p = new JsonConfigurationProvider(new JsonConfigurationSource { Optional = true });
             p.Load(TestStreamHelpers.StringToStream(json));
             return p;
+        }
+
+        [ReplaceCulture("es-AR", "es-AR")]
+        [Fact]
+        public void FloatWithCommaCultureDoesNotGetComma()
+        {
+            var json = @"{ 'B': 1.83 }";
+            var jsonConfigSrc = LoadProvider(json);
+            Assert.Equal("1.83", jsonConfigSrc.Get("B"));
+        }
+
+        [Fact]
+        public void FloatWithNormalCultureDoesNotGetComma()
+        {
+            var json = @"{ 'B': 1.83 }";
+            var jsonConfigSrc = LoadProvider(json);
+            Assert.Equal("1.83", jsonConfigSrc.Get("B"));
         }
 
         [Fact]
