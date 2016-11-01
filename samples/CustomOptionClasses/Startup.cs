@@ -24,7 +24,7 @@ namespace CustomOptionClasses
             // Make IOptions<MyOptions> available for dependency injection.
             services.Configure<MyOptions>(_configuration.GetSection("MyOptions"));
 
-            // Get MyOptions in ConfigureServices
+            // Access MyOptions in ConfigureServices
             var myOptions = services
                 .BuildServiceProvider()
                 .GetRequiredService<IOptions<MyOptions>>()
@@ -37,6 +37,7 @@ namespace CustomOptionClasses
 
         public void Configure(IApplicationBuilder app, IOptions<MyOptions> myOptionsProvider)
         {
+            // Access MyOptions in Configure
             var myOptions = myOptionsProvider.Value;
             Console.WriteLine($"MyOptions in Configure: {myOptions.StringOption} {myOptions.IntegerOption}"); 
 

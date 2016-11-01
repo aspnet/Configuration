@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -6,13 +5,17 @@ namespace CustomOptionClasses
 {
     public class HomeController : Controller
     {
-        private readonly IOptions<MyOptions> _myOptions;
+        private readonly IOptions<MyOptions> _myOptionsProvider;
 
-        public HomeController(IOptions<MyOptions> myOptions)
+        public HomeController(IOptions<MyOptions> myOptionsProvider)
         {
-            _myOptions = myOptions;
+            _myOptionsProvider = myOptionsProvider;
         }
 
-        public ContentResult Index() => Content($"MyOptions in the HomeController: {_myOptions.Value.StringOption} {_myOptions.Value.IntegerOption}");
+        public ContentResult Index()
+        {
+            var myOptions = _myOptionsProvider.Value;
+            return Content($"MyOptions in the HomeController: {myOptions.StringOption} {myOptions.IntegerOption}");
+        }
     }
 }
