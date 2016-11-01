@@ -21,16 +21,22 @@ namespace CustomOptionClasses
         {
             services.AddOptions();
 
-            // Make IOptions<MyOptions> available for dependency injection.
+            // Make IOptions<MyOptions> available for dependency injection
             services.Configure<MyOptions>(_configuration.GetSection("MyOptions"));
 
-            // Access MyOptions in ConfigureServices
-            var myOptions = services
+            // Access MyOptions using the ServiceProvider 
+            var myOptions1 = services
                 .BuildServiceProvider()
                 .GetRequiredService<IOptions<MyOptions>>()
                 .Value;
 
-            Console.WriteLine($"MyOptions in ConfigureServices: {myOptions.StringOption} {myOptions.IntegerOption}"); 
+            Console.WriteLine($"MyOptions in ConfigureServices: {myOptions1.StringOption} {myOptions1.IntegerOption}"); 
+
+            // Access MyOptions using Bind
+            var myOptions2 = new MyOptions();
+            _configuration.GetSection("MyOptions").Bind(myOptions2);
+
+            Console.WriteLine($"MyOptions in ConfigureServices: {myOptions2.StringOption} {myOptions2.IntegerOption}"); 
             
             services.AddMvc();
         }
