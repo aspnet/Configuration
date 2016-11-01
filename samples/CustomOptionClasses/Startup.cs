@@ -19,7 +19,7 @@ namespace CustomOptionClasses
         {
             services.AddOptions();
 
-            services.Configure<MyOptions>(_configuration);
+            services.Configure<MyOptions>(_configuration.GetSection("MyOptions"));
 
             services.AddMvc();
         }
