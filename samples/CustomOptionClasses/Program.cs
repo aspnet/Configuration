@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace CustomOptionClasses
 {
@@ -7,6 +8,11 @@ namespace CustomOptionClasses
         public static void Main(string[] args)
         {
             var config = new ConfigurationBuilder();
+
+            var builder = new WebHostBuilder()
+                .UseKestrel()
+                .UseStartup<Startup>()
+                .Build();
         }
     }
 }
