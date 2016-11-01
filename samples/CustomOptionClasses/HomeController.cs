@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -12,6 +13,6 @@ namespace CustomOptionClasses
             _myOptions = myOptions;
         }
 
-        public ContentResult Index() => Content(_myOptions?.Value?.Option1 ?? "Option1 is null");
+        public ContentResult Index() => Content($"MyOptions in the HomeController: {_myOptions.Value.StringOption} {_myOptions.Value.IntegerOption}");
     }
 }
