@@ -9,10 +9,12 @@ namespace CustomOptionClasses
         {
             var config = new ConfigurationBuilder();
 
-            var builder = new WebHostBuilder()
+            var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseStartup<Startup>()
                 .Build();
+
+            host.Run();
         }
     }
 }
