@@ -30,7 +30,7 @@ namespace Microsoft.Extensions.Configuration
             }
 
             var entryAssembly = Assembly.GetEntryAssembly();
-            var attribute = entryAssembly.GetCustomAttribute<UserSecretsIdAttribute>();
+            var attribute = entryAssembly?.GetCustomAttribute<UserSecretsIdAttribute>();
             if (attribute != null)
             {
                 return AddUserSecrets(configuration, attribute.UserSecretsId);
@@ -46,6 +46,12 @@ namespace Microsoft.Extensions.Configuration
             }
             catch
             { }
+
+            if (entryAssembly == null)
+            {
+                // can occur inside an app domain
+                throw new InvalidOperationException(Resources.Error_EntryAssemblyNull);
+            }
 
             // Show the error about missing UserSecretIdAttribute instead an error about missing
             // project.json as PJ is going away.
