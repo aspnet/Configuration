@@ -616,7 +616,7 @@ IniKey1=IniValue2");
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
-        public async Task DeletingKeysWithReload(bool optional)
+        public async Task DeletingFilesThatRedefineKeysWithReload(bool optional)
         {
             // Arrange
             _fileSystem.WriteFile(_jsonFile, @"{""Key"": ""JsonValue1""}");
