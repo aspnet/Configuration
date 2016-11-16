@@ -76,7 +76,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
         public class ConfigurationInterfaceOptions
         {
             public IConfigurationSection Section { get; set; }
-        }                
+        }
 
         public class DerivedOptionsWithIConfigurationSection : DerivedOptions
         {
@@ -388,10 +388,10 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             var configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddInMemoryCollection(dic);
             var config = configurationBuilder.Build();
-            
+
             var instance = new ComplexOptions();
             config.Bind(instance);
-            
+
             Assert.True(instance.Boolean);
             Assert.Equal(-2, instance.Integer);
             Assert.Equal(11, instance.Nested.Integer);
@@ -431,10 +431,10 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             var configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddInMemoryCollection(dic);
             var config = configurationBuilder.Build();
-            
+
             var instance = new DerivedOptions();
             config.Bind(instance);
-            
+
             Assert.True(instance.Boolean);
             Assert.Equal(-2, instance.Integer);
             Assert.Equal(11, instance.Nested.Integer);
@@ -462,6 +462,27 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             Assert.Equal(-2, options.Integer);
             Assert.Equal(11, options.Nested.Integer);
             Assert.Equal("Derived:Sup", options.Virtual);
+        }
+
+        [Fact]
+        public void CanGetComplexOptionsWhichHasAlsoHasValue()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                {"obj", "whut" },
+                {"obj:Integer", "-2"},
+                {"obj:Boolean", "TRUe"},
+                {"obj:Nested:Integer", "11"}
+            };
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddInMemoryCollection(dic);
+            var config = configurationBuilder.Build();
+
+            var options = config.GetSection("obj").Get<ComplexOptions>();
+            Assert.NotNull(options);
+            Assert.True(options.Boolean);
+            Assert.Equal(-2, options.Integer);
+            Assert.Equal(11, options.Nested.Integer);
         }
 
         [Fact]
@@ -495,23 +516,6 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             config.Bind(instance);
 
             Assert.Equal("other stuff", ComplexOptions.StaticProperty);
-        }
-
-        [Fact]
-        public void GetComplexOptionsWhichHasAlsoHasValueThrows()
-        {
-            var dic = new Dictionary<string, string>
-            {
-                {"obj", "whut" },
-                {"obj:Integer", "-2"},
-                {"obj:Boolean", "TRUe"},
-                {"obj:Nested:Integer", "11"}
-            };
-            var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.AddInMemoryCollection(dic);
-            var config = configurationBuilder.Build();
-
-            Assert.Throws<InvalidOperationException>(() => config.GetSection("obj").Get<ComplexOptions>());
         }
 
         [Theory]
