@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0-*",
+  "version": "1.1.0",
   "buildOptions": {
     "warningsAsErrors": true,
     "keyFile": "../../tools/Key.snk",
@@ -16,9 +16,9 @@
     ]
   },
   "dependencies": {
-    "Microsoft.Extensions.Configuration": "1.1.0-*",
-    "Microsoft.Extensions.FileProviders.Physical": "1.1.0-*",
-    "NETStandard.Library": "1.6.1-*"
+    "Microsoft.Extensions.Configuration": "1.1.0",
+    "Microsoft.Extensions.FileProviders.Physical": "1.1.0",
+    "NETStandard.Library": "1.6.1"
   },
   "frameworks": {
     "net451": {
@@ -30,7 +30,7 @@
     },
     "netstandard1.3": {
       "dependencies": {
-        "System.Threading.Thread": "4.3.0-*"
+        "System.Threading.Thread": "4.3.0"
       }
     }
   }
