@@ -11,15 +11,23 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets
         public IFileProvider FileProvider { get; set; }
         public bool Optional { get; set; }
 
+        public DockerSecretsConfigurationSource()
+            :this(null)
+        {
+        }
+
+        public DockerSecretsConfigurationSource(IFileProvider provider)
+        {
+            FileProvider = provider;
+        }
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
+            ResolveFileProvider();
             return new DockerSecretsConfigurationProvider(this);
         }
 
-        /// <summary>
-        /// </summary>
-        public void ResolveFileProvider()
+        private void ResolveFileProvider()
         {
             if (FileProvider == null)
             {

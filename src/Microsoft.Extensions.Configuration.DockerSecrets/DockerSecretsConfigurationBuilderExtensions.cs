@@ -30,7 +30,6 @@ namespace Microsoft.Extensions.Configuration
                 Optional = optional
             };
 
-            source.ResolveFileProvider();
             builder.Add(source);
             return builder;
         }

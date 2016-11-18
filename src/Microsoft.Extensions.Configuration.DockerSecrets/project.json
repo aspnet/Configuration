@@ -9,9 +9,6 @@
     "Microsoft.Extensions.Configuration": {
       "target": "project"
     },
-    "Microsoft.Extensions.Configuration.FileExtensions": {
-      "target": "project"
-    },
     "Microsoft.Extensions.FileProviders.Physical": "1.2.0-*"
   },
 

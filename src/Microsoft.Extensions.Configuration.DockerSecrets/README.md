@@ -15,5 +15,5 @@ $ docker service create --name test --secret mysecret <myImageName>
 Now the `test` service will be running and have access to a secret called mysecret. In your app you can access it with
 
 ```
-var secretValue = Configuration["test"];
+var secretValue = Configuration["mysecret"];
 ```
