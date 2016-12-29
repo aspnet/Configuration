@@ -1,0 +1,31 @@
+{
+  "description": "Shared test suite for Configuration provider implementations.",
+  "version": "1.2.0-*",
+  "buildOptions": {
+    "warningsAsErrors": true,
+    "keyFile": "../../tools/Key.snk",
+    "xmlDoc": true
+  },
+  "packOptions": {
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/aspnet/configuration"
+    },
+    "tags": [
+      "aspnetcore",
+      "configuration"
+    ]
+  },
+  "dependencies": {
+    "Microsoft.Extensions.Configuration.Abstractions": {
+      "target": "project"
+    },
+    "Microsoft.AspNetCore.Testing": "1.2.0-*",
+    "NETStandard.Library": "1.6.2-*",
+    "xunit": "2.2.0-*"
+  },
+  "frameworks": {
+    "net451": {},
+    "netstandard1.3": {}
+  }
+}

@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Test;
@@ -10,7 +11,7 @@ using Xunit;
 
 namespace Microsoft.Extensions.Configuration
 {
-    public class JsonConfigurationTest
+    public class JsonConfigurationTest : ConfigurationSpecificationTestBase
     {
         private JsonConfigurationProvider LoadProvider(string json)
         {
@@ -144,6 +145,11 @@ namespace Microsoft.Extensions.Configuration
         public void ThrowFormatExceptionWhenFileIsEmpty()
         {
             var exception = Assert.Throws<FormatException>(() => LoadProvider(@""));
+        }
+
+        public override IConfigurationBuilder LoadTestData(Dictionary<string, string> configData)
+        {
+            throw new NotImplementedException();
         }
     }
 }
