@@ -9,6 +9,7 @@
     "Microsoft.Extensions.Configuration.Test.Common": {
       "target": "project"
     },
+    "Microsoft.Extensions.Configuration.Specification.Tests": "1.2.0-*",
     "Microsoft.Extensions.Configuration.Xml": "1.2.0-*",
     "xunit": "2.2.0-*"
   },

@@ -662,9 +662,9 @@ namespace Microsoft.Extensions.Configuration.Test
             Assert.False(sectionExists);
         }
 
-        public override IConfigurationBuilder LoadTestData(Dictionary<string, string> configData)
+        public override IConfigurationProvider BuildTestProvider()
         {
-            return new ConfigurationBuilder().AddInMemoryCollection(configData);
+            return new MemoryConfigurationSource().Build(new ConfigurationBuilder());
         }
     }
 }

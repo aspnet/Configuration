@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Microsoft.Extensions.Configuration.Xml.Test
 {
-    public partial class XmlConfigurationTest
+    public partial class XmlConfigurationTest : ConfigurationSpecificationTestBase
     {
         [Fact]
         public void LoadKeyValuePairsFromValidXml()
@@ -392,6 +392,11 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
         public void XmlConfiguration_Does_Not_Throw_On_Optional_Configuration()
         {
             var config = new ConfigurationBuilder().AddXmlFile("NotExistingConfig.xml", optional: true).Build();
+        }
+
+        public override IConfigurationProvider BuildTestProvider()
+        {
+            return new XmlConfigurationSource().Build(new ConfigurationBuilder());
         }
     }
 }

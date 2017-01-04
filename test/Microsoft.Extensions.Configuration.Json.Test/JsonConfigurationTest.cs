@@ -2,11 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Test;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace Microsoft.Extensions.Configuration
@@ -147,9 +145,9 @@ namespace Microsoft.Extensions.Configuration
             var exception = Assert.Throws<FormatException>(() => LoadProvider(@""));
         }
 
-        public override IConfigurationBuilder LoadTestData(Dictionary<string, string> configData)
+        public override IConfigurationProvider BuildTestProvider()
         {
-            throw new NotImplementedException();
+            return new JsonConfigurationSource().Build(new ConfigurationBuilder());
         }
     }
 }
