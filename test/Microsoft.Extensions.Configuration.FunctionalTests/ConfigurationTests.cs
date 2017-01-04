@@ -394,9 +394,9 @@ CommonKey3:CommonKey4=IniValue6";
             // Arrange
             File.WriteAllText(Path.Combine(_basePath, "error.json"), @"{""JsonKey1"": ");
 
-            FileConfigurationProvider provider = null;
+            IConfigurationProvider provider = null;
             Exception jsonError = null;
-            Action<FileLoadExceptionContext> jsonLoadError = c =>
+            Action<LoadExceptionContext> jsonLoadError = c =>
             {
                 jsonError = c.Exception;
                 provider = c.Provider;
@@ -405,7 +405,7 @@ CommonKey3:CommonKey4=IniValue6";
             try
             {
                 new ConfigurationBuilder().AddJsonFile("error.json")
-                    .SetFileLoadExceptionHandler(jsonLoadError)
+                    .SetLoadExceptionHandler(jsonLoadError)
                     .Build();
             }
             catch (FormatException e)
@@ -421,9 +421,9 @@ CommonKey3:CommonKey4=IniValue6";
             // Arrange
             _fileSystem.WriteFile("error.xml", @"gobblygook");
 
-            FileConfigurationProvider provider = null;
+            IConfigurationProvider provider = null;
             Exception error = null;
-            Action<FileLoadExceptionContext> loadError = c =>
+            Action<LoadExceptionContext> loadError = c =>
             {
                 error = c.Exception;
                 provider = c.Provider;
@@ -432,7 +432,7 @@ CommonKey3:CommonKey4=IniValue6";
             try
             {
                 CreateBuilder().AddJsonFile("error.xml")
-                    .SetFileLoadExceptionHandler(loadError)
+                    .SetLoadExceptionHandler(loadError)
                     .Build();
             }
             catch (FormatException e)
@@ -449,9 +449,9 @@ CommonKey3:CommonKey4=IniValue6";
             _fileSystem.WriteFile("error.ini", @"IniKey1=IniValue1
 IniKey1=IniValue2");
 
-            FileConfigurationProvider provider = null;
+            IConfigurationProvider provider = null;
             Exception error = null;
-            Action<FileLoadExceptionContext> loadError = c =>
+            Action<LoadExceptionContext> loadError = c =>
             {
                 error = c.Exception;
                 provider = c.Provider;
@@ -460,7 +460,7 @@ IniKey1=IniValue2");
             try
             {
                 CreateBuilder().AddIniFile("error.ini")
-                    .SetFileLoadExceptionHandler(loadError)
+                    .SetLoadExceptionHandler(loadError)
                     .Build();
             }
             catch (FormatException e)
@@ -476,8 +476,8 @@ IniKey1=IniValue2");
             // Arrange
             _fileSystem.WriteFile("error.json", @"{""JsonKey1"": ");
 
-            FileConfigurationProvider provider = null;
-            Action<FileLoadExceptionContext> jsonLoadError = c =>
+            IConfigurationProvider provider = null;
+            Action<LoadExceptionContext> jsonLoadError = c =>
             {
                 provider = c.Provider;
                 c.Ignore = true;

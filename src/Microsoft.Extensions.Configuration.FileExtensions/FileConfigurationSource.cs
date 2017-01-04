@@ -39,9 +39,9 @@ namespace Microsoft.Extensions.Configuration
         public int ReloadDelay { get; set; } = 250;
 
         /// <summary>
-        /// Will be called if an uncaught exception occurs in FileConfigurationProvider.Load.
+        /// Will be called if an uncaught exception occurs in Load.
         /// </summary>
-        public Action<FileLoadExceptionContext> OnLoadException { get; set; }
+        public Action<LoadExceptionContext> OnLoadException { get; set; }
 
         /// <summary>
         /// Builds the <see cref="IConfigurationProvider"/> for this source.
@@ -57,7 +57,7 @@ namespace Microsoft.Extensions.Configuration
         public void EnsureDefaults(IConfigurationBuilder builder)
         {
             FileProvider = FileProvider ?? builder.GetFileProvider();
-            OnLoadException = OnLoadException ?? builder.GetFileLoadExceptionHandler();
+            OnLoadException = OnLoadException ?? builder.GetLoadExceptionHandler();
         }
 
         /// <summary>

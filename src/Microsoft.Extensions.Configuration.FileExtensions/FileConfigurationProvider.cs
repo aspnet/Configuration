@@ -26,6 +26,7 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentNullException(nameof(source));
             }
             Source = source;
+            OnLoadException = source.OnLoadException;
 
             if (Source.ReloadOnChange && Source.FileProvider != null)
             {
@@ -71,28 +72,7 @@ namespace Microsoft.Extensions.Configuration
                 }
                 using (var stream = file.CreateReadStream())
                 {
-                    try
-                    {
-                        Load(stream);
-                    }
-                    catch (Exception e)
-                    {
-                        bool ignoreException = false;
-                        if (Source.OnLoadException != null)
-                        {
-                            var exceptionContext = new FileLoadExceptionContext
-                            {
-                                Provider = this,
-                                Exception = e
-                            };
-                            Source.OnLoadException.Invoke(exceptionContext);
-                            ignoreException = exceptionContext.Ignore;
-                        }
-                        if (!ignoreException)
-                        {
-                            throw e;
-                        }
-                    }
+                    Load(stream);
                 }
             }
             // REVIEW: Should we raise this in the base as well / instead?
@@ -104,7 +84,7 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <exception cref="FileNotFoundException">If Optional is <c>false</c> on the source and a
         /// file does not exist at specified Path.</exception>
-        public override void Load()
+        public override void DoLoad()
         {
             Load(reload: false);
         }

@@ -30,6 +30,11 @@ namespace Microsoft.Extensions.Configuration
         protected IDictionary<string, string> Data { get; set; }
 
         /// <summary>
+        /// Will be called if an uncaught exception occurs in Load.
+        /// </summary>
+        protected Action<LoadExceptionContext> OnLoadException { get; set; }
+
+        /// <summary>
         /// Attempts to find a value with the given key, returns true if one is found, false otherwise.
         /// </summary>
         /// <param name="key">The key to lookup.</param>
@@ -53,10 +58,40 @@ namespace Microsoft.Extensions.Configuration
         /// <summary>
         /// Loads (or reloads) the data for this provider.
         /// </summary>
-        public virtual void Load()
+        public void Load()
         {
+            try
+            {
+                DoLoad();
+            }
+            catch (Exception e)
+            {
+                bool ignoreException = false;
+                if (OnLoadException != null)
+                {
+                    var exceptionContext = new LoadExceptionContext
+                    {
+                        Provider = this,
+                        Exception = e
+                    };
+                    OnLoadException.Invoke(exceptionContext);
+                    ignoreException = exceptionContext.Ignore;
+                }
+                if (!ignoreException)
+                {
+                    throw e;
+                }
+            }
         }
-       
+
+        /// <summary>
+        /// Loads (or reloads) the data for this provider.
+        /// </summary>
+        public virtual void DoLoad()
+        {
+
+        }
+
         /// <summary>
         /// Returns the list of keys that this provider has.
         /// </summary>

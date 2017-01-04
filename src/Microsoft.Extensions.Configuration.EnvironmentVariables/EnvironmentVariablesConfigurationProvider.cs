@@ -41,7 +41,7 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables
         /// <summary>
         /// Loads the environment variables.
         /// </summary>
-        public override void Load()
+        public override void DoLoad()
         {
             Load(Environment.GetEnvironmentVariables());
         }
