@@ -5,12 +5,11 @@ using System;
 using System.IO;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Test;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace Microsoft.Extensions.Configuration
 {
-    public class JsonConfigurationTest
+    public class JsonConfigurationTest : ConfigurationSpecificationTestBase
     {
         private JsonConfigurationProvider LoadProvider(string json)
         {
@@ -144,6 +143,11 @@ namespace Microsoft.Extensions.Configuration
         public void ThrowFormatExceptionWhenFileIsEmpty()
         {
             var exception = Assert.Throws<FormatException>(() => LoadProvider(@""));
+        }
+
+        public override IConfigurationProvider BuildTestProvider()
+        {
+            return new JsonConfigurationSource().Build(new ConfigurationBuilder());
         }
     }
 }

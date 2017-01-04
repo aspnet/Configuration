@@ -6,6 +6,7 @@
   "dependencies": {
     "dotnet-test-xunit": "2.2.0-*",
     "Microsoft.Extensions.Configuration.Json": "1.2.0-*",
+    "Microsoft.Extensions.Configuration.Specification.Tests": "1.2.0-*",
     "Microsoft.Extensions.Configuration.Test.Common": {
       "target": "project"
     },

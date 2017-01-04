@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Microsoft.Extensions.Configuration.Test
 {
-    public class ConfigurationTest
+    public class ConfigurationTest : ConfigurationSpecificationTestBase
     {
         [Fact]
         public void LoadAndCombineKeyValuePairsFromDifferentConfigurationProviders()
@@ -660,6 +660,11 @@ namespace Microsoft.Extensions.Configuration.Test
 
             // Assert
             Assert.False(sectionExists);
+        }
+
+        public override IConfigurationProvider BuildTestProvider()
+        {
+            return new MemoryConfigurationSource().Build(new ConfigurationBuilder());
         }
     }
 }

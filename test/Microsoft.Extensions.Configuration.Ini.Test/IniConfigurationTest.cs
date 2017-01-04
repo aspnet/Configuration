@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Microsoft.Extensions.Configuration.Ini.Test
 {
-    public class IniConfigurationTest
+    public class IniConfigurationTest : ConfigurationSpecificationTestBase
     {
         [Fact]
         public void LoadKeyValuePairsFromValidIniFile()
@@ -212,5 +212,11 @@ DefaultConnection=TestConnectionString
         {
             var config = new ConfigurationBuilder().AddIniFile("NotExistingConfig.ini", optional: true).Build();
         }
+
+        public override IConfigurationProvider BuildTestProvider()
+        {
+            return new IniConfigurationSource().Build(new ConfigurationBuilder());
+        }
+
     }
 }

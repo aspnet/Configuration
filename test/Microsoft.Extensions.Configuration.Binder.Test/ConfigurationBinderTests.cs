@@ -636,6 +636,40 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
                 exception.Message);
         }
 
+        public class DictOptions : Dictionary<string, string>
+        {
+            public bool Enabled { get; set; }
+        }
+
+        [Fact]
+        public void CanBindToDictionaryDerivedOptions()
+        {
+            // Test
+            var input = new Dictionary<string, string>
+            {
+                // Binds to MyOptions.Enabled because it exists as a writable property
+                {"MyOptions:Enabled", "true"},
+                // Binds to regular entries
+                {"MyOptions:abc", "val_1"},
+                {"MyOptions:def", "val_2"},
+                // Also binds to a regular entry because Count is not a writable property
+                {"MyOptions:Count", "3"}
+            };
+
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddInMemoryCollection(input);
+            var config = configurationBuilder.Build();
+
+            var options = config.GetSection("MyOptions").Get<DictOptions>();
+
+            Assert.Equal(options["Enabled"], "true");
+            //Assert.Equal(true, options.Enabled);
+            //Assert.Equal(3, options.Count);
+            Assert.Equal("val_1", options["abc"]);
+            Assert.Equal("val_2", options["def"]);
+            Assert.Equal("3", options["Count"]);
+        }
+
         private interface ISomeInterface
         {
         }

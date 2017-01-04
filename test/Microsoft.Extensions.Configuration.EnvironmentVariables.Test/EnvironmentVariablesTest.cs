@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Microsoft.Extensions.Configuration.EnvironmentVariables.Test
 {
-    public class EnvironmentVariablesTest
+    public class EnvironmentVariablesTest : ConfigurationSpecificationTestBase
     {
         [Fact]
         public void LoadKeyValuePairsFromEnvironmentDictionary()
@@ -148,6 +148,11 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables.Test
 
             Assert.Equal("connection", envConfigSrc.Get("data:ConnectionString"));
             Assert.Equal("System.Data.SqlClient", envConfigSrc.Get("ConnectionStrings:_db1_ProviderName"));
+        }
+
+        public override IConfigurationProvider BuildTestProvider()
+        {
+            return new EnvironmentVariablesConfigurationSource().Build(new ConfigurationBuilder());
         }
     }
 }

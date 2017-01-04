@@ -15,7 +15,7 @@ using Xunit;
 
 namespace Microsoft.Extensions.Configuration.AzureKeyVault.Test
 {
-    public class AzureKeyVaultConfigurationTest
+    public class AzureKeyVaultConfigurationTest : ConfigurationSpecificationTestBase
     {
         private const string VaultUri = "https://vault";
 
@@ -129,6 +129,15 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault.Test
         }
 
         private string GetSecretId(string name) => new SecretIdentifier(VaultUri, name).Identifier;
+
+        public override IConfigurationProvider BuildTestProvider()
+        {
+            return new AzureKeyVaultConfigurationSource
+            {
+                Client = new Mock<KeyVaultClient>().Object,
+                Vault = "itsstolen!"
+            }.Build(new ConfigurationBuilder());
+        }
 
         private class EndsWithOneKeyVaultSecretManager : DefaultKeyVaultSecretManager
         {
