@@ -42,7 +42,7 @@ namespace Microsoft.Extensions.Configuration.UserSecrets
             }
             var target = Path.Combine(_solutionRoot.FullName, "src", "Microsoft.Extensions.Configuration.UserSecrets", "build", "netstandard1.0", "Microsoft.Extensions.Configuration.UserSecrets.targets");
             Directory.CreateDirectory(Path.Combine(_tempDir, "obj"));
-            File.Copy(target, Path.Combine(_tempDir, "obj", "test.csproj.usersecretstest.targets")); // imitates how NuGet will import thsi target
+            File.Copy(target, Path.Combine(_tempDir, "obj", "test.csproj.usersecretstest.targets")); // imitates how NuGet will import this target
             var testProj = Path.Combine(_tempDir, "test.csproj");
             // should represent a 'dotnet new' project
             File.WriteAllText(testProj, @"
@@ -82,7 +82,7 @@ namespace Microsoft.Extensions.Configuration.UserSecrets
                 UseShellExecute = false,
                 WorkingDirectory = _tempDir
             };
-            Process.Start(buildInfo).WaitForExit(); 
+            Process.Start(buildInfo).WaitForExit();
             // build will fail because the test proj doesn't reference UserSecrets.dll
             // but that's okay. We just want to verify the target generates code correctly
 
