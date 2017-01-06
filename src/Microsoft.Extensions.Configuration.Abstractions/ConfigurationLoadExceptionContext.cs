@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.Configuration
     /// <summary>
     /// Contains information about a load exception.
     /// </summary>
-    public class LoadExceptionContext
+    public class ConfigurationLoadExceptionContext
     {
         /// <summary>
         /// The <see cref="IConfigurationProvider"/> that caused the exception.

@@ -4,9 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Testing.xunit;
 using Microsoft.Extensions.Configuration.Ini;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Xml;
@@ -360,6 +358,19 @@ CommonKey3:CommonKey4=IniValue6";
                 Source.FileProvider = builder.GetFileProvider();
                 return this;
             }
+
+            Action<ConfigurationLoadExceptionContext> IConfigurationSource.OnLoadException
+            {
+                get
+                {
+                    return OnLoadException;
+                }
+                set
+                {
+                    OnLoadException = value;
+                }
+            }
+
         }
 
         public class TestJsonSourceProvider : JsonConfigurationProvider, IConfigurationSource
@@ -373,6 +384,19 @@ CommonKey3:CommonKey4=IniValue6";
                 Source.FileProvider = builder.GetFileProvider();
                 return this;
             }
+
+            Action<ConfigurationLoadExceptionContext> IConfigurationSource.OnLoadException
+            {
+                get
+                {
+                    return OnLoadException;
+                }
+                set
+                {
+                    OnLoadException = value;
+                }
+            }
+
         }
 
         public class TestXmlSourceProvider : XmlConfigurationProvider, IConfigurationSource
@@ -386,6 +410,19 @@ CommonKey3:CommonKey4=IniValue6";
                 Source.FileProvider = builder.GetFileProvider();
                 return this;
             }
+
+            Action<ConfigurationLoadExceptionContext> IConfigurationSource.OnLoadException
+            {
+                get
+                {
+                    return OnLoadException;
+                }
+                set
+                {
+                    OnLoadException = value;
+                }
+            }
+
         }
 
         [Fact]
@@ -396,7 +433,7 @@ CommonKey3:CommonKey4=IniValue6";
 
             IConfigurationProvider provider = null;
             Exception jsonError = null;
-            Action<LoadExceptionContext> jsonLoadError = c =>
+            Action<ConfigurationLoadExceptionContext> jsonLoadError = c =>
             {
                 jsonError = c.Exception;
                 provider = c.Provider;
@@ -416,6 +453,34 @@ CommonKey3:CommonKey4=IniValue6";
         }
 
         [Fact]
+        public async Task OnLoadErrorWillBeCalledOnJsonParseErrorInReload()
+        {
+            // Arrange
+            File.WriteAllText(Path.Combine(_basePath, "error.json"), @"{""JsonKey1"":""JsonValue1""}");
+
+            IConfigurationProvider provider = null;
+            Exception jsonError = null;
+            Action<ConfigurationLoadExceptionContext> jsonLoadError = c =>
+            {
+                jsonError = c.Exception;
+                provider = c.Provider;
+            };
+
+            var config = new ConfigurationBuilder().AddJsonFile("error.json", optional: false, reloadOnChange: true)
+                    .SetLoadExceptionHandler(jsonLoadError)
+                    .Build();
+
+            Assert.Null(jsonError);
+
+            File.WriteAllText(Path.Combine(_basePath, "error.json"), @"{""JsonKey1"": ");
+
+            await Task.Delay(1500);
+
+            Assert.NotNull(jsonError);
+            Assert.NotNull(provider);
+        }
+
+        [Fact]
         public void OnLoadErrorWillBeCalledOnXmlParseError()
         {
             // Arrange
@@ -423,7 +488,7 @@ CommonKey3:CommonKey4=IniValue6";
 
             IConfigurationProvider provider = null;
             Exception error = null;
-            Action<LoadExceptionContext> loadError = c =>
+            Action<ConfigurationLoadExceptionContext> loadError = c =>
             {
                 error = c.Exception;
                 provider = c.Provider;
@@ -451,7 +516,7 @@ IniKey1=IniValue2");
 
             IConfigurationProvider provider = null;
             Exception error = null;
-            Action<LoadExceptionContext> loadError = c =>
+            Action<ConfigurationLoadExceptionContext> loadError = c =>
             {
                 error = c.Exception;
                 provider = c.Provider;
@@ -477,7 +542,7 @@ IniKey1=IniValue2");
             _fileSystem.WriteFile("error.json", @"{""JsonKey1"": ");
 
             IConfigurationProvider provider = null;
-            Action<LoadExceptionContext> jsonLoadError = c =>
+            Action<ConfigurationLoadExceptionContext> jsonLoadError = c =>
             {
                 provider = c.Provider;
                 c.Ignore = true;
@@ -510,7 +575,7 @@ IniKey1=IniValue2");
             foreach (var provider in configurationBuilder.Sources)
             {
                 Assert.Equal("NewValue",
-                    (provider as FileConfigurationProvider).Get("CommonKey1:CommonKey2:CommonKey3:CommonKey4"));
+                    (provider as IConfigurationProvider).Get("CommonKey1:CommonKey2:CommonKey3:CommonKey4"));
             }
 
             // Recover values by reloading
@@ -525,7 +590,7 @@ IniKey1=IniValue2");
             foreach (var provider in configurationBuilder.Sources)
             {
                 Assert.Equal("NewValue",
-                    (provider as FileConfigurationProvider).Get("CommonKey1:CommonKey2:CommonKey3:CommonKey4"));
+                    (provider as IConfigurationProvider).Get("CommonKey1:CommonKey2:CommonKey3:CommonKey4"));
             }
 
             // Recover values by reloading

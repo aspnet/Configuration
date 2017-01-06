@@ -208,6 +208,18 @@ namespace Microsoft.Extensions.Configuration.Test
                 : base(new MemoryConfigurationSource { InitialData = initialData })
             { }
 
+            Action<ConfigurationLoadExceptionContext> IConfigurationSource.OnLoadException
+            {
+                get
+                {
+                    return OnLoadException;
+                }
+                set
+                {
+                    OnLoadException = value;
+                }
+            }
+
             public IConfigurationProvider Build(IConfigurationBuilder builder)
             {
                 return this;

@@ -155,7 +155,7 @@ namespace Microsoft.Extensions.Configuration
 
             configurationBuilder.Add(new AzureKeyVaultConfigurationSource()
             {
-                Client = client,
+                Client = new KeyVaultClientWrapper(client),
                 Vault = vault,
                 Manager = manager
             });

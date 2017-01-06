@@ -12,17 +12,29 @@ namespace Microsoft.Extensions.Configuration
     /// <summary>
     /// Base helper class for implementing an <see cref="IConfigurationProvider"/>
     /// </summary>
-    public abstract class ConfigurationProvider : IConfigurationProvider
+    /// <typeparam name="TSource">The type of <see cref="IConfigurationSource"/> used to build this provider.</typeparam>
+    public abstract class ConfigurationProvider<TSource> : IConfigurationProvider where TSource : IConfigurationSource
     {
         private ConfigurationReloadToken _reloadToken = new ConfigurationReloadToken();
 
         /// <summary>
         /// Initializes a new <see cref="IConfigurationProvider"/>
         /// </summary>
-        protected ConfigurationProvider()
+        protected ConfigurationProvider(TSource source)
         {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
             Data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            Source = source;
         }
+
+        /// <summary>
+        /// The <see cref="IConfigurationSource"/> used to build this provider.
+        /// </summary>
+        public TSource Source { get; }
 
         /// <summary>
         /// The configuration key value pairs for this provider.
@@ -32,7 +44,7 @@ namespace Microsoft.Extensions.Configuration
         /// <summary>
         /// Will be called if an uncaught exception occurs in Load.
         /// </summary>
-        protected Action<LoadExceptionContext> OnLoadException { get; set; }
+        protected Action<ConfigurationLoadExceptionContext> OnLoadException { get; set; }
 
         /// <summary>
         /// Attempts to find a value with the given key, returns true if one is found, false otherwise.
@@ -58,38 +70,8 @@ namespace Microsoft.Extensions.Configuration
         /// <summary>
         /// Loads (or reloads) the data for this provider.
         /// </summary>
-        public void Load()
+        public virtual void Load()
         {
-            try
-            {
-                DoLoad();
-            }
-            catch (Exception e)
-            {
-                bool ignoreException = false;
-                if (OnLoadException != null)
-                {
-                    var exceptionContext = new LoadExceptionContext
-                    {
-                        Provider = this,
-                        Exception = e
-                    };
-                    OnLoadException.Invoke(exceptionContext);
-                    ignoreException = exceptionContext.Ignore;
-                }
-                if (!ignoreException)
-                {
-                    throw e;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Loads (or reloads) the data for this provider.
-        /// </summary>
-        public virtual void DoLoad()
-        {
-
         }
 
         /// <summary>
@@ -134,5 +116,14 @@ namespace Microsoft.Extensions.Configuration
             var previousToken = Interlocked.Exchange(ref _reloadToken, new ConfigurationReloadToken());
             previousToken.OnReload();
         }
+
+        IConfigurationSource IConfigurationProvider.Source
+        {
+            get
+            {
+                return Source;
+            }
+        }
+
     }
 }

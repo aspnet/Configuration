@@ -31,7 +31,7 @@ namespace Microsoft.Extensions.Configuration
             _providers = providers;
             foreach (var p in providers)
             {
-                p.Load();
+                p.SafeLoad();
                 ChangeToken.OnChange(() => p.GetReloadToken(), () => RaiseChanged());
             }
         }
@@ -117,7 +117,7 @@ namespace Microsoft.Extensions.Configuration
         {
             foreach (var provider in _providers)
             {
-                provider.Load();
+                provider.SafeLoad();
             }
             RaiseChanged();
         }

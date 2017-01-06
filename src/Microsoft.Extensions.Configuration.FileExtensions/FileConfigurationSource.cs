@@ -1,7 +1,6 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.IO;
 using Microsoft.Extensions.FileProviders;
 
@@ -10,7 +9,7 @@ namespace Microsoft.Extensions.Configuration
     /// <summary>
     /// Represents a base class for file based <see cref="IConfigurationSource"/>.
     /// </summary>
-    public abstract class FileConfigurationSource : IConfigurationSource
+    public abstract class FileConfigurationSource : ConfigurationSource
     {
         /// <summary>
         /// Used to access the contents of the file.
@@ -37,18 +36,6 @@ namespace Microsoft.Extensions.Configuration
         /// avoid triggering reload before a file is completely written. Default is 250.
         /// </summary>
         public int ReloadDelay { get; set; } = 250;
-
-        /// <summary>
-        /// Will be called if an uncaught exception occurs in Load.
-        /// </summary>
-        public Action<LoadExceptionContext> OnLoadException { get; set; }
-
-        /// <summary>
-        /// Builds the <see cref="IConfigurationProvider"/> for this source.
-        /// </summary>
-        /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
-        /// <returns>A <see cref="IConfigurationProvider"/></returns>
-        public abstract IConfigurationProvider Build(IConfigurationBuilder builder);
 
         /// <summary>
         /// Called to use any default settings on the builder like the FileProvider or FileLoadExceptionHandler.

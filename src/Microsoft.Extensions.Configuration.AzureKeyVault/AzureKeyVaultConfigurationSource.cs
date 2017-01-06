@@ -8,12 +8,12 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault
     /// <summary>
     /// Represents Azure KeyVault secrets as an <see cref="IConfigurationSource"/>.
     /// </summary>
-    internal class AzureKeyVaultConfigurationSource : IConfigurationSource
+    internal class AzureKeyVaultConfigurationSource : ConfigurationSource
     {
         /// <summary>
         /// Gets or sets the <see cref="KeyVaultClient"/> to use for retrieving values.
         /// </summary>
-        public KeyVaultClient Client { get; set; }
+        public IKeyVaultClient Client { get; set; }
 
         /// <summary>
         /// Gets or sets the vault uri.
@@ -26,9 +26,9 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault
         public IKeyVaultSecretManager Manager { get; set; }
 
         /// <inheritdoc />
-        public IConfigurationProvider Build(IConfigurationBuilder builder)
+        public override IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new AzureKeyVaultConfigurationProvider(new KeyVaultClientWrapper(Client), Vault, Manager);
+            return new AzureKeyVaultConfigurationProvider(this);
         }
     }
 }
