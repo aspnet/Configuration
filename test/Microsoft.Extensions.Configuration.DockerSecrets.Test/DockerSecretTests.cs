@@ -23,7 +23,7 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets.Test
         [Fact]
         public void DoesNotThrowWhenOptionalAndNoSecrets()
         {
-            new ConfigurationBuilder().AddDockerSecrets(optional: true).Build();
+            new ConfigurationBuilder().AddDockerSecrets(o => o.Optional = true).Build();
         }
 
         [Fact]
@@ -33,10 +33,8 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets.Test
                 new TestFile("Secret1", "SecretValue1"),
                 new TestFile("Secret2", "SecretValue2"));
 
-            var source = new DockerSecretsConfigurationSource(testFileProvider);
-
             var config = new ConfigurationBuilder()
-                .Add(source)
+                .AddDockerSecrets(o => o.FileProvider = testFileProvider)
                 .Build();
 
             Assert.Equal("SecretValue1", config["Secret1"]);
@@ -51,15 +49,73 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets.Test
                 new TestFile("Secret2", "SecretValue2"),
                 new TestFile("directory"));
 
-            var source = new DockerSecretsConfigurationSource(testFileProvider);
-
             var config = new ConfigurationBuilder()
-                .Add(source)
+                .AddDockerSecrets(o => o.FileProvider = testFileProvider)
                 .Build();
 
             Assert.Equal("SecretValue1", config["Secret1"]);
             Assert.Equal("SecretValue2", config["Secret2"]);
         }
+
+        [Fact]
+        public void CanIgnoreFilesWithDefault()
+        {
+            var testFileProvider = new TestFileProvider(
+                new TestFile("ignore.Secret0", "SecretValue0"),
+                new TestFile("ignore.Secret1", "SecretValue1"),
+                new TestFile("Secret2", "SecretValue2"));
+
+            var config = new ConfigurationBuilder()
+                .AddDockerSecrets(o => o.FileProvider = testFileProvider)
+                .Build();
+
+            Assert.Null(config["ignore.Secret0"]);
+            Assert.Null(config["ignore.Secret1"]);
+            Assert.Equal("SecretValue2", config["Secret2"]);
+        }
+
+        [Fact]
+        public void CanIgnoreFilesWithCustomIgnore()
+        {
+            var testFileProvider = new TestFileProvider(
+                new TestFile("meSecret0", "SecretValue0"),
+                new TestFile("meSecret1", "SecretValue1"),
+                new TestFile("Secret2", "SecretValue2"));
+
+            var config = new ConfigurationBuilder()
+                .AddDockerSecrets(o =>
+                {
+                    o.FileProvider = testFileProvider;
+                    o.IgnorePrefx = "me";
+                })
+                .Build();
+
+            Assert.Null(config["meSecret0"]);
+            Assert.Null(config["meSecret1"]);
+            Assert.Equal("SecretValue2", config["Secret2"]);
+        }
+
+        [Fact]
+        public void CanUnIgnoreDefaultFiles()
+        {
+            var testFileProvider = new TestFileProvider(
+                new TestFile("ignore.Secret0", "SecretValue0"),
+                new TestFile("ignore.Secret1", "SecretValue1"),
+                new TestFile("Secret2", "SecretValue2"));
+
+            var config = new ConfigurationBuilder()
+                .AddDockerSecrets(o =>
+                {
+                    o.FileProvider = testFileProvider;
+                    o.IgnorePrefx = null;
+                })
+                .Build();
+
+            Assert.Equal("SecretValue0", config["ignore.Secret0"]);
+            Assert.Equal("SecretValue1", config["ignore.Secret1"]);
+            Assert.Equal("SecretValue2", config["Secret2"]);
+        }
+
     }
 
     class TestFileProvider : IFileProvider

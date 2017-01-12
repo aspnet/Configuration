@@ -1,37 +1,41 @@
 using System;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.DockerSecrets;
-using Microsoft.Extensions.FileProviders;
 
 namespace Microsoft.Extensions.Configuration
 {
+    /// <summary>
+    /// Extension methods for registering <see cref="DockerSecretsConfigurationProvider"/> with <see cref="IConfigurationBuilder"/>.
+    /// </summary>
     public static class DockerSecretsConfigurationBuilderExtensions
     {
-        public static IConfigurationBuilder AddDockerSecrets(this IConfigurationBuilder builder)
+        /// <summary>
+        /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from docker secrets.
+        /// </summary>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddDockerSecrets(this IConfigurationBuilder builder) =>
+            builder.AddDockerSecrets(configureSource: null);
+
+        /// <summary>
+        /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from docker secrets.
+        /// </summary>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="secretsPath">The path to the secrets directory.</param>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddDockerSecrets(this IConfigurationBuilder builder, string secretsPath) 
+            => builder.AddDockerSecrets(source => source.SecretsDirectory = secretsPath);
+
+        /// <summary>
+        /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from docker secrets.
+        /// </summary>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="configureSource">Configures the source secrets.</param>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddDockerSecrets(this IConfigurationBuilder builder, Action<DockerSecretsConfigurationSource> configureSource)
         {
-            return AddDockerSecrets(builder, false, null);
-        }
-
-        public static IConfigurationBuilder AddDockerSecrets(this IConfigurationBuilder builder, bool optional)
-        {
-            return AddDockerSecrets(builder, optional, null);
-        }
-
-        public static IConfigurationBuilder AddDockerSecrets(this IConfigurationBuilder builder, bool optional, IFileProvider provider)
-        {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            var source = new DockerSecretsConfigurationSource
-            {
-                FileProvider = provider,
-                Optional = optional
-            };
-
-            builder.Add(source);
-            return builder;
+            var source = new DockerSecretsConfigurationSource();
+            configureSource?.Invoke(source);
+            return builder.Add(source);
         }
     }
 }

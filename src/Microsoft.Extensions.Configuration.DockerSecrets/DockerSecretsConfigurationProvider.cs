@@ -1,37 +1,54 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Extensions.Configuration.DockerSecrets
 {
+    /// <summary>
+    /// An docker secrets based <see cref="ConfigurationProvider"/>.
+    /// </summary>
     public class DockerSecretsConfigurationProvider : ConfigurationProvider
     {
         DockerSecretsConfigurationSource Source { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance.
+        /// </summary>
+        /// <param name="source">The settings.</param>
         public DockerSecretsConfigurationProvider(DockerSecretsConfigurationSource source)
         {
-            if(source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            Source = source;
+            Source = source ?? throw new ArgumentNullException(nameof(source));
         }
 
-        public static Dictionary<string, string> ReadDockerSecrets(IFileProvider fileProvider)
+        /// <summary>
+        /// Loads the docker secrets.
+        /// </summary>
+        public override void Load()
         {
-            var data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            var secretsDir = fileProvider.GetDirectoryContents("/");
+            Data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-            //if (!secretsDir.Exists && !Source.Optional)
-            //{
-            //    throw new FileNotFoundException("Secrets directory doesn't exist and is not optional.");
-            //}
+            if (Source.FileProvider == null)
+            {
+                if (Directory.Exists(Source.SecretsDirectory))
+                {
+                    Source.FileProvider = new PhysicalFileProvider(Source.SecretsDirectory);
+                }
+                else if (Source.Optional)
+                {
+                    return;
+                }
+                else
+                {
+                    throw new FileNotFoundException("Secrets directory doesn't exist and is not optional.");
+                }
+            }
+
+            var secretsDir = Source.FileProvider.GetDirectoryContents("/");
+            if (!secretsDir.Exists && !Source.Optional)
+            {
+                throw new FileNotFoundException("Secrets directory doesn't exist and is not optional.");
+            }
 
             foreach (var file in secretsDir)
             {
@@ -43,33 +60,12 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets
                 using (var stream = file.CreateReadStream())
                 using (var streamReader = new StreamReader(stream))
                 {
-                    data.Add(file.Name, streamReader.ReadToEnd());
+                    if (Source.IgnorePrefx == null || !file.Name.StartsWith(Source.IgnorePrefx))
+                    {
+                        Data.Add(file.Name, streamReader.ReadToEnd());
+                    }
                 }
             }
-            return data;
-        }
-
-        public override void Load()
-        {
-            Data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-            if(Source.FileProvider == null)
-            {
-                if(Source.Optional)
-                {
-                    return;
-                }
-                throw new InvalidOperationException($"The FileProvider of {nameof(Source)} is null in a non-optional provider.");
-            }
-
-            var secretsDir = Source.FileProvider.GetDirectoryContents("/");
-
-            if (!secretsDir.Exists && !Source.Optional)
-            {
-                throw new FileNotFoundException("Secrets directory doesn't exist and is not optional.");
-            }
-
-            Data = ReadDockerSecrets(Source.FileProvider);
         }
     }
 }
