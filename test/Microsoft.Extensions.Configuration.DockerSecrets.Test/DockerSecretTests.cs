@@ -1,19 +1,16 @@
-using Microsoft.Extensions.FileProviders;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
-using Microsoft.Extensions.Primitives;
-using System.Collections;
 using System.Text;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Primitives;
+using Xunit;
 
 namespace Microsoft.Extensions.Configuration.DockerSecrets.Test
 {
     public class DockerSecretTests
     {
-
         [Fact]
         public void ThrowsWhenNotOptionalAndNoSecrets()
         {
@@ -115,7 +112,6 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets.Test
             Assert.Equal("SecretValue1", config["ignore.Secret1"]);
             Assert.Equal("SecretValue2", config["Secret2"]);
         }
-
     }
 
     class TestFileProvider : IFileProvider
