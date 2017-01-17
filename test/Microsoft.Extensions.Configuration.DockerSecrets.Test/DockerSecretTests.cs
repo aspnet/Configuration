@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets.Test
         [Fact]
         public void ThrowsWhenNotOptionalAndNoSecrets()
         {
-            Assert.Throws<FileNotFoundException>(() => new ConfigurationBuilder().AddDockerSecrets().Build());
+            Assert.Throws<DirectoryNotFoundException>(() => new ConfigurationBuilder().AddDockerSecrets().Build());
         }
 
         [Fact]

@@ -40,14 +40,14 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets
                 }
                 else
                 {
-                    throw new FileNotFoundException("DockerSecrets directory doesn't exist and is not optional.");
+                    throw new DirectoryNotFoundException("DockerSecrets directory doesn't exist and is not optional.");
                 }
             }
 
             var secretsDir = Source.FileProvider.GetDirectoryContents("/");
             if (!secretsDir.Exists && !Source.Optional)
             {
-                throw new FileNotFoundException("DockerSecrets directory doesn't exist and is not optional.");
+                throw new DirectoryNotFoundException("DockerSecrets directory doesn't exist and is not optional.");
             }
 
             foreach (var file in secretsDir)
