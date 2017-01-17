@@ -55,6 +55,23 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets.Test
         }
 
         [Fact]
+        public void CanLoadNestedKeys()
+        {
+            var testFileProvider = new TestFileProvider(
+                new TestFile("Secret0__Secret1__Secret2__Key", "SecretValue2"),
+                new TestFile("Secret0__Secret1__Key", "SecretValue1"),
+                new TestFile("Secret0__Key", "SecretValue0"));
+
+            var config = new ConfigurationBuilder()
+                .AddDockerSecrets(o => o.FileProvider = testFileProvider)
+                .Build();
+
+            Assert.Equal("SecretValue0", config["Secret0:Key"]);
+            Assert.Equal("SecretValue1", config["Secret0:Secret1:Key"]);
+            Assert.Equal("SecretValue2", config["Secret0:Secret1:Secret2:Key"]);
+        }
+
+        [Fact]
         public void CanIgnoreFilesWithDefault()
         {
             var testFileProvider = new TestFileProvider(

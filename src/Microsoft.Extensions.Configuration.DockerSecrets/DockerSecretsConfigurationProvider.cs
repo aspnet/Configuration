@@ -21,6 +21,11 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets
             Source = source ?? throw new ArgumentNullException(nameof(source));
         }
 
+        private static string NormalizeKey(string key)
+        {
+            return key.Replace("__", ConfigurationPath.KeyDelimiter);
+        }
+
         /// <summary>
         /// Loads the docker secrets.
         /// </summary>
@@ -62,7 +67,7 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets
                 {
                     if (Source.IgnorePrefx == null || !file.Name.StartsWith(Source.IgnorePrefx))
                     {
-                        Data.Add(file.Name, streamReader.ReadToEnd());
+                        Data.Add(NormalizeKey(file.Name), streamReader.ReadToEnd());
                     }
                 }
             }
