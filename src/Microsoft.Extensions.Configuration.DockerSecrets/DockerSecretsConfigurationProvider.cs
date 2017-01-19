@@ -65,7 +65,7 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets
                 using (var stream = file.CreateReadStream())
                 using (var streamReader = new StreamReader(stream))
                 {
-                    if (Source.IgnorePrefx == null || !file.Name.StartsWith(Source.IgnorePrefx))
+                    if (Source.IgnoreCondition == null || !Source.IgnoreCondition(file.Name))
                     {
                         Data.Add(NormalizeKey(file.Name), streamReader.ReadToEnd());
                     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
@@ -89,6 +90,46 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets.Test
         }
 
         [Fact]
+        public void CanTurnOffDefaultIgnorePrefixWithCondition()
+        {
+            var testFileProvider = new TestFileProvider(
+                new TestFile("ignore.Secret0", "SecretValue0"),
+                new TestFile("ignore.Secret1", "SecretValue1"),
+                new TestFile("Secret2", "SecretValue2"));
+
+            var config = new ConfigurationBuilder()
+                .AddDockerSecrets(o =>
+                {
+                    o.FileProvider = testFileProvider;
+                    o.IgnoreCondition = null;
+                })
+                .Build();
+
+            Assert.Equal("SecretValue0", config["ignore.Secret0"]);
+            Assert.Equal("SecretValue1", config["ignore.Secret1"]);
+            Assert.Equal("SecretValue2", config["Secret2"]);
+        }
+
+        [Fact]
+        public void CanIgnoreAllWithCondition()
+        {
+            var testFileProvider = new TestFileProvider(
+                new TestFile("Secret0", "SecretValue0"),
+                new TestFile("Secret1", "SecretValue1"),
+                new TestFile("Secret2", "SecretValue2"));
+
+            var config = new ConfigurationBuilder()
+                .AddDockerSecrets(o =>
+                {
+                    o.FileProvider = testFileProvider;
+                    o.IgnoreCondition = s => true;
+                })
+                .Build();
+
+            Assert.Equal(0, config.AsEnumerable().Count());
+        }
+
+        [Fact]
         public void CanIgnoreFilesWithCustomIgnore()
         {
             var testFileProvider = new TestFileProvider(
@@ -100,7 +141,7 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets.Test
                 .AddDockerSecrets(o =>
                 {
                     o.FileProvider = testFileProvider;
-                    o.IgnorePrefx = "me";
+                    o.IgnorePrefix = "me";
                 })
                 .Build();
 
@@ -121,7 +162,7 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets.Test
                 .AddDockerSecrets(o =>
                 {
                     o.FileProvider = testFileProvider;
-                    o.IgnorePrefx = null;
+                    o.IgnorePrefix = null;
                 })
                 .Build();
 

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Microsoft.Extensions.FileProviders;
 
@@ -8,6 +9,14 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets
     /// </summary>
     public class DockerSecretsConfigurationSource : IConfigurationSource
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public DockerSecretsConfigurationSource()
+        {
+            IgnoreCondition = s => IgnorePrefix != null && s.StartsWith(IgnorePrefix);
+        }
+
         //TODO: I don't know that this is configurable, maybe should just be a const.
         /// <summary>
         /// The secrets directory which will be used if FileProvider is not set.
@@ -22,7 +31,12 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets
         /// <summary>
         /// Docker secrets that start with this prefix will be excluded.
         /// </summary>
-        public string IgnorePrefx { get; set; } = "ignore.";
+        public string IgnorePrefix { get; set; } = "ignore.";
+
+        /// <summary>
+        /// Used to determine if a file should be ignored using its name.
+        /// </summary>
+        public Func<string, bool> IgnoreCondition { get; set; }
 
         /// <summary>
         /// If false, will throw if the secrets directory doesn't exist.
