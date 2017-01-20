@@ -1,7 +1,6 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.IO;
 using Microsoft.Extensions.FileProviders;
 
@@ -10,7 +9,7 @@ namespace Microsoft.Extensions.Configuration
     /// <summary>
     /// Represents a base class for file based <see cref="IConfigurationSource"/>.
     /// </summary>
-    public abstract class FileConfigurationSource : IConfigurationSource
+    public abstract class FileConfigurationSource : ConfigurationSource
     {
         /// <summary>
         /// Used to access the contents of the file.
@@ -39,25 +38,13 @@ namespace Microsoft.Extensions.Configuration
         public int ReloadDelay { get; set; } = 250;
 
         /// <summary>
-        /// Will be called if an uncaught exception occurs in FileConfigurationProvider.Load.
-        /// </summary>
-        public Action<FileLoadExceptionContext> OnLoadException { get; set; }
-
-        /// <summary>
-        /// Builds the <see cref="IConfigurationProvider"/> for this source.
-        /// </summary>
-        /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
-        /// <returns>A <see cref="IConfigurationProvider"/></returns>
-        public abstract IConfigurationProvider Build(IConfigurationBuilder builder);
-
-        /// <summary>
         /// Called to use any default settings on the builder like the FileProvider or FileLoadExceptionHandler.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
         public void EnsureDefaults(IConfigurationBuilder builder)
         {
             FileProvider = FileProvider ?? builder.GetFileProvider();
-            OnLoadException = OnLoadException ?? builder.GetFileLoadExceptionHandler();
+            OnLoadException = OnLoadException ?? builder.GetLoadExceptionHandler();
         }
 
         /// <summary>

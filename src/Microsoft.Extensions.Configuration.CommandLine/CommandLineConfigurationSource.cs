@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.Configuration.CommandLine
     /// <summary>
     /// Represents command line arguments as an <see cref="IConfigurationSource"/>.
     /// </summary>
-    public class CommandLineConfigurationSource : IConfigurationSource
+    public class CommandLineConfigurationSource : ConfigurationSource
     {
         /// <summary>
         /// Gets or sets the switch mappings.
@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.Configuration.CommandLine
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
         /// <returns>A <see cref="CommandLineConfigurationProvider"/></returns>
-        public IConfigurationProvider Build(IConfigurationBuilder builder)
+        public override IConfigurationProvider Build(IConfigurationBuilder builder)
         {
             return new CommandLineConfigurationProvider(Args, SwitchMappings);
         }

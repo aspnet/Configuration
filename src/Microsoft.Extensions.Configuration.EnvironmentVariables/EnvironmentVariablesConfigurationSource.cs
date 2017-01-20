@@ -6,7 +6,7 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables
     /// <summary>
     /// Represents environment variables as an <see cref="IConfigurationSource"/>.
     /// </summary>
-    public class EnvironmentVariablesConfigurationSource : IConfigurationSource
+    public class EnvironmentVariablesConfigurationSource : ConfigurationSource
     {
         /// <summary>
         /// A prefix used to filter environment variables.
@@ -18,7 +18,7 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
         /// <returns>A <see cref="EnvironmentVariablesConfigurationProvider"/></returns>
-        public IConfigurationProvider Build(IConfigurationBuilder builder)
+        public override IConfigurationProvider Build(IConfigurationBuilder builder)
         {
             return new EnvironmentVariablesConfigurationProvider(Prefix);
         }

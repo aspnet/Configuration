@@ -10,9 +10,9 @@ using System.Xml;
 namespace Microsoft.Extensions.Configuration.Xml
 {
     /// <summary>
-    /// Represents an XML file as an <see cref="IConfigurationSource"/>.
+    /// Represents an XML file as an <see cref="IConfigurationProvider"/>.
     /// </summary>
-    public class XmlConfigurationProvider : FileConfigurationProvider
+    public class XmlConfigurationProvider : FileConfigurationProvider<XmlConfigurationSource>
     {
         private const string NameAttributeKey = "Name";
 

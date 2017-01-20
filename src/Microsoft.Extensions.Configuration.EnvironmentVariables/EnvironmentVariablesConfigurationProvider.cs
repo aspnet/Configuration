@@ -9,9 +9,9 @@ using System.Linq;
 namespace Microsoft.Extensions.Configuration.EnvironmentVariables
 {
     /// <summary>
-    /// An environment variable based <see cref="ConfigurationProvider"/>.
+    /// An environment variable based <see cref="IConfigurationProvider"/>.
     /// </summary>
-    public class EnvironmentVariablesConfigurationProvider : ConfigurationProvider
+    public class EnvironmentVariablesConfigurationProvider : ConfigurationProvider<EnvironmentVariablesConfigurationSource>
     {
         private const string MySqlServerPrefix = "MYSQLCONNSTR_";
         private const string SqlAzureServerPrefix = "SQLAZURECONNSTR_";
@@ -20,8 +20,6 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables
 
         private const string ConnStrKeyFormat = "ConnectionStrings:{0}";
         private const string ProviderKeyFormat = "ConnectionStrings:{0}_ProviderName";
-
-        private readonly string _prefix;
 
         /// <summary>
         /// Initializes a new instance.
@@ -33,9 +31,16 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables
         /// Initializes a new instance with the specified prefix.
         /// </summary>
         /// <param name="prefix">A prefix used to filter the environment variables.</param>
-        public EnvironmentVariablesConfigurationProvider(string prefix)
+        public EnvironmentVariablesConfigurationProvider(string prefix) : this(new EnvironmentVariablesConfigurationSource { Prefix = prefix })
+        { }
+
+        /// <summary>
+        /// Initializes a new instance with the specified source.
+        /// </summary>
+        /// <param name="source">The source which contains the specified prefix.</param>
+        public EnvironmentVariablesConfigurationProvider(EnvironmentVariablesConfigurationSource source) : base(source)
         {
-            _prefix = prefix ?? string.Empty;
+            Source.Prefix = Source.Prefix ?? string.Empty;
         }
 
         /// <summary>
@@ -53,11 +58,11 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables
             var filteredEnvVariables = envVariables
                 .Cast<DictionaryEntry>()
                 .SelectMany(AzureEnvToAppEnv)
-                .Where(entry => ((string)entry.Key).StartsWith(_prefix, StringComparison.OrdinalIgnoreCase));
+                .Where(entry => ((string)entry.Key).StartsWith(Source.Prefix, StringComparison.OrdinalIgnoreCase));
 
             foreach (var envVariable in filteredEnvVariables)
             {
-                var key = ((string)envVariable.Key).Substring(_prefix.Length);
+                var key = ((string)envVariable.Key).Substring(Source.Prefix.Length);
                 Data[key] = (string)envVariable.Value;
             }
         }

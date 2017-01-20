@@ -7,9 +7,9 @@ using System.Collections.Generic;
 namespace Microsoft.Extensions.Configuration.CommandLine
 {
     /// <summary>
-    /// A command line based <see cref="ConfigurationProvider"/>.
+    /// A command line based <see cref="IConfigurationProvider"/>.
     /// </summary>
-    public class CommandLineConfigurationProvider : ConfigurationProvider
+    public class CommandLineConfigurationProvider : ConfigurationProvider<CommandLineConfigurationSource>
     {
         private readonly Dictionary<string, string> _switchMappings;
 
@@ -19,17 +19,23 @@ namespace Microsoft.Extensions.Configuration.CommandLine
         /// <param name="args">The command line args.</param>
         /// <param name="switchMappings">The switch mappings.</param>
         public CommandLineConfigurationProvider(IEnumerable<string> args, IDictionary<string, string> switchMappings = null)
+            : this(new CommandLineConfigurationSource { Args = args, SwitchMappings = switchMappings })
+        { }
+
+        /// <summary>
+        /// Initializes a new instance.
+        /// </summary>
+        /// <param name="source">The command line source.</param>
+        public CommandLineConfigurationProvider(CommandLineConfigurationSource source) : base(source)
         {
-            if (args == null)
+            if (source.Args == null)
             {
-                throw new ArgumentNullException(nameof(args));
+                throw new ArgumentNullException(nameof(source.Args));
             }
 
-            Args = args;
-
-            if (switchMappings != null)
+            if (source.SwitchMappings != null)
             {
-                _switchMappings = GetValidatedSwitchMappingsCopy(switchMappings);
+                _switchMappings = GetValidatedSwitchMappingsCopy(source.SwitchMappings);
             }
         }
 

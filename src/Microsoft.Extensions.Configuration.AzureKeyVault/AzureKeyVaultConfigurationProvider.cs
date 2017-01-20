@@ -9,14 +9,10 @@ using Microsoft.Azure.KeyVault;
 namespace Microsoft.Extensions.Configuration.AzureKeyVault
 {
     /// <summary>
-    /// An AzureKeyVault based <see cref="ConfigurationProvider"/>.
+    /// An AzureKeyVault based <see cref="IConfigurationProvider"/>.
     /// </summary>
-    internal class AzureKeyVaultConfigurationProvider : ConfigurationProvider
+    internal class AzureKeyVaultConfigurationProvider : ConfigurationProvider<AzureKeyVaultConfigurationSource>
     {
-        private readonly IKeyVaultClient _client;
-        private readonly string _vault;
-        private readonly IKeyVaultSecretManager _manager;
-
         /// <summary>
         /// Creates a new instance of <see cref="AzureKeyVaultConfigurationProvider"/>.
         /// </summary>
@@ -24,18 +20,19 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault
         /// <param name="vault">Azure KeyVault uri.</param>
         /// <param name="manager"></param>
         public AzureKeyVaultConfigurationProvider(IKeyVaultClient client, string vault, IKeyVaultSecretManager manager)
+            : this(new AzureKeyVaultConfigurationSource { Client = client, Vault = vault, Manager = manager })
+        { }
+
+        public AzureKeyVaultConfigurationProvider(AzureKeyVaultConfigurationSource source) : base(source)
         {
-            if (client == null)
+            if (source.Client == null)
             {
-                throw new ArgumentNullException(nameof(client));
+                throw new ArgumentNullException(nameof(source.Client));
             }
-            if (vault == null)
+            if (source.Vault == null)
             {
-                throw new ArgumentNullException(nameof(vault));
+                throw new ArgumentNullException(nameof(source.Vault));
             }
-            _client = client;
-            _vault = vault;
-            _manager = manager;
         }
 
         /// <inheritdoc />
@@ -44,27 +41,31 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault
             LoadAsync().GetAwaiter().GetResult();
         }
 
+        private IKeyVaultClient Client => Source.Client;
+        private string Vault => Source.Vault;
+        private IKeyVaultSecretManager Manager => Source.Manager;
+
         private async Task LoadAsync()
         {
             var data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-            var secrets = await _client.GetSecretsAsync(_vault);
+            var secrets = await Client.GetSecretsAsync(Vault);
             do
             {
                 foreach (var secretItem in secrets)
                 {
-                    if (!_manager.Load(secretItem))
+                    if (!Manager.Load(secretItem))
                     {
                         continue;
                     }
 
-                    var value = await _client.GetSecretAsync(secretItem.Id);
-                    var key = _manager.GetKey(value);
+                    var value = await Client.GetSecretAsync(secretItem.Id);
+                    var key = Manager.GetKey(value);
                     data.Add(key, value.Value);
                 }
 
                 secrets = secrets.NextPageLink != null ?
-                    await _client.GetSecretsNextAsync(secrets.NextPageLink) :
+                    await Client.GetSecretsNextAsync(secrets.NextPageLink) :
                     null;
             } while (secrets != null);
 

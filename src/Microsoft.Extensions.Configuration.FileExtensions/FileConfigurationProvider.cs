@@ -11,37 +11,27 @@ using Microsoft.Extensions.Primitives;
 namespace Microsoft.Extensions.Configuration
 {
     /// <summary>
-    /// Base class for file based <see cref="ConfigurationProvider"/>.
+    /// Base class for file based <see cref="ConfigurationProvider{TSource}"/>.
     /// </summary>
-    public abstract class FileConfigurationProvider : ConfigurationProvider
+    /// <typeparam name="TSource">The <see cref="FileConfigurationSource"/>.</typeparam>
+    public abstract class FileConfigurationProvider<TSource> : ConfigurationProvider<TSource> where TSource : FileConfigurationSource
     {
         /// <summary>
         /// Initializes a new instance with the specified source.
         /// </summary>
         /// <param name="source">The source settings.</param>
-        public FileConfigurationProvider(FileConfigurationSource source)
+        public FileConfigurationProvider(TSource source) : base(source)
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-            Source = source;
-
             if (Source.ReloadOnChange && Source.FileProvider != null)
             {
                 ChangeToken.OnChange(
                     () => Source.FileProvider.Watch(Source.Path),
                     () => {
                         Thread.Sleep(Source.ReloadDelay);
-                        Load(reload: true);
+                        this.SafeInvoke(() => Load(reload: true));
                     });
             }
         }
-
-        /// <summary>
-        /// The source settings for this provider.
-        /// </summary>
-        public FileConfigurationSource Source { get; }
 
         private void Load(bool reload)
         {
@@ -71,28 +61,7 @@ namespace Microsoft.Extensions.Configuration
                 }
                 using (var stream = file.CreateReadStream())
                 {
-                    try
-                    {
-                        Load(stream);
-                    }
-                    catch (Exception e)
-                    {
-                        bool ignoreException = false;
-                        if (Source.OnLoadException != null)
-                        {
-                            var exceptionContext = new FileLoadExceptionContext
-                            {
-                                Provider = this,
-                                Exception = e
-                            };
-                            Source.OnLoadException.Invoke(exceptionContext);
-                            ignoreException = exceptionContext.Ignore;
-                        }
-                        if (!ignoreException)
-                        {
-                            throw e;
-                        }
-                    }
+                    Load(stream);
                 }
             }
             // REVIEW: Should we raise this in the base as well / instead?
@@ -104,10 +73,7 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <exception cref="FileNotFoundException">If Optional is <c>false</c> on the source and a
         /// file does not exist at specified Path.</exception>
-        public override void Load()
-        {
-            Load(reload: false);
-        }
+        public override void Load() => Load(reload: false);
 
         /// <summary>
         /// Loads this provider's data from a stream.

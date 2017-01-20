@@ -6,14 +6,14 @@ using System;
 namespace Microsoft.Extensions.Configuration
 {
     /// <summary>
-    /// Contains information about a file load exception.
+    /// Contains information about a load exception.
     /// </summary>
-    public class FileLoadExceptionContext
+    public class ConfigurationLoadExceptionContext
     {
         /// <summary>
-        /// The <see cref="FileConfigurationProvider"/> that caused the exception.
+        /// The <see cref="IConfigurationProvider"/> that caused the exception.
         /// </summary>
-        public FileConfigurationProvider Provider { get; set; }
+        public IConfigurationProvider Provider { get; set; }
 
         /// <summary>
         /// The exception that occured in Load.

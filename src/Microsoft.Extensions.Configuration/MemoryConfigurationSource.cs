@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.Configuration.Memory
     /// <summary>
     /// Represents in-memory data as an <see cref="IConfigurationSource"/>.
     /// </summary>
-    public class MemoryConfigurationSource : IConfigurationSource
+    public class MemoryConfigurationSource : ConfigurationSource
     {
         /// <summary>
         /// The initial key value configuration pairs.
@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.Configuration.Memory
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
         /// <returns>A <see cref="MemoryConfigurationProvider"/></returns>
-        public IConfigurationProvider Build(IConfigurationBuilder builder)
+        public override IConfigurationProvider Build(IConfigurationBuilder builder)
         {
             return new MemoryConfigurationProvider(this);
         }

@@ -12,6 +12,11 @@ namespace Microsoft.Extensions.Configuration
     public interface IConfigurationProvider
     {
         /// <summary>
+        /// The <see cref="IConfigurationSource"/> used to build this provider.
+        /// </summary>
+        IConfigurationSource Source { get; }
+
+        /// <summary>
         /// Tries to get a configuration value for the specified key.
         /// </summary>
         /// <param name="key">The key.</param>

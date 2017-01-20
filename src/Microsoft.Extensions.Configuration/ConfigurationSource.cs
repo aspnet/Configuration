@@ -6,20 +6,20 @@ using System;
 namespace Microsoft.Extensions.Configuration
 {
     /// <summary>
-    /// Represents a source of configuration key/values for an application.
+    /// Base helper class for implementing an <see cref="IConfigurationSource"/>
     /// </summary>
-    public interface IConfigurationSource
+    public abstract class ConfigurationSource : IConfigurationSource
     {
         /// <summary>
         /// Will be called if an uncaught exception occurs in Load.
         /// </summary>
-        Action<ConfigurationLoadExceptionContext> OnLoadException { get; set; }
+        public Action<ConfigurationLoadExceptionContext> OnLoadException { get; set; }
 
         /// <summary>
         /// Builds the <see cref="IConfigurationProvider"/> for this source.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
         /// <returns>An <see cref="IConfigurationProvider"/></returns>
-        IConfigurationProvider Build(IConfigurationBuilder builder);
+        public abstract IConfigurationProvider Build(IConfigurationBuilder builder);
     }
 }
