@@ -26,12 +26,26 @@ namespace Microsoft.Extensions.Configuration
             => builder.AddDockerSecrets(source => source.SecretsDirectory = secretsPath);
 
         /// <summary>
+        /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from docker secrets.
+        /// </summary>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="secretsPath">The path to the secrets directory.</param>
+        /// <param name="optional">Whether the directory is optional.</param>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddDockerSecrets(this IConfigurationBuilder builder, string secretsPath, bool optional)
+            => builder.AddDockerSecrets(source =>
+            {
+                source.SecretsDirectory = secretsPath;
+                source.Optional = optional;
+            });
+
+        /// <summary>
         /// Adds a docker secrets configuration source to <paramref name="builder"/>.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="configureSource">Configures the source.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddDockerSecrets(this IConfigurationBuilder builder, Action<DockerSecretsConfigurationSource> configureSource)
-            => builder.Add<DockerSecretsConfigurationSource>(configureSource);
+            => builder.Add(configureSource);
     }
 }
