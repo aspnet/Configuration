@@ -17,7 +17,6 @@ namespace Microsoft.Extensions.Configuration.DockerSecrets
             IgnoreCondition = s => IgnorePrefix != null && s.StartsWith(IgnorePrefix);
         }
 
-        //TODO: I don't know that this is configurable, maybe should just be a const.
         /// <summary>
         /// The secrets directory which will be used if FileProvider is not set.
         /// </summary>
