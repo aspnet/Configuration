@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "buildOptions": {
     "warningsAsErrors": true,
     "keyFile": "../../tools/Key.snk",
@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "Microsoft.Azure.KeyVault": "2.0.6",
-    "Microsoft.Extensions.Configuration": "1.1.0",
-    "Microsoft.Extensions.Configuration.FileExtensions": "1.1.0",
+    "Microsoft.Extensions.Configuration": "1.1.1",
+    "Microsoft.Extensions.Configuration.FileExtensions": "1.1.1",
     "Microsoft.IdentityModel.Clients.ActiveDirectory": "3.13.5",
     "NETStandard.Library": "1.6.1"
   },
