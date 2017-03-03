@@ -5,12 +5,34 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration.Memory;
+using Microsoft.Win32;
 using Xunit;
 
 namespace Microsoft.Extensions.Configuration.Test
 {
     public class ConfigurationTest
     {
+#if NET452
+        [Fact]
+        public void RunningAtLeastNet462()
+        {
+            // Arrange
+            using (var registryKey = RegistryKey
+                .OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32)
+                .OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full"))
+            {
+                Assert.NotNull(registryKey);
+
+                var release = registryKey.GetValue("Release");
+                Assert.NotNull(release);
+
+                // 4.6.2 on Windows 10 Anniversary Update has release 394802. It's release 394806 elsewhere.
+                var releaseVersion = (int)release;
+                Assert.InRange(releaseVersion, 394802, 394806);
+            }
+        }
+#endif
+
         [Fact]
         public void LoadAndCombineKeyValuePairsFromDifferentConfigurationProviders()
         {
@@ -204,7 +226,7 @@ namespace Microsoft.Extensions.Configuration.Test
 
         public class TestMemorySourceProvider : MemoryConfigurationProvider, IConfigurationSource
         {
-            public TestMemorySourceProvider(Dictionary<string, string> initialData) 
+            public TestMemorySourceProvider(Dictionary<string, string> initialData)
                 : base(new MemoryConfigurationSource { InitialData = initialData })
             { }
 
