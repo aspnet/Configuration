@@ -70,7 +70,7 @@ namespace Microsoft.Extensions.Configuration
             return result.AccessToken;
         }
 
-#if NET451
+
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from the Azure KeyVault.
         /// </summary>
@@ -121,10 +121,13 @@ namespace Microsoft.Extensions.Configuration
         private static async Task<string> GetTokenFromClientCertificate(string authority, string resource, string clientId, X509Certificate2 certificate)
         {
             var authContext = new AuthenticationContext(authority);
+#if NET451
             var result = await authContext.AcquireTokenAsync(resource, new ClientAssertionCertificate(clientId, certificate));
+#else
+            var result = await authContext.AcquireTokenAsync(resource, new ClientAssertionCertificateCore(clientId, certificate));
+#endif
             return result.AccessToken;
         }
-#endif
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from the Azure KeyVault.
