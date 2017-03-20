@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\build\common.props" />
+
+  <PropertyGroup>
+    <Description>YAML configuration provider implementation for Microsoft.Extensions.Configuration.</Description>
+    <TargetFrameworks>net451;netstandard1.3</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageTags>configuration;yaml</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.Extensions.Configuration\Microsoft.Extensions.Configuration.csproj" />
+    <ProjectReference Include="..\Microsoft.Extensions.Configuration.FileExtensions\Microsoft.Extensions.Configuration.FileExtensions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
+    <PackageReference Include="System.Dynamic.Runtime" Version="$(CoreFxVersion)" />
+    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="$(CoreFxVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="YamlDotNet.Signed">
+      <Version>4.1.0</Version>
+    </PackageReference>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PackageTargetFallback Condition="'$(TargetFramework)'=='netstandard1.3'">$(PackageTargetFallback);dotnet</PackageTargetFallback>
+  </PropertyGroup>
+
+</Project>

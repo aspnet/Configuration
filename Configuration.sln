@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26118.1
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F141E2D0-F9B8-4ADB-A19A-7B6FF4CA19A1}"
 EndProject
@@ -59,6 +59,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Extensions.Configuration.DockerSecrets", "src\Microsoft.Extensions.Configuration.DockerSecrets\Microsoft.Extensions.Configuration.DockerSecrets.csproj", "{69AB0230-D82E-438B-AFE5-85BFF414F1B8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Extensions.Configuration.DockerSecrets.Test", "test\Microsoft.Extensions.Configuration.DockerSecrets.Test\Microsoft.Extensions.Configuration.DockerSecrets.Test.csproj", "{82A403ED-F827-4FED-BE38-7F87925A07E1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Extensions.Configuration.Yaml", "src\Microsoft.Extensions.Configuration.Yaml\Microsoft.Extensions.Configuration.Yaml.csproj", "{1D7A7ABB-94CB-4C2D-B54A-46C364BF71CB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Extensions.Configuration.Yaml.Test", "test\Microsoft.Extensions.Configuration.Yaml.Test\Microsoft.Extensions.Configuration.Yaml.Test.csproj", "{9CA6D06A-4A7C-4C73-9368-ED8A27DDEF72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -170,6 +174,14 @@ Global
 		{82A403ED-F827-4FED-BE38-7F87925A07E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82A403ED-F827-4FED-BE38-7F87925A07E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82A403ED-F827-4FED-BE38-7F87925A07E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D7A7ABB-94CB-4C2D-B54A-46C364BF71CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D7A7ABB-94CB-4C2D-B54A-46C364BF71CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D7A7ABB-94CB-4C2D-B54A-46C364BF71CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D7A7ABB-94CB-4C2D-B54A-46C364BF71CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CA6D06A-4A7C-4C73-9368-ED8A27DDEF72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CA6D06A-4A7C-4C73-9368-ED8A27DDEF72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CA6D06A-4A7C-4C73-9368-ED8A27DDEF72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CA6D06A-4A7C-4C73-9368-ED8A27DDEF72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -201,5 +213,7 @@ Global
 		{AC7FAD2A-5763-404D-B0FC-3CCA81A16B0A} = {B54371FF-B920-46C8-8D55-6B19DBB43EBF}
 		{69AB0230-D82E-438B-AFE5-85BFF414F1B8} = {F141E2D0-F9B8-4ADB-A19A-7B6FF4CA19A1}
 		{82A403ED-F827-4FED-BE38-7F87925A07E1} = {B54371FF-B920-46C8-8D55-6B19DBB43EBF}
+		{1D7A7ABB-94CB-4C2D-B54A-46C364BF71CB} = {F141E2D0-F9B8-4ADB-A19A-7B6FF4CA19A1}
+		{9CA6D06A-4A7C-4C73-9368-ED8A27DDEF72} = {B54371FF-B920-46C8-8D55-6B19DBB43EBF}
 	EndGlobalSection
 EndGlobal
