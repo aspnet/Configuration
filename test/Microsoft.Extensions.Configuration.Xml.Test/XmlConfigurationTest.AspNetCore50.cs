@@ -54,4 +54,7 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
         }
     }
 }
+#elif NET452
+#else
+#error Target framework needs to be updated
 #endif
