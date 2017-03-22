@@ -680,7 +680,9 @@ IniKey1=IniValue2");
         }
 
 
-        [Theory]
+        [ConditionalTheory]
+        // Disabling until https://github.com/aspnet/Configuration/issues/628 is resolved.
+        [OSSkipCondition(OperatingSystems.MacOSX)]
         [InlineData(false)]
         [InlineData(true)]
         public async Task DeletingFileWillReload(bool optional)
