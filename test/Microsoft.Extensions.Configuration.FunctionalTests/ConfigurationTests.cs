@@ -78,13 +78,7 @@ CommonKey3:CommonKey4=IniValue6";
         {
             _fileSystem = new DisposableFileSystem();
             _fileProvider = new PhysicalFileProvider(_fileSystem.RootPath);
-#if NET452
-            _basePath = AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY") as string ??
-                AppDomain.CurrentDomain.BaseDirectory ??
-                string.Empty;
-#else
             _basePath = AppContext.BaseDirectory ?? string.Empty;
-#endif
 
             _iniFile = Path.GetRandomFileName();
             _xmlFile = Path.GetRandomFileName();
@@ -484,7 +478,8 @@ IniKey1=IniValue2");
             };
 
             CreateBuilder()
-                .AddJsonFile(s => {
+                .AddJsonFile(s =>
+                {
                     s.Path = "error.json";
                     s.OnLoadException = jsonLoadError;
                 })
@@ -677,7 +672,9 @@ IniKey1=IniValue2");
         }
 
 
-        [Theory]
+        [ConditionalTheory(Skip = "https://github.com/aspnet/Configuration/issues/628")]
+        [OSSkipCondition(OperatingSystems.MacOSX)]
+        [OSSkipCondition(OperatingSystems.Linux)]
         [InlineData(false)]
         [InlineData(true)]
         public async Task DeletingFileWillReload(bool optional)

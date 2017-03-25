@@ -4,7 +4,7 @@
 
   <PropertyGroup>
     <Description>Azure KeyVault configuration provider implementation for Microsoft.Extensions.Configuration.</Description>
-    <TargetFrameworks>netstandard1.5;net451</TargetFrameworks>
+    <TargetFrameworks>netstandard1.5;net46</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageTags>configuration;azure;keyvault</PackageTags>
   </PropertyGroup>
@@ -12,8 +12,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.Extensions.Configuration\Microsoft.Extensions.Configuration.csproj" />
     <ProjectReference Include="..\Microsoft.Extensions.Configuration.FileExtensions\Microsoft.Extensions.Configuration.FileExtensions.csproj" />
-    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="3.13.5" />
-    <PackageReference Include="Microsoft.Azure.KeyVault" Version="2.0.6" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="$(IdentityModelActiveDirectoryVersion)" />
+    <PackageReference Include="Microsoft.Azure.KeyVault" Version="$(AzureKeyVaultVersion)" />
   </ItemGroup>
 
 </Project>

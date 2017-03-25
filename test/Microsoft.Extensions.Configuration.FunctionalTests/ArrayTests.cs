@@ -25,7 +25,7 @@ i=ini_i.i.i.i
     <address name=""4"">xml_4.4.4.4</address>
     <address name=""1"">xml_1.1.1.1</address>
     <address name=""x"">xml_x.x.x.x</address>
-</settings>   
+</settings>
 ";
         private static readonly string _json1ConfigFileContent = @"
 {
@@ -101,13 +101,7 @@ i=ini_i.i.i.i
 
         public ArrayTests()
         {
-#if NET452
-            var basePath = AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY") as string ??
-                AppDomain.CurrentDomain.BaseDirectory ??
-                string.Empty;
-#else
             var basePath = AppContext.BaseDirectory ?? string.Empty;
-#endif
             _iniConfigFilePath = Path.GetRandomFileName();
             _xmlConfigFilePath = Path.GetRandomFileName();
             _json1ConfigFilePath = Path.GetRandomFileName();
@@ -118,7 +112,7 @@ i=ini_i.i.i.i
             File.WriteAllText(Path.Combine(basePath, _json1ConfigFilePath), _json1ConfigFileContent);
             File.WriteAllText(Path.Combine(basePath, _json2ConfigFilePath), _json2ConfigFileContent);
         }
-        
+
         public void Dispose()
         {
             File.Delete(_iniConfigFilePath);
