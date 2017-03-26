@@ -4,7 +4,7 @@
 
   <PropertyGroup>
     <Description>YAML configuration provider implementation for Microsoft.Extensions.Configuration.</Description>
-    <TargetFrameworks>net451;netstandard1.3</TargetFrameworks>
+    <TargetFramework>netstandard1.3</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageTags>configuration;yaml</PackageTags>
   </PropertyGroup>
@@ -20,9 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="YamlDotNet.Signed">
-      <Version>4.1.0</Version>
-    </PackageReference>
+    <PackageReference Include="YamlDotNet.Signed" Version="$(YamlDotNetVersion)" />
   </ItemGroup>
 
   <PropertyGroup>
