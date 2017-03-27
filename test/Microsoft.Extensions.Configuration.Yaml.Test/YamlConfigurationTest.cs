@@ -75,6 +75,15 @@ address: # Comments
         }
 
         [Fact]
+        public void SpecifyLineNumberAndTextWhenThrowException()
+        {
+            var yaml = "\ttarget";
+
+            var exception = Assert.Throws<FormatException>(() => LoadProvider(yaml));
+            Assert.Equal("Could not parse the YAML file. Error on line number '1': '\ttarget'.", exception.Message);
+        }
+
+        [Fact]
         public void ThrowExceptionWhenPassingNullAsFilePath()
         {
             var expectedMsg = new ArgumentException(Resources.Error_InvalidFilePath, "path").Message;
