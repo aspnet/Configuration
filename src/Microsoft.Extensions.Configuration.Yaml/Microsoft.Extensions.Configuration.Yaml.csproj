@@ -14,17 +14,14 @@
     <ProjectReference Include="..\Microsoft.Extensions.Configuration.FileExtensions\Microsoft.Extensions.Configuration.FileExtensions.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
+  <ItemGroup>
     <PackageReference Include="System.Dynamic.Runtime" Version="$(CoreFxVersion)" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="$(CoreFxVersion)" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="YamlDotNet.Signed" Version="$(YamlDotNetVersion)" />
   </ItemGroup>
 
   <PropertyGroup>
-    <PackageTargetFallback Condition="'$(TargetFramework)'=='netstandard1.3'">$(PackageTargetFallback);dotnet</PackageTargetFallback>
+    <PackageTargetFallback>$(PackageTargetFallback);dotnet</PackageTargetFallback>
   </PropertyGroup>
 
 </Project>
