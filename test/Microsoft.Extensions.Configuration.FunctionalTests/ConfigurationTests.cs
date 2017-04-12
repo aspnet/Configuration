@@ -353,7 +353,9 @@ CommonKey3:CommonKey4=IniValue6";
             //Assert.True(token2.HasChanged, "Deleted");
         }
 
-        [Theory]
+        [ConditionalTheory(Skip = "https://github.com/aspnet/Configuration/issues/628")]
+        [OSSkipCondition(OperatingSystems.MacOSX)]
+        [OSSkipCondition(OperatingSystems.Linux)]
         [InlineData(false)]
         [InlineData(true)]
         public void DeletingFileWillReload(bool optional)
