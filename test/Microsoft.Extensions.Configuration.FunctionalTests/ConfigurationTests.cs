@@ -593,7 +593,9 @@ IniKey1=IniValue2");
             //Assert.True(token2.HasChanged, "Deleted");
         }
 
-        [Fact]
+        [ConditionalFact(Skip = "https://github.com/aspnet/Configuration/issues/628")]
+        [OSSkipCondition(OperatingSystems.MacOSX)]
+        [OSSkipCondition(OperatingSystems.Linux)]
         public async Task CreatingOptionalFileInNonExistentDirectoryWillReload()
         {
             var directory = Path.Combine(_basePath, Path.GetRandomFileName());
@@ -629,7 +631,9 @@ IniKey1=IniValue2");
             Assert.True(createToken.HasChanged);
         }
 
-        [Theory]
+        [ConditionalTheory(Skip = "https://github.com/aspnet/Configuration/issues/628")]
+        [OSSkipCondition(OperatingSystems.MacOSX)]
+        [OSSkipCondition(OperatingSystems.Linux)]
         [InlineData(false)]
         [InlineData(true)]
         public async Task DeletingFileWillReload(bool optional)
@@ -668,7 +672,9 @@ IniKey1=IniValue2");
             Assert.True(token.HasChanged);
         }
 
-        [Fact]
+        [ConditionalFact(Skip = "https://github.com/aspnet/Configuration/issues/628")]
+        [OSSkipCondition(OperatingSystems.MacOSX)]
+        [OSSkipCondition(OperatingSystems.Linux)]
         public async Task CreatingWritingDeletingCreatingFileWillReload()
         {
             var iniFile = Path.Combine(_basePath, Path.GetRandomFileName());
