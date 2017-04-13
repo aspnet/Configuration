@@ -518,7 +518,9 @@ IniKey1=IniValue2");
             Assert.Equal("XmlValue6", config["CommonKey1:CommonKey2:CommonKey3:CommonKey4"]);
         }
 
-        [Fact]
+        [ConditionalFact(Skip = "https://github.com/aspnet/Configuration/issues/628")]
+        [OSSkipCondition(OperatingSystems.MacOSX)]
+        [OSSkipCondition(OperatingSystems.Linux)]
         public async Task ReloadOnChangeWorksAfterError()
         {
             File.WriteAllText(Path.Combine(_basePath, "reload.json"), @"{""JsonKey1"": ""JsonValue1""}");
