@@ -10,7 +10,7 @@ namespace Microsoft.Extensions.Configuration
     /// <summary>
     /// Extension methods for configuration classes./>.
     /// </summary>
-    public static class ConfigurationExtensions
+    public static partial class ConfigurationExtensions
     {
         /// <summary>
         /// Adds a new configuration source.
