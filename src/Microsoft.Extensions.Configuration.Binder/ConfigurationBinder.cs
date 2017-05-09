@@ -121,10 +121,14 @@ namespace Microsoft.Extensions.Configuration
         /// <returns>The converted value.</returns>
         public static object GetValue(this IConfiguration configuration, Type type, string key, object defaultValue)
         {
-            var value = configuration.GetSection(key).Value;
-            if (value != null)
+            var secion = configuration.GetSection(key);
+            if (secion.Value != null)
             {
-                return ConvertValue(type, value);
+               return ConvertValue(type, secion.Value);
+            }
+            else if (secion != null)
+            {
+               return BindInstance(type, defaultValue, secion);
             }
             return defaultValue;
         }
