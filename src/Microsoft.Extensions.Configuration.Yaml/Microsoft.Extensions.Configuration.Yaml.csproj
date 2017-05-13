@@ -20,8 +20,4 @@
     <PackageReference Include="YamlDotNet.Signed" Version="$(YamlDotNetVersion)" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <PackageTargetFallback>$(PackageTargetFallback);dotnet</PackageTargetFallback>
-  </PropertyGroup>
-
 </Project>
