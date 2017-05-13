@@ -1,7 +1,6 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+VisualStudioVersion = 15.0.26424.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F141E2D0-F9B8-4ADB-A19A-7B6FF4CA19A1}"
 EndProject
@@ -64,6 +63,28 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Extensions.Configuration.Yaml", "src\Microsoft.Extensions.Configuration.Yaml\Microsoft.Extensions.Configuration.Yaml.csproj", "{1D7A7ABB-94CB-4C2D-B54A-46C364BF71CB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Extensions.Configuration.Yaml.Test", "test\Microsoft.Extensions.Configuration.Yaml.Test\Microsoft.Extensions.Configuration.Yaml.Test.csproj", "{9CA6D06A-4A7C-4C73-9368-ED8A27DDEF72}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B926267F-98A3-41F0-90F5-0B1ADF78CA65}"
+	ProjectSection(SolutionItems) = preProject
+		.travis.yml = .travis.yml
+		appveyor.yml = appveyor.yml
+		build.cmd = build.cmd
+		build.ps1 = build.ps1
+		build.sh = build.sh
+		CONTRIBUTING.md = CONTRIBUTING.md
+		LICENSE.txt = LICENSE.txt
+		NuGet.config = NuGet.config
+		NuGetPackageVerifier.json = NuGetPackageVerifier.json
+		README.md = README.md
+		version.props = version.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{F786716B-DE4D-4C4D-8D5B-38182329E5B5}"
+	ProjectSection(SolutionItems) = preProject
+		build\common.props = build\common.props
+		build\dependencies.props = build\dependencies.props
+		build\repo.props = build\repo.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -214,6 +235,7 @@ Global
 		{AC7FAD2A-5763-404D-B0FC-3CCA81A16B0A} = {B54371FF-B920-46C8-8D55-6B19DBB43EBF}
 		{69AB0230-D82E-438B-AFE5-85BFF414F1B8} = {F141E2D0-F9B8-4ADB-A19A-7B6FF4CA19A1}
 		{82A403ED-F827-4FED-BE38-7F87925A07E1} = {B54371FF-B920-46C8-8D55-6B19DBB43EBF}
+		{F786716B-DE4D-4C4D-8D5B-38182329E5B5} = {B926267F-98A3-41F0-90F5-0B1ADF78CA65}
 		{1D7A7ABB-94CB-4C2D-B54A-46C364BF71CB} = {F141E2D0-F9B8-4ADB-A19A-7B6FF4CA19A1}
 		{9CA6D06A-4A7C-4C73-9368-ED8A27DDEF72} = {B54371FF-B920-46C8-8D55-6B19DBB43EBF}
 	EndGlobalSection
