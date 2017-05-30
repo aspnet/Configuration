@@ -59,7 +59,7 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault
                     }
 
                     var value = await _client.GetSecretAsync(secretItem.Id);
-                    var key = _manager.GetKey(value);
+                    var key = _manager.GetKey(value).Replace("--", ":");
                     data.Add(key, value.Value);
                 }
 
