@@ -60,6 +60,15 @@ namespace Microsoft.Extensions.Configuration
         /// Attempts to bind the given object instance to configuration values by matching property names against configuration keys recursively.
         /// </summary>
         /// <param name="configuration">The configuration instance to bind.</param>
+        /// <param name="key">The configuration key to bind.</param>
+        /// <param name="instance">The object to bind.</param>
+        public static void Bind(this IConfiguration configuration, string key, object instance)
+            => configuration.GetSection(key).Bind(instance);
+
+        /// <summary>
+        /// Attempts to bind the given object instance to configuration values by matching property names against configuration keys recursively.
+        /// </summary>
+        /// <param name="configuration">The configuration instance to bind.</param>
         /// <param name="instance">The object to bind.</param>
         public static void Bind(this IConfiguration configuration, object instance)
         {
