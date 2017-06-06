@@ -40,12 +40,17 @@ namespace Microsoft.Extensions.Configuration.UserSecrets
                         badCharIndex));
             }
 
-            var root = Environment.GetEnvironmentVariable("APPDATA") ??         // On Windows it goes to %APPDATA%\Microsoft\UserSecrets\
-                        Environment.GetEnvironmentVariable("HOME");             // On Mac/Linux it goes to ~/.microsoft/usersecrets/
+            var root = Environment.GetEnvironmentVariable("APPDATA") ??          // On Windows it goes to %APPDATA%\Microsoft\UserSecrets\
+                        Environment.GetEnvironmentVariable("XDG_CONFIG_HOME") ?? // On Linux it goes to ~/.config/microsoft/usersecrets/
+                        Environment.GetEnvironmentVariable("HOME");              // On Mac it goes to ~/.microsoft/usersecrets/
 
             if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPDATA")))
             {
                 return Path.Combine(root, "Microsoft", "UserSecrets", userSecretsId, SecretsFileName);
+            }
+            else if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME")))
+            {
+                return Path.Combine(root, "microsoft", "usersecrets", userSecretsId, SecretsFileName);
             }
             else
             {
