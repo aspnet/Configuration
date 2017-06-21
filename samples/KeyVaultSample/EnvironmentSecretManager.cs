@@ -1,10 +1,9 @@
 using Microsoft.Azure.KeyVault.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 
 namespace ConsoleApplication
 {
-    public class EnvironmentSecretManager : IKeyVaultSecretManager
+    public class EnvironmentSecretManager : DefaultKeyVaultSecretManager
     {
         private readonly string _environmentPrefix;
 
@@ -13,16 +12,23 @@ namespace ConsoleApplication
             _environmentPrefix = environment + "-";
         }
 
-        public bool Load(SecretItem secret)
+        public override bool Load(SecretItem secret)
         {
-            return secret.Identifier.Name.StartsWith(_environmentPrefix);
+            return HasEnvironmentPrefix(secret.Identifier.Name);
         }
 
-        public string GetKey(SecretBundle secret)
+        public override string GetKey(SecretBundle secret)
         {
-            return secret.SecretIdentifier.Name
-                                          .Substring(_environmentPrefix.Length)
-                                          .Replace("--", ConfigurationPath.KeyDelimiter);
+            var keyName = base.GetKey(secret);
+
+            return HasEnvironmentPrefix(keyName)
+                ? keyName.Substring(_environmentPrefix.Length)
+                : keyName;
+        }
+
+        private bool HasEnvironmentPrefix(string name)
+        {
+            return name.StartsWith(_environmentPrefix);
         }
     }
 }
