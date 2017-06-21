@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.KeyVault.Models;
+using Microsoft.Azure.KeyVault.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 
 namespace ConsoleApplication
@@ -19,7 +20,9 @@ namespace ConsoleApplication
 
         public string GetKey(SecretBundle secret)
         {
-            return secret.SecretIdentifier.Name.Substring(_environmentPrefix.Length);
+            return secret.SecretIdentifier.Name
+                                          .Substring(_environmentPrefix.Length)
+                                          .Replace("--", ConfigurationPath.KeyDelimiter);
         }
     }
 }
