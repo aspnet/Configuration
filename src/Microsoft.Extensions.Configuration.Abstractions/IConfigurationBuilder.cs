@@ -6,9 +6,9 @@ using System.Collections.Generic;
 namespace Microsoft.Extensions.Configuration
 {
     /// <summary>
-    /// Represents a type used to build application configuration.
+    /// Represents a list of <see cref="IConfigurationSource"/>s used to build application configuration.
     /// </summary>
-    public interface IConfigurationBuilder
+    public interface IConfigurationBuilder : IList<IConfigurationSource>
     {
         /// <summary>
         /// Gets a key/value collection that can be used to share data between the <see cref="IConfigurationBuilder"/>
@@ -26,11 +26,11 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <param name="source">The configuration source to add.</param>
         /// <returns>The same <see cref="IConfigurationBuilder"/>.</returns>
-        IConfigurationBuilder Add(IConfigurationSource source);
+        new IConfigurationBuilder Add(IConfigurationSource source);
 
         /// <summary>
         /// Builds an <see cref="IConfiguration"/> with keys and values from the set of sources registered in
-        /// <see cref="Sources"/>.
+        /// this builder.
         /// </summary>
         /// <returns>An <see cref="IConfigurationRoot"/> with keys and values from the registered sources.</returns>
         IConfigurationRoot Build();
