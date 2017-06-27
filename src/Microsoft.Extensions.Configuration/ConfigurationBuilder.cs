@@ -34,7 +34,7 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentNullException(nameof(source));
             }
 
-            _sources.Add(source);
+            Sources.Add(source);
             return this;
         }
 
@@ -46,7 +46,7 @@ namespace Microsoft.Extensions.Configuration
         public IConfigurationRoot Build()
         {
             var providers = new List<IConfigurationProvider>();
-            foreach (var source in _sources)
+            foreach (var source in Sources)
             {
                 var provider = source.Build(this);
                 providers.Add(provider);
