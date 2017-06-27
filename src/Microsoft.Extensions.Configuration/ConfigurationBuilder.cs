@@ -11,12 +11,10 @@ namespace Microsoft.Extensions.Configuration
     /// </summary>
     public class ConfigurationBuilder : IConfigurationBuilder
     {
-        private readonly IList<IConfigurationSource> _sources = new List<IConfigurationSource>();
-
         /// <summary>
         /// Returns the sources used to obtain configuration values.
         /// </summary>
-        public IList<IConfigurationSource> Sources => _sources;
+        public IList<IConfigurationSource> Sources { get; } = new List<IConfigurationSource>();
 
         /// <summary>
         /// Gets a key/value collection that can be used to share data between the <see cref="IConfigurationBuilder"/>

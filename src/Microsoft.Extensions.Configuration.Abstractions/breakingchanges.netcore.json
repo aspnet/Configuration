@@ -3,5 +3,15 @@
       "TypeId": "public interface Microsoft.Extensions.Configuration.IConfigurationRoot : Microsoft.Extensions.Configuration.IConfiguration",
       "MemberId": "System.Collections.Generic.IEnumerable<Microsoft.Extensions.Configuration.IConfigurationProvider> get_Providers()",
       "Kind": "Addition"
+    },
+    {
+      "TypeId": "public class Microsoft.Extensions.Configuration.ConfigurationBuilder : Microsoft.Extensions.Configuration.IConfigurationBuilder",
+      "MemberId": "public System.Collections.Generic.Dictionary<System.String, System.Object> get_Properties()",
+      "Kind": "Removal"
+    },
+    {
+      "TypeId": "public class Microsoft.Extensions.Configuration.ConfigurationBuilder : Microsoft.Extensions.Configuration.IConfigurationBuilder",
+      "MemberId": "public System.Collections.Generic.IEnumerable<Microsoft.Extensions.Configuration.IConfigurationSource> get_Sources()",
+      "Kind": "Removal"
     }
 ]
