@@ -16,19 +16,13 @@ namespace Microsoft.Extensions.Configuration
         /// <summary>
         /// Returns the sources used to obtain configuration values.
         /// </summary>
-        public IEnumerable<IConfigurationSource> Sources
-        {
-            get
-            {
-                return _sources;
-            }
-        }
+        public IList<IConfigurationSource> Sources => _sources;
 
         /// <summary>
         /// Gets a key/value collection that can be used to share data between the <see cref="IConfigurationBuilder"/>
         /// and the registered <see cref="IConfigurationProvider"/>s.
         /// </summary>
-        public Dictionary<string, object> Properties { get; } = new Dictionary<string, object>();
+        public IDictionary<string, object> Properties { get; } = new Dictionary<string, object>();
 
         /// <summary>
         /// Adds a new configuration source.
