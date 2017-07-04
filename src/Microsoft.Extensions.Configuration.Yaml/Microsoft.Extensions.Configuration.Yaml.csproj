@@ -4,7 +4,7 @@
 
   <PropertyGroup>
     <Description>YAML configuration provider implementation for Microsoft.Extensions.Configuration.</Description>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageTags>configuration;yaml</PackageTags>
   </PropertyGroup>
@@ -15,8 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Dynamic.Runtime" Version="$(CoreFxVersion)" />
-    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="$(CoreFxVersion)" />
     <PackageReference Include="YamlDotNet.Signed" Version="$(YamlDotNetVersion)" />
   </ItemGroup>
 
