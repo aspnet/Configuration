@@ -108,7 +108,30 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
 
             Assert.Equal("Section", options.Section.Key);
             Assert.Equal("Section", options.Section.Path);
-            Assert.Equal(null, options.Section.Value);
+            Assert.Null(options.Section.Value);
+        }
+
+        [Fact]
+        public void CanBindWithKeyOverload()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                {"Section:Integer", "-2"},
+                {"Section:Boolean", "TRUe"},
+                {"Section:Nested:Integer", "11"},
+                {"Section:Virtual", "Sup"}
+            };
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddInMemoryCollection(dic);
+            var config = configurationBuilder.Build();
+
+            var options = new DerivedOptions();
+            config.Bind("Section", options);
+
+            Assert.True(options.Boolean);
+            Assert.Equal(-2, options.Integer);
+            Assert.Equal(11, options.Nested.Integer);
+            Assert.Equal("Derived:Sup", options.Virtual);
         }
 
         [Fact]
@@ -144,7 +167,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             Assert.Equal("Section", options.Section.Path);
             Assert.Equal("DerivedSection", childOptions.DerivedSection.Key);
             Assert.Equal("Section:DerivedSection", childOptions.DerivedSection.Path);
-            Assert.Equal(null, options.Section.Value);
+            Assert.Null(options.Section.Value);
         }
 
         [Fact]

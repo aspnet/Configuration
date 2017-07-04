@@ -57,6 +57,15 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
+        /// Attempts to bind the given object instance to the configuration section specified by the key by matching property names against configuration keys recursively.
+        /// </summary>
+        /// <param name="configuration">The configuration instance to bind.</param>
+        /// <param name="key">The key of the configuration section to bind.</param>
+        /// <param name="instance">The object to bind.</param>
+        public static void Bind(this IConfiguration configuration, string key, object instance)
+            => configuration.GetSection(key).Bind(instance);
+
+        /// <summary>
         /// Attempts to bind the given object instance to configuration values by matching property names against configuration keys recursively.
         /// </summary>
         /// <param name="configuration">The configuration instance to bind.</param>
@@ -79,7 +88,7 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <typeparam name="T">The type to convert the value to.</typeparam>
         /// <param name="configuration">The configuration.</param>
-        /// <param name="key">The configuration key for the value to convert.</param>
+        /// <param name="key">The key of the configuration section's value to convert.</param>
         /// <returns>The converted value.</returns>
         public static T GetValue<T>(this IConfiguration configuration, string key)
         {
@@ -91,7 +100,7 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <typeparam name="T">The type to convert the value to.</typeparam>
         /// <param name="configuration">The configuration.</param>
-        /// <param name="key">The configuration key for the value to convert.</param>
+        /// <param name="key">The key of the configuration section's value to convert.</param>
         /// <param name="defaultValue">The default value to use if no value is found.</param>
         /// <returns>The converted value.</returns>
         public static T GetValue<T>(this IConfiguration configuration, string key, T defaultValue)
@@ -104,7 +113,7 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="type">The type to convert the value to.</param>
-        /// <param name="key">The configuration key for the value to convert.</param>
+        /// <param name="key">The key of the configuration section's value to convert.</param>
         /// <returns>The converted value.</returns>
         public static object GetValue(this IConfiguration configuration, Type type, string key)
         {
@@ -116,7 +125,7 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="type">The type to convert the value to.</param>
-        /// <param name="key">The configuration key for the value to convert.</param>
+        /// <param name="key">The key of the configuration section's value to convert.</param>
         /// <param name="defaultValue">The default value to use if no value is found.</param>
         /// <returns>The converted value.</returns>
         public static object GetValue(this IConfiguration configuration, Type type, string key, object defaultValue)
@@ -343,10 +352,11 @@ namespace Microsoft.Extensions.Configuration
             // IDictionary<K,V> is guaranteed to have exactly two parameters
             var keyType = typeInfo.GenericTypeArguments[0];
             var valueType = typeInfo.GenericTypeArguments[1];
+            var keyTypeIsEnum = keyType.GetTypeInfo().IsEnum;
 
-            if (keyType != typeof(string))
+            if (keyType != typeof(string) && !keyTypeIsEnum)
             {
-                // We only support string keys
+                // We only support string and enum keys
                 return;
             }
 
@@ -359,8 +369,16 @@ namespace Microsoft.Extensions.Configuration
                     config: child);
                 if (item != null)
                 {
-                    var key = child.Key;
-                    addMethod.Invoke(dictionary, new[] { key, item });
+                    if (keyType == typeof(string))
+                    {
+                        var key = child.Key;
+                        addMethod.Invoke(dictionary, new[] { key, item });
+                    }
+                    else if (keyTypeIsEnum)
+                    {
+                        var key = Convert.ToInt32(Enum.Parse(keyType, child.Key));
+                        addMethod.Invoke(dictionary, new[] { key, item });
+                    }
                 }
             }
         }

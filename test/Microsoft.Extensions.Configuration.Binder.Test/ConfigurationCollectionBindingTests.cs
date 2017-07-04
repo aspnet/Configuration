@@ -34,7 +34,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             Assert.Equal("val2", list[2]);
             Assert.Equal("valx", list[3]);
         }
-        
+
         [Fact]
         public void GetListNullValues()
         {
@@ -71,7 +71,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             config.GetSection("InvalidList").Bind(list);
 
             Assert.Equal(1, list.Count);
-            Assert.Equal(true, list[0]);
+            Assert.True(list[0]);
         }
 
         [Fact]
@@ -146,6 +146,30 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             Assert.Equal("val_1", options["abc"]);
             Assert.Equal("val_2", options["def"]);
             Assert.Equal("val_3", options["ghi"]);
+        }
+
+        [Fact]
+        public void GetEnumDictionary()
+        {
+            var input = new Dictionary<string, string>
+            {
+                {"EnumDictionary:abc", "val_1"},
+                {"EnumDictionary:def", "val_2"},
+                {"EnumDictionary:ghi", "val_3"}
+            };
+
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddInMemoryCollection(input);
+            var config = configurationBuilder.Build();
+
+            var options = new Dictionary<KeyEnum, string>();
+            config.GetSection("EnumDictionary").Bind(options);
+
+            Assert.Equal(3, options.Count);
+
+            Assert.Equal("val_1", options[KeyEnum.abc]);
+            Assert.Equal("val_2", options[KeyEnum.def]);
+            Assert.Equal("val_3", options[KeyEnum.ghi]);
         }
 
         [Fact]
@@ -244,7 +268,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             var configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddInMemoryCollection(input);
             var config = configurationBuilder.Build();
-            
+
             var options = new OptionsWithLists();
             config.Bind(options);
 
@@ -314,7 +338,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             Assert.Equal("val1", list[2]);
             Assert.Equal("val2", list[3]);
             Assert.Equal("valx", list[4]);
-        }        
+        }
 
         [Fact]
         public void CustomListBinding()
@@ -421,7 +445,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             Assert.Equal("val_2", options.StringDictionary["def"]);
             Assert.Equal("val_3", options.StringDictionary["ghi"]);
         }
-        
+
         [Fact]
         public void AlreadyInitializedStringDictionaryBinding()
         {
@@ -619,10 +643,10 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             var configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddInMemoryCollection(input);
             var config = configurationBuilder.Build();
-            
+
             var instance = new OptionsWithArrays();
             config.Bind(instance);
-            
+
             var array = instance.StringArray;
 
             Assert.Equal(4, array.Length);
@@ -655,8 +679,8 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             Assert.Equal(7, array.Length);
 
             Assert.Equal(OptionsWithArrays.InitialValue, array[0]);
-            Assert.Equal(null, array[1]);
-            Assert.Equal(null, array[2]);
+            Assert.Null(array[1]);
+            Assert.Null(array[2]);
             Assert.Equal("val0", array[3]);
             Assert.Equal("val1", array[4]);
             Assert.Equal("val2", array[5]);
@@ -686,8 +710,8 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             Assert.Equal(7, array.Length);
 
             Assert.Equal(OptionsWithArrays.InitialValue, array[0]);
-            Assert.Equal(null, array[1]);
-            Assert.Equal(null, array[2]);
+            Assert.Null(array[1]);
+            Assert.Null(array[2]);
             Assert.Equal("val0", array[3]);
             Assert.Equal("val1", array[4]);
             Assert.Equal("val2", array[5]);
@@ -965,6 +989,13 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             public int[] ArrayInNestedOption { get; set; }
         }
 
+        private enum KeyEnum
+        {
+            abc,
+            def,
+            ghi
+        }
+
         private class OptionsWithArrays
         {
             public const string InitialValue = "This was here before";
@@ -1011,7 +1042,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             public List<string> AlreadyInitializedList { get; set; }
 
             public List<NestedOptions> ObjectList { get; set; }
-            
+
             public IList<string> AlreadyInitializedListInterface { get; set; }
         }
 
@@ -1022,7 +1053,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
                 AlreadyInitializedStringDictionaryInterface = new Dictionary<string, string>();
                 AlreadyInitializedStringDictionaryInterface["123"] = "This was already here";
             }
-            
+
             public Dictionary<string, int> IntDictionary { get; set; }
 
             public Dictionary<string, string> StringDictionary { get; set; }
@@ -1032,11 +1063,11 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             public Dictionary<string, List<string>> ListDictionary { get; set; }
 
             public Dictionary<NestedOptions, string> NonStringKeyDictionary { get; set; }
-            
+
             // This cannot be initialized because we cannot
             // activate an interface
             public IDictionary<string, string> StringDictionaryInterface { get; set; }
-            
+
             public IDictionary<string, string> AlreadyInitializedStringDictionaryInterface { get; set; }
         }
     }

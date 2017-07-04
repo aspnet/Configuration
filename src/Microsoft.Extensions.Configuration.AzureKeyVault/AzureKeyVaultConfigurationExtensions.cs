@@ -70,7 +70,6 @@ namespace Microsoft.Extensions.Configuration
             return result.AccessToken;
         }
 
-#if NET46
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from the Azure KeyVault.
         /// </summary>
@@ -124,10 +123,6 @@ namespace Microsoft.Extensions.Configuration
             var result = await authContext.AcquireTokenAsync(resource, new ClientAssertionCertificate(clientId, certificate));
             return result.AccessToken;
         }
-#elif NETSTANDARD1_5
-#else
-#error Target frameworks need to be updated.
-#endif
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from the Azure KeyVault.
