@@ -16,6 +16,13 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables
         private const string MySqlServerPrefix = "MYSQLCONNSTR_";
         private const string SqlAzureServerPrefix = "SQLAZURECONNSTR_";
         private const string SqlServerPrefix = "SQLCONNSTR_";
+        private const string RedisCachePrefix = "REDISCACHECONNSTR_";
+        private const string ApiHubPrefix = "APIHUBCONNSTR_";
+        private const string DocumentDbPrefix = "DOCDBCONNSTR_";
+        private const string EventHubPrefix = "EVENTHUBCONNSTR_";
+        private const string NotificationHubPrefix = "NOTIFICATIONHUBCONNSTR_";
+        private const string PostgreSqkPrefix = "POSTGRESQLCONNSTR_";
+        private const string ServiceBusPrefix = "SERVICEBUSCONNSTR_";
         private const string CustomPrefix = "CUSTOMCONNSTR_";
 
         private const string ConnStrKeyFormat = "ConnectionStrings:{0}";
@@ -87,6 +94,34 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables
             {
                 prefix = SqlServerPrefix;
                 provider = "System.Data.SqlClient";
+            }
+            else if (key.StartsWith(RedisCachePrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                prefix = RedisCachePrefix;
+            }
+            else if (key.StartsWith(ApiHubPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                prefix = ApiHubPrefix;
+            }
+            else if (key.StartsWith(DocumentDbPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                prefix = DocumentDbPrefix;
+            }
+            else if (key.StartsWith(EventHubPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                prefix = EventHubPrefix;
+            }
+            else if (key.StartsWith(NotificationHubPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                prefix = NotificationHubPrefix;
+            }
+            else if (key.StartsWith(PostgreSqkPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                prefix = PostgreSqkPrefix;
+            }
+            else if (key.StartsWith(ServiceBusPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                prefix = ServiceBusPrefix;
             }
             else if (key.StartsWith(CustomPrefix, StringComparison.OrdinalIgnoreCase))
             {

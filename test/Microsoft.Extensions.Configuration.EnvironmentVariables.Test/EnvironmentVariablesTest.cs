@@ -1,7 +1,6 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Collections;
 using Microsoft.Extensions.Configuration.Test;
 using Xunit;
@@ -58,6 +57,13 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables.Test
                     {"SQLCONNSTR_db2", "SQLConnStr"},
                     {"MYSQLCONNSTR_db3", "MySQLConnStr"},
                     {"SQLAZURECONNSTR_db4", "SQLAzureConnStr"},
+                    {"REDISCACHECONNSTR_db6", "RedisCacheConnStr"},
+                    {"APIHUBCONNSTR_db7", "ApiHubConnStr"},
+                    {"DOCDBCONNSTR_db8", "DocDbConnStr"},
+                    {"EVENTHUBCONNSTR_db9", "EventHubConnStr"},
+                    {"NOTIFICATIONHUBCONNSTR_db10", "NotificationHubConnStr"},
+                    {"POSTGRESQLCONNSTR_db11", "PostgreSqlConnStr"},
+                    {"SERVICEBUSCONNSTR_db12", "ServiceBusConnStr"},
                     {"CommonEnv", "CommonEnvValue"},
                 };
             var envConfigSrc = new EnvironmentVariablesConfigurationProvider();
@@ -74,6 +80,13 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables.Test
             Assert.Equal("MySql.Data.MySqlClient", envConfigSrc.Get("ConnectionStrings:db3_ProviderName"));
             Assert.Equal("SQLAzureConnStr", envConfigSrc.Get("ConnectionStrings:db4"));
             Assert.Equal("System.Data.SqlClient", envConfigSrc.Get("ConnectionStrings:db4_ProviderName"));
+            Assert.Equal("RedisCacheConnStr", envConfigSrc.Get("ConnectionStrings:db6"));
+            Assert.Equal("ApiHubConnStr", envConfigSrc.Get("ConnectionStrings:db7"));
+            Assert.Equal("DocDbConnStr", envConfigSrc.Get("ConnectionStrings:db8"));
+            Assert.Equal("EventHubConnStr", envConfigSrc.Get("ConnectionStrings:db9"));
+            Assert.Equal("NotificationHubConnStr", envConfigSrc.Get("ConnectionStrings:db10"));
+            Assert.Equal("PostgreSqlConnStr", envConfigSrc.Get("ConnectionStrings:db11"));
+            Assert.Equal("ServiceBusConnStr", envConfigSrc.Get("ConnectionStrings:db12"));
             Assert.Equal("CommonEnvValue", envConfigSrc.Get("CommonEnv"));
         }
 
@@ -86,6 +99,13 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables.Test
                 {"SQLCONNSTR_db2", "SQLConnStr"},
                 {"MYSQLCONNSTR_db3", "MySQLConnStr"},
                 {"SQLAZURECONNSTR_db4", "SQLAzureConnStr"},
+                {"REDISCACHECONNSTR_db6", "RedisCacheConnStr"},
+                {"APIHUBCONNSTR_db7", "ApiHubConnStr"},
+                {"DOCDBCONNSTR_db8", "DocDbConnStr"},
+                {"EVENTHUBCONNSTR_db9", "EventHubConnStr"},
+                {"NOTIFICATIONHUBCONNSTR_db10", "NotificationHubConnStr"},
+                {"POSTGRESQLCONNSTR_db11", "PostgreSqlConnStr"},
+                {"SERVICEBUSCONNSTR_db12", "ServiceBusConnStr"},
                 {"CommonEnv", "CommonEnvValue"},
             };
             var envConfigSrc = new EnvironmentVariablesConfigurationProvider("ConnectionStrings:");
@@ -99,6 +119,13 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables.Test
             Assert.Equal("MySql.Data.MySqlClient", envConfigSrc.Get("db3_ProviderName"));
             Assert.Equal("SQLAzureConnStr", envConfigSrc.Get("db4"));
             Assert.Equal("System.Data.SqlClient", envConfigSrc.Get("db4_ProviderName"));
+            Assert.Equal("RedisCacheConnStr", envConfigSrc.Get("ConnectionStrings:db6"));
+            Assert.Equal("ApiHubConnStr", envConfigSrc.Get("ConnectionStrings:db7"));
+            Assert.Equal("DocDbConnStr", envConfigSrc.Get("ConnectionStrings:db8"));
+            Assert.Equal("EventHubConnStr", envConfigSrc.Get("ConnectionStrings:db9"));
+            Assert.Equal("NotificationHubConnStr", envConfigSrc.Get("ConnectionStrings:db10"));
+            Assert.Equal("PostgreSqlConnStr", envConfigSrc.Get("ConnectionStrings:db11"));
+            Assert.Equal("ServiceBusConnStr", envConfigSrc.Get("ConnectionStrings:db12"));
         }
 
         [Fact]
