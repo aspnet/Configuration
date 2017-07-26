@@ -119,13 +119,13 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables.Test
             Assert.Equal("MySql.Data.MySqlClient", envConfigSrc.Get("db3_ProviderName"));
             Assert.Equal("SQLAzureConnStr", envConfigSrc.Get("db4"));
             Assert.Equal("System.Data.SqlClient", envConfigSrc.Get("db4_ProviderName"));
-            Assert.Equal("RedisCacheConnStr", envConfigSrc.Get("ConnectionStrings:db6"));
-            Assert.Equal("ApiHubConnStr", envConfigSrc.Get("ConnectionStrings:db7"));
-            Assert.Equal("DocDbConnStr", envConfigSrc.Get("ConnectionStrings:db8"));
-            Assert.Equal("EventHubConnStr", envConfigSrc.Get("ConnectionStrings:db9"));
-            Assert.Equal("NotificationHubConnStr", envConfigSrc.Get("ConnectionStrings:db10"));
-            Assert.Equal("PostgreSqlConnStr", envConfigSrc.Get("ConnectionStrings:db11"));
-            Assert.Equal("ServiceBusConnStr", envConfigSrc.Get("ConnectionStrings:db12"));
+            Assert.Equal("RedisCacheConnStr", envConfigSrc.Get("db6"));
+            Assert.Equal("ApiHubConnStr", envConfigSrc.Get("db7"));
+            Assert.Equal("DocDbConnStr", envConfigSrc.Get("db8"));
+            Assert.Equal("EventHubConnStr", envConfigSrc.Get("db9"));
+            Assert.Equal("NotificationHubConnStr", envConfigSrc.Get("db10"));
+            Assert.Equal("PostgreSqlConnStr", envConfigSrc.Get("db11"));
+            Assert.Equal("ServiceBusConnStr", envConfigSrc.Get("db12"));
         }
 
         [Fact]
