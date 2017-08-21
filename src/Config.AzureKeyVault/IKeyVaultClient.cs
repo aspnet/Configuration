@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Threading.Tasks;
-using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.KeyVault.Models;
 using Microsoft.Rest.Azure;
 
@@ -13,7 +12,7 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault
     /// against the Key Vault service.
     /// Thread safety: This class is thread-safe.
     /// </summary>
-    internal interface IKeyVaultClient
+    public interface IKeyVaultClient
     {
         /// <summary>List secrets in the specified vault</summary>
         /// <param name="vault">The URL for the vault containing the secrets.</param>
