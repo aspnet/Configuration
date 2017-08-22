@@ -9,15 +9,15 @@ using Microsoft.Rest.Azure;
 namespace Microsoft.Extensions.Configuration.AzureKeyVault
 {
     /// <inheritdoc />
-    internal class KeyVaultClientWrapper : IKeyVaultClient
+    public class KeyVaultClientWrapper : IKeyVaultClient
     {
-        private readonly KeyVaultClient _keyVaultClientImplementation;
+        private readonly Azure.KeyVault.IKeyVaultClient _keyVaultClientImplementation;
 
         /// <summary>
-        /// Creates a new instance of <see cref="KeyVaultClientWrapper"/>.
+        /// Creates a new instance of <see cref="KeyVaultClientWrapper" />.
         /// </summary>
-        /// <param name="keyVaultClientImplementation">The <see cref="KeyVaultClient"/> instance to wrap.</param>
-        public KeyVaultClientWrapper(KeyVaultClient keyVaultClientImplementation)
+        /// <param name="keyVaultClientImplementation">The <see cref="IKeyVaultClient" /> instance to wrap.</param>
+        public KeyVaultClientWrapper(Azure.KeyVault.IKeyVaultClient keyVaultClientImplementation)
         {
             _keyVaultClientImplementation = keyVaultClientImplementation;
         }
