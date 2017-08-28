@@ -4,7 +4,6 @@
     <AssemblyName>Microsoft.Extensions.Configuration.Test.Common</AssemblyName>
     <RootNamespace>Microsoft.Extensions.Configuration.Test.Common</RootNamespace>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <IsTestProject>false</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>

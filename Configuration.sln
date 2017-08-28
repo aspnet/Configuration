@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F141E2D0-F9B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{B54371FF-B920-46C8-8D55-6B19DBB43EBF}"
 	ProjectSection(SolutionItems) = preProject
-		test\Directory.Build.targets = test\Directory.Build.targets
+		test\Directory.Build.props = test\Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Extensions.Configuration.Json", "src\Config.Json\Config.Json.csproj", "{4C4CD1BC-4411-4AFD-9D04-147053F0E259}"
