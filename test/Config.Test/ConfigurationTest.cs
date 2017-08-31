@@ -138,8 +138,10 @@ namespace Microsoft.Extensions.Configuration.Test
             // Act
             configurationBuilder.Add(memConfigSrc1);
             configurationBuilder.Add(memConfigSrc2);
-            configurationBuilder.Add(memConfigSrc3);
-            var config = new ConfigurationBuilder().AddConfiguration(configurationBuilder.Build()).Build();
+            var config = new ConfigurationBuilder()
+                .AddConfiguration(configurationBuilder.Build())
+                .Add(memConfigSrc3)
+                .Build();
             var dict = config.AsEnumerable(makePathsRelative: removePath).ToDictionary(k => k.Key, v => v.Value);
 
             // Assert

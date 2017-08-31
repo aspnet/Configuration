@@ -75,12 +75,12 @@ namespace Microsoft.Extensions.Configuration
             IEnumerable<string> earlierKeys,
             string parentPath)
         {
-            var children = _config.GetChildren();
+            var section = parentPath == null ? _config : _config.GetSection(parentPath);
+            var children = section.GetChildren();
             var keys = new List<string>();
-            keys.AddRange(_config.GetChildren().Select(c => c.Key));
-            keys.Concat(earlierKeys)
+            keys.AddRange(children.Select(c => c.Key));
+            return keys.Concat(earlierKeys)
                 .OrderBy(k => k, ConfigurationKeyComparer.Instance);
-            return keys;
         }
     }
 }
