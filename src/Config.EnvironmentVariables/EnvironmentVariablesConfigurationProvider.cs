@@ -21,21 +21,33 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables
         private const string ConnStrKeyFormat = "ConnectionStrings:{0}";
         private const string ProviderKeyFormat = "ConnectionStrings:{0}_ProviderName";
 
+        private const string DefaultKeyDelimiter = "__";
+
         private readonly string _prefix;
+        private readonly string _keyDelimiter;
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
-        public EnvironmentVariablesConfigurationProvider() : this(string.Empty)
+        public EnvironmentVariablesConfigurationProvider() : this(string.Empty, string.Empty)
         { }
 
         /// <summary>
         /// Initializes a new instance with the specified prefix.
         /// </summary>
         /// <param name="prefix">A prefix used to filter the environment variables.</param>
-        public EnvironmentVariablesConfigurationProvider(string prefix)
+        public EnvironmentVariablesConfigurationProvider(string prefix) : this(prefix, string.Empty)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance with the specified prefix.
+        /// </summary>
+        /// <param name="prefix">A prefix used to filter the environment variables.</param>
+        /// <param name="keyDelimiter">The delimiter used to separate individual keys in a path, will be replaced with <see cref="ConfigurationPath.KeyDelimiter"/></param>
+        public EnvironmentVariablesConfigurationProvider(string prefix, string keyDelimiter)
         {
             _prefix = prefix ?? string.Empty;
+            _keyDelimiter = string.IsNullOrEmpty(keyDelimiter) ? DefaultKeyDelimiter : keyDelimiter;
         }
 
         /// <summary>
@@ -62,12 +74,12 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables
             }
         }
 
-        private static string NormalizeKey(string key)
+        private string NormalizeKey(string key)
         {
-            return key.Replace("__", ConfigurationPath.KeyDelimiter);
+            return key.Replace(_keyDelimiter, ConfigurationPath.KeyDelimiter);
         }
 
-        private static IEnumerable<DictionaryEntry> AzureEnvToAppEnv(DictionaryEntry entry)
+        private IEnumerable<DictionaryEntry> AzureEnvToAppEnv(DictionaryEntry entry)
         {
             var key = (string)entry.Key;
             var prefix = string.Empty;

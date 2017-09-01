@@ -14,13 +14,18 @@ namespace Microsoft.Extensions.Configuration.EnvironmentVariables
         public string Prefix { get; set; }
 
         /// <summary>
+        /// The delimiter used to separate individual keys in a path, will be replaced with <see cref="ConfigurationPath.KeyDelimiter"/>
+        /// </summary>
+        public string KeyDelimiter { get; set; }
+
+        /// <summary>
         /// Builds the <see cref="EnvironmentVariablesConfigurationProvider"/> for this source.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
         /// <returns>A <see cref="EnvironmentVariablesConfigurationProvider"/></returns>
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new EnvironmentVariablesConfigurationProvider(Prefix);
+            return new EnvironmentVariablesConfigurationProvider(Prefix, KeyDelimiter);
         }
     }
 }

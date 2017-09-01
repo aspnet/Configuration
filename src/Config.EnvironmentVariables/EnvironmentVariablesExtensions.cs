@@ -38,6 +38,23 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
+        /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from environment variables
+        /// with a specified prefix.
+        /// </summary>
+        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="prefix">The prefix that environment variable names must start with. The prefix will be removed from the environment variable names.</param>
+        /// <param name="keyDelimiter">The delimiter used to separate individual keys in a path, will be replaced with <see cref="ConfigurationPath.KeyDelimiter"/></param>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddEnvironmentVariables(
+            this IConfigurationBuilder configurationBuilder,
+            string prefix,
+            string keyDelimiter)
+        {
+            configurationBuilder.Add(new EnvironmentVariablesConfigurationSource { Prefix = prefix, KeyDelimiter = keyDelimiter });
+            return configurationBuilder;
+        }
+
+        /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from environment variables.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
