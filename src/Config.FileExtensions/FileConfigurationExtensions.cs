@@ -45,7 +45,7 @@ namespace Microsoft.Extensions.Configuration
 
             if (builder.Properties.TryGetValue(FileProviderKey, out object provider))
             {
-                return builder.Properties[FileProviderKey] as IFileProvider;
+                return provider as IFileProvider;
             }
 
             return new PhysicalFileProvider(AppContext.BaseDirectory ?? string.Empty);
