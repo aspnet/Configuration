@@ -491,7 +491,9 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
 
             config.Bind(options);
 
-            Assert.Equal(1, options.Count);
+            var optionsCount = options.Count;
+
+            Assert.Equal(1, optionsCount);
             Assert.Equal("override", options["abc"]);
         }
 
