@@ -1,17 +1,17 @@
 ﻿<Project>
   <PropertyGroup>
-    <AspNetCoreVersion>2.0.0</AspNetCoreVersion>
-    <AzureKeyVaultVersion>2.3.2</AzureKeyVaultVersion>
-    <CoreFxVersion>4.4.0</CoreFxVersion>
-    <IdentityModelActiveDirectoryVersion>3.14.1</IdentityModelActiveDirectoryVersion>
-    <InternalAspNetCoreSdkVersion>2.0.1-rtm-15400</InternalAspNetCoreSdkVersion>
-    <JsonNetVersion>10.0.1</JsonNetVersion>
-    <MoqVersion>4.7.49</MoqVersion>
-    <NETStandardImplicitPackageVersion>2.0.0</NETStandardImplicitPackageVersion>
-    <RuntimeFrameworkVersion Condition="'$(TargetFramework)'=='netcoreapp2.0'">2.0.0</RuntimeFrameworkVersion>
-    <TestSdkVersion>15.3.0</TestSdkVersion>
-    <XunitVersion>2.3.0-beta2-build3683</XunitVersion>
-    <XunitRunnerVisualStudioVersion>2.3.0-beta2-build1317</XunitRunnerVisualStudioVersion>
+    <InternalAspNetCoreSdkPackageVersion>2.0.2-beta-15522</InternalAspNetCoreSdkPackageVersion>
+    <MicrosoftAspNetCoreTestingPackageVersion>2.0.0</MicrosoftAspNetCoreTestingPackageVersion>
+    <MicrosoftAzureKeyVaultPackageVersion>2.3.2</MicrosoftAzureKeyVaultPackageVersion>
+    <MicrosoftExtensionsFileProvidersPhysicalPackageVersion>2.0.0</MicrosoftExtensionsFileProvidersPhysicalPackageVersion>
+    <MicrosoftExtensionsPrimitivesPackageVersion>2.0.0</MicrosoftExtensionsPrimitivesPackageVersion>
+    <MicrosoftIdentityModelClientsActiveDirectoryPackageVersion>3.14.1</MicrosoftIdentityModelClientsActiveDirectoryPackageVersion>
+    <MicrosoftNETTestSdkPackageVersion>15.3.0</MicrosoftNETTestSdkPackageVersion>
+    <NewtonsoftJsonRuntimePackageVersion>10.0.1</NewtonsoftJsonRuntimePackageVersion>
+    <MoqPackageVersion>4.7.49</MoqPackageVersion>
+    <SystemSecurityCryptographyXmlPackageVersion>4.4.0</SystemSecurityCryptographyXmlPackageVersion>
+    <XunitPackageVersion>2.3.0-beta2-build3683</XunitPackageVersion>
+    <XunitRunnerVisualStudioPackageVersion>2.3.0-beta2-build1317</XunitRunnerVisualStudioPackageVersion>
   </PropertyGroup>
 
   <Import Project="$(DotNetPackageVersionPropsPath)" Condition=" '$(DotNetPackageVersionPropsPath)' != '' " />
