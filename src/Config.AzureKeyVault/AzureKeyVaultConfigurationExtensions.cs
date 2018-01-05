@@ -135,7 +135,7 @@ namespace Microsoft.Extensions.Configuration
             this IConfigurationBuilder configurationBuilder,
             string vault)
         {
-            return AddAzureKeyVault(configurationBuilder, vault, null);
+            return AddAzureKeyVault(configurationBuilder, vault, new DefaultKeyVaultSecretManager());
         }
 
         /// <summary>
@@ -182,6 +182,10 @@ namespace Microsoft.Extensions.Configuration
             if (vault == null)
             {
                 throw new ArgumentNullException(nameof(vault));
+            }
+            if (manager == null)
+            {
+                throw new ArgumentNullException(nameof(manager));
             }
 
             configurationBuilder.Add(new AzureKeyVaultConfigurationSource()
