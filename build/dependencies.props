@@ -6,7 +6,9 @@
     <MicrosoftExtensionsFileProvidersPhysicalPackageVersion>2.0.0</MicrosoftExtensionsFileProvidersPhysicalPackageVersion>
     <MicrosoftExtensionsPrimitivesPackageVersion>2.0.0</MicrosoftExtensionsPrimitivesPackageVersion>
     <MicrosoftIdentityModelClientsActiveDirectoryPackageVersion>3.14.1</MicrosoftIdentityModelClientsActiveDirectoryPackageVersion>
+    <MicrosoftNETCoreApp20PackageVersion>2.0.5</MicrosoftNETCoreApp20PackageVersion>
     <MicrosoftNETTestSdkPackageVersion>15.3.0</MicrosoftNETTestSdkPackageVersion>
+    <NETStandardLibrary20PackageVersion>2.0.1</NETStandardLibrary20PackageVersion>
     <NewtonsoftJsonRuntimePackageVersion>10.0.1</NewtonsoftJsonRuntimePackageVersion>
     <MoqPackageVersion>4.7.49</MoqPackageVersion>
     <SystemSecurityCryptographyXmlPackageVersion>4.4.0</SystemSecurityCryptographyXmlPackageVersion>
