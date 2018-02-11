@@ -172,15 +172,12 @@ namespace Microsoft.Extensions.Configuration
                 return;
             }
 
-            object[] propertyAttributes = property.GetCustomAttributes(true).ToArray();
-
-            foreach (var propertyAttribute in propertyAttributes)
+            DataMemberAttribute propertyDataMemberAttribute = property.GetCustomAttribute<DataMemberAttribute>(true);
+            if (propertyDataMemberAttribute != null &&
+                propertyDataMemberAttribute.IsNameSetExplicitly &&
+                !string.IsNullOrEmpty( propertyDataMemberAttribute.Name))
             {
-                if (propertyAttribute is DataMemberAttribute dataMemberAttribute && dataMemberAttribute.IsNameSetExplicitly)
-                {
-                    propertyName = dataMemberAttribute.Name;
-                    break;
-                }
+                propertyName = propertyDataMemberAttribute.Name;
             }
 
             propertyValue = BindInstance(property.PropertyType, propertyValue, config.GetSection(propertyName));
