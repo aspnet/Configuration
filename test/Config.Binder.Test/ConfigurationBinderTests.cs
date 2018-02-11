@@ -9,6 +9,8 @@ using Xunit;
 
 namespace Microsoft.Extensions.Configuration.Binder.Test
 {
+    using System.Runtime.Serialization;
+
     public class ConfigurationBinderTests
     {
         public class ComplexOptions
@@ -29,6 +31,10 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             public string ProtectedSetter { get; protected set; }
             public string InternalSetter { get; internal set; }
             public static string StaticProperty { get; set; }
+            [DataMember]
+            public string DataMemberAttributeNoName { get; set; }
+            [DataMember(Name="data-member-attribute-with-name")]
+            public string DataMemberAttributeWithName { get; set; }
 
             public string ReadOnly
             {
@@ -402,7 +408,8 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             {
                 {"Integer", "-2"},
                 {"Boolean", "TRUe"},
-                {"Nested:Integer", "11"}
+                {"Nested:Integer", "11"},
+                {"data-member-attribute-with-name", "a string"}
             };
             var configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddInMemoryCollection(dic);
@@ -414,6 +421,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             Assert.True(instance.Boolean);
             Assert.Equal(-2, instance.Integer);
             Assert.Equal(11, instance.Nested.Integer);
+            Assert.Equal("a string", instance.DataMemberAttributeWithName);
         }
 
         [Fact]
