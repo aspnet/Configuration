@@ -409,7 +409,8 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
                 {"Integer", "-2"},
                 {"Boolean", "TRUe"},
                 {"Nested:Integer", "11"},
-                {"data-member-attribute-with-name", "a string"}
+                {"data-member-attribute-with-name", "a string"},
+                {"DataMemberAttributeNoName","another string"}
             };
             var configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddInMemoryCollection(dic);
@@ -422,6 +423,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             Assert.Equal(-2, instance.Integer);
             Assert.Equal(11, instance.Nested.Integer);
             Assert.Equal("a string", instance.DataMemberAttributeWithName);
+            Assert.Equal("another string", instance.DataMemberAttributeNoName);
         }
 
         [Fact]
