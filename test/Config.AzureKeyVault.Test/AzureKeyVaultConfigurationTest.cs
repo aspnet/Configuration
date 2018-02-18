@@ -134,6 +134,34 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault.Test
             Assert.Throws<ArgumentNullException>(() => new AzureKeyVaultConfigurationProvider(Mock.Of<IKeyVaultClient>(), VaultUri, null));
         }
 
+        [Fact]
+        public void ShouldThrowInvalidOperationExceptionWhenKeyIsDuplicated()
+        {
+            var client = new Mock<IKeyVaultClient>(MockBehavior.Strict);
+            var secret1Id = GetSecretId("Secret1");
+            var secret2Id = GetSecretId("Secret1");
+
+            client.Setup(c => c.GetSecretsAsync(VaultUri)).ReturnsAsync(new PageMock()
+            {
+                NextPageLink = "next",
+                Value = new[] { new SecretItem { Id = secret1Id } }
+            });
+
+            client.Setup(c => c.GetSecretsNextAsync("next")).ReturnsAsync(new PageMock()
+            {
+                Value = new[] { new SecretItem { Id = secret2Id } }
+            });
+
+            client.Setup(c => c.GetSecretAsync(secret1Id)).ReturnsAsync(new SecretBundle() { Value = "Value1", Id = secret1Id });
+            client.Setup(c => c.GetSecretAsync(secret2Id)).ReturnsAsync(new SecretBundle() { Value = "Value2", Id = secret2Id });
+
+            // Act
+            var provider = new AzureKeyVaultConfigurationProvider(client.Object, VaultUri, new DefaultKeyVaultSecretManager());
+
+            // Assert
+            Assert.Throws<InvalidOperationException>(() => provider.Load());
+        }
+
         private string GetSecretId(string name) => new SecretIdentifier(VaultUri, name).Identifier;
 
         private class EndsWithOneKeyVaultSecretManager : DefaultKeyVaultSecretManager

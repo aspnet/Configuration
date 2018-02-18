@@ -61,6 +61,11 @@ namespace Microsoft.Extensions.Configuration.AzureKeyVault
 
                     var value = await _client.GetSecretAsync(secretItem.Id).ConfigureAwait(false);
                     var key = _manager.GetKey(value);
+                    if (data.ContainsKey(key))
+                    {
+                        throw new InvalidOperationException(string.Format(Resources.Error_DuplicateKey, key));
+                    }
+
                     data.Add(key, value.Value);
                 }
 
