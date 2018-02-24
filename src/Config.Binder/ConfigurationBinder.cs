@@ -538,8 +538,6 @@ namespace Microsoft.Extensions.Configuration
                 return null;
             }
 
-            Console.WriteLine("Checking for Property TypeConverter");
-
             var typeConverterAttribute = propertyInfo.GetCustomAttribute<TypeConverterAttribute>();
             if ((typeConverterAttribute != null) &&
                 (typeConverterAttribute.ConverterTypeName != null) && 
