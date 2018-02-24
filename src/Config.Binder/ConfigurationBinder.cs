@@ -53,7 +53,7 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            return BindInstance(type, instance: null, config: configuration);
+            return BindInstance(propertyInfo: null, type, instance: null, config: configuration);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Microsoft.Extensions.Configuration
 
             if (instance != null)
             {
-                BindInstance(instance.GetType(), instance, configuration);
+                BindInstance(propertyInfo: null, instance.GetType(), instance, configuration);
             }
         }
 
@@ -133,7 +133,7 @@ namespace Microsoft.Extensions.Configuration
             var value = configuration.GetSection(key).Value;
             if (value != null)
             {
-                return ConvertValue(type, value);
+                return ConvertValue(propertyInfo: null, type, value);
             }
             return defaultValue;
         }
@@ -169,7 +169,7 @@ namespace Microsoft.Extensions.Configuration
                 return;
             }
 
-            propertyValue = BindInstance(property.PropertyType, propertyValue, config.GetSection(property.Name));
+            propertyValue = BindInstance(property, property.PropertyType, propertyValue, config.GetSection(property.Name));
 
             if (propertyValue != null && hasPublicSetter)
             {
@@ -243,7 +243,7 @@ namespace Microsoft.Extensions.Configuration
             return null;
         }
 
-        private static object BindInstance(Type type, object instance, IConfiguration config)
+        private static object BindInstance(PropertyInfo propertyInfo, Type type, object instance, IConfiguration config)
         {
             // if binding IConfigurationSection, break early
             if (type == typeof(IConfigurationSection))
@@ -255,7 +255,7 @@ namespace Microsoft.Extensions.Configuration
             var configValue = section?.Value;
             object convertedValue;
             Exception error;
-            if (configValue != null && TryConvertValue(type, configValue, out convertedValue, out error))
+            if (configValue != null && TryConvertValue(propertyInfo, type, configValue, out convertedValue, out error))
             {
                 if (error != null)
                 {
@@ -364,6 +364,7 @@ namespace Microsoft.Extensions.Configuration
             foreach (var child in config.GetChildren())
             {
                 var item = BindInstance(
+                    propertyInfo: null,
                     type: valueType,
                     instance: null,
                     config: child);
@@ -396,6 +397,7 @@ namespace Microsoft.Extensions.Configuration
                 try
                 {
                     var item = BindInstance(
+                        propertyInfo: null,
                         type: itemType,
                         instance: null,
                         config: section);
@@ -428,6 +430,7 @@ namespace Microsoft.Extensions.Configuration
                 try
                 {
                     var item = BindInstance(
+                        propertyInfo: null,
                         type: elementType,
                         instance: null,
                         config: children[i]);
@@ -444,7 +447,7 @@ namespace Microsoft.Extensions.Configuration
             return newArray;
         }
 
-        private static bool TryConvertValue(Type type, string value, out object result, out Exception error)
+        private static bool TryConvertValue(PropertyInfo propertyInfo, Type type, string value, out object result, out Exception error)
         {
             error = null;
             result = null;
@@ -453,22 +456,37 @@ namespace Microsoft.Extensions.Configuration
                 result = value;
                 return true;
             }
-  
-            if (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+
+            TypeConverter typeConverter = null;
+
+            // check for TypeConverter from the propertyInfo before performing Nullable type checks, since
+            // TypeConverters assigned to a property should be expecting the property's actual type.
+
+            if (propertyInfo != null)
             {
-                if (string.IsNullOrEmpty(value))
-                {
-                    return true;
-                }
-                return TryConvertValue(Nullable.GetUnderlyingType(type), value, out result, out error);
+                typeConverter = GetPropertyInfoTypeConverter(propertyInfo);
             }
-  
-            var converter = TypeDescriptor.GetConverter(type);
-            if (converter.CanConvertFrom(typeof(string)))
+
+            if (typeConverter == null)
+            {
+                if (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                {
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        return true;
+                    }
+                    // do not foward propertyInfo, since we are changing to the underlying type..
+                    return TryConvertValue(propertyInfo: null, Nullable.GetUnderlyingType(type), value, out result, out error);
+                }
+
+                typeConverter = TypeDescriptor.GetConverter(type);
+            }
+
+            if (typeConverter.CanConvertFrom(typeof(string)))
             {
                 try
                 {
-                    result = converter.ConvertFromInvariantString(value);
+                    result = typeConverter.ConvertFromInvariantString(value);
                 }
                 catch (Exception ex)
                 {
@@ -480,11 +498,11 @@ namespace Microsoft.Extensions.Configuration
             return false;
         }
 
-        private static object ConvertValue(Type type, string value)
+        private static object ConvertValue(PropertyInfo propertyInfo, Type type, string value)
         {
             object result;
             Exception error;
-            TryConvertValue(type, value, out result, out error);
+            TryConvertValue(propertyInfo, type, value, out result, out error);
             if (error != null)
             {
                 throw error;
@@ -510,6 +528,31 @@ namespace Microsoft.Extensions.Configuration
                     return interfaceType;
                 }
             }
+            return null;
+        }
+
+        private static TypeConverter GetPropertyInfoTypeConverter(PropertyInfo propertyInfo)
+        {
+            if (propertyInfo == null)
+            {
+                return null;
+            }
+
+            Console.WriteLine("Checking for Property TypeConverter");
+
+            var typeConverterAttribute = propertyInfo.GetCustomAttribute<TypeConverterAttribute>();
+            if ((typeConverterAttribute != null) &&
+                (typeConverterAttribute.ConverterTypeName != null) && 
+                (typeConverterAttribute.ConverterTypeName.Length > 0))
+            {
+                Type typeConverterType = Type.GetType(typeConverterAttribute.ConverterTypeName);
+                if ((typeConverterType != null) &&
+                    (typeof(TypeConverter).IsAssignableFrom(typeConverterType)))
+                {
+                    return (TypeConverter)CreateInstance(typeConverterType);
+                }
+            }
+
             return null;
         }
 
