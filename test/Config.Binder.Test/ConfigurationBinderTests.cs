@@ -86,7 +86,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
 
         public class TypeConverterAttributedOptions
         {
-            [TypeConverter()]
+            [TypeConverter(typeof(UserDefinedTypeConverter))]
             public int Value { get; set; }
 
             public class UserDefinedTypeConverter: TypeConverter
