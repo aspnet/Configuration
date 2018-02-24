@@ -457,17 +457,17 @@ namespace Microsoft.Extensions.Configuration
                 return true;
             }
 
-            TypeConverter typeConverter = null;
+            TypeConverter converter = null;
 
             // check for TypeConverter from the propertyInfo before performing Nullable type checks, since
             // TypeConverters assigned to a property should be expecting the property's actual type.
 
             if (propertyInfo != null)
             {
-                typeConverter = GetPropertyInfoTypeConverter(propertyInfo);
+                converter = GetPropertyInfoTypeConverter(propertyInfo);
             }
 
-            if (typeConverter == null)
+            if (converter == null)
             {
                 if (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
                 {
@@ -479,14 +479,14 @@ namespace Microsoft.Extensions.Configuration
                     return TryConvertValue(propertyInfo: null, Nullable.GetUnderlyingType(type), value, out result, out error);
                 }
 
-                typeConverter = TypeDescriptor.GetConverter(type);
+                converter = TypeDescriptor.GetConverter(type);
             }
 
-            if (typeConverter.CanConvertFrom(typeof(string)))
+            if (converter.CanConvertFrom(typeof(string)))
             {
                 try
                 {
-                    result = typeConverter.ConvertFromInvariantString(value);
+                    result = converter.ConvertFromInvariantString(value);
                 }
                 catch (Exception ex)
                 {
