@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Reflection;
 using Xunit;
 
@@ -81,6 +82,31 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
         public class DerivedOptionsWithIConfigurationSection : DerivedOptions
         {
             public IConfigurationSection DerivedSection { get; set; }
+        }
+
+        public class TypeConverterAttributedOptions
+        {
+            [TypeConverter()]
+            public int Value { get; set; }
+
+            public class UserDefinedTypeConverter: TypeConverter
+            {
+                public override bool CanConvertFrom ( ITypeDescriptorContext context, Type sourceType )
+                {
+                    if (sourceType == typeof(string))
+                        return true;
+
+                    return base.CanConvertFrom(context, sourceType);
+                }
+
+                public override object ConvertFrom ( ITypeDescriptorContext context, CultureInfo culture, object value )
+                {
+                    if ((value is string) && (int.TryParse((string)value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsedValue)))
+                        return parsedValue + 1;
+
+                    return base.ConvertFrom(context, culture, value);
+                }
+            }
         }
 
         [Fact]
@@ -393,6 +419,24 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             var configurationBuilder = new ConfigurationBuilder();
             var config = configurationBuilder.Build();
             config.Bind(new List<string>());
+        }
+
+        [Fact]
+        public void BindUsesPropertyTypeConverter()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                {"Value", "1"}
+            };
+
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddInMemoryCollection(dic);
+            var config = configurationBuilder.Build();
+
+            var instance = new TypeConverterAttributedOptions();
+            config.Bind(instance);
+
+            Assert.Equal(2, instance.Value);
         }
 
         [Fact]
