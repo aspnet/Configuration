@@ -80,6 +80,12 @@ namespace Microsoft.Extensions.Configuration.Binder
         internal static string FormatError_UnsupportedMultidimensionalArray(object p0)
             => string.Format(CultureInfo.CurrentCulture, GetString("Error_UnsupportedMultidimensionalArray"), p0);
 
+        /// <summary>
+        /// Required member '{0}' is missing or cannot be serialized.
+        /// </summary>
+        internal static string FormatError_FailedBindingRequiredProperty(object p0)
+            => string.Format(CultureInfo.CurrentCulture, GetString("FormatError_FailedBindingRequiredProperty"), p0);
+
         private static string GetString(string name, params string[] formatterNames)
         {
             var value = _resourceManager.GetString(name);
