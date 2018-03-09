@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration.Binder;
 
 namespace Microsoft.Extensions.Configuration
 {
+    using System.Runtime.Serialization;
+
     /// <summary>
     /// Static helper class that allows binding strongly typed objects to configuration values.
     /// </summary>
@@ -159,6 +161,7 @@ namespace Microsoft.Extensions.Configuration
                 return;
             }
 
+            var propertyName = property.Name;
             var propertyValue = property.GetValue(instance);
             var hasPublicSetter = property.SetMethod != null && property.SetMethod.IsPublic;
 
@@ -169,7 +172,15 @@ namespace Microsoft.Extensions.Configuration
                 return;
             }
 
-            propertyValue = BindInstance(property.PropertyType, propertyValue, config.GetSection(property.Name));
+            DataMemberAttribute propertyDataMemberAttribute = property.GetCustomAttribute<DataMemberAttribute>(true);
+            if (propertyDataMemberAttribute != null &&
+                propertyDataMemberAttribute.IsNameSetExplicitly &&
+                !string.IsNullOrEmpty( propertyDataMemberAttribute.Name))
+            {
+                propertyName = propertyDataMemberAttribute.Name;
+            }
+
+            propertyValue = BindInstance(property.PropertyType, propertyValue, config.GetSection(propertyName));
 
             if (propertyValue != null && hasPublicSetter)
             {
