@@ -2,20 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Microsoft.Extensions.Configuration.DirectoryFiles
+namespace Microsoft.Extensions.Configuration.KeyPerFile
 {
     /// <summary>
     /// A <see cref="ConfigurationProvider"/> that uses a directory's files as configuration key/values.
     /// </summary>
-    public class DirectoryFilesConfigurationProvider : ConfigurationProvider
+    public class KeyPerFileConfigurationProvider : ConfigurationProvider
     {
-        DirectoryFilesConfigurationSource Source { get; set; }
+        KeyPerFileConfigurationSource Source { get; set; }
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
         /// <param name="source">The settings.</param>
-        public DirectoryFilesConfigurationProvider(DirectoryFilesConfigurationSource source)
+        public KeyPerFileConfigurationProvider(KeyPerFileConfigurationSource source)
             => Source = source ?? throw new ArgumentNullException(nameof(source));
 
         private static string NormalizeKey(string key)

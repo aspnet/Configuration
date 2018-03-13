@@ -8,14 +8,14 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 using Xunit;
 
-namespace Microsoft.Extensions.Configuration.DirectoryFiles.Test
+namespace Microsoft.Extensions.Configuration.KeyPerFile.Test
 {
-    public class DirectoryFilesTests
+    public class KeyPerFileTests
     {
         [Fact]
         public void DoesNotThrowWhenOptionalAndNoSecrets()
         {
-            new ConfigurationBuilder().AddDirectoryFiles(o => o.Optional = true).Build();
+            new ConfigurationBuilder().AddKeyPerFile(o => o.Optional = true).Build();
         }
 
         [Fact]
@@ -26,7 +26,7 @@ namespace Microsoft.Extensions.Configuration.DirectoryFiles.Test
                 new TestFile("Secret2", "SecretValue2"));
 
             var config = new ConfigurationBuilder()
-                .AddDirectoryFiles(o => o.FileProvider = testFileProvider)
+                .AddKeyPerFile(o => o.FileProvider = testFileProvider)
                 .Build();
 
             Assert.Equal("SecretValue1", config["Secret1"]);
@@ -42,7 +42,7 @@ namespace Microsoft.Extensions.Configuration.DirectoryFiles.Test
                 new TestFile("directory"));
 
             var config = new ConfigurationBuilder()
-                .AddDirectoryFiles(o => o.FileProvider = testFileProvider)
+                .AddKeyPerFile(o => o.FileProvider = testFileProvider)
                 .Build();
 
             Assert.Equal("SecretValue1", config["Secret1"]);
@@ -58,7 +58,7 @@ namespace Microsoft.Extensions.Configuration.DirectoryFiles.Test
                 new TestFile("Secret0__Key", "SecretValue0"));
 
             var config = new ConfigurationBuilder()
-                .AddDirectoryFiles(o => o.FileProvider = testFileProvider)
+                .AddKeyPerFile(o => o.FileProvider = testFileProvider)
                 .Build();
 
             Assert.Equal("SecretValue0", config["Secret0:Key"]);
@@ -75,7 +75,7 @@ namespace Microsoft.Extensions.Configuration.DirectoryFiles.Test
                 new TestFile("Secret2", "SecretValue2"));
 
             var config = new ConfigurationBuilder()
-                .AddDirectoryFiles(o => o.FileProvider = testFileProvider)
+                .AddKeyPerFile(o => o.FileProvider = testFileProvider)
                 .Build();
 
             Assert.Null(config["ignore.Secret0"]);
@@ -92,7 +92,7 @@ namespace Microsoft.Extensions.Configuration.DirectoryFiles.Test
                 new TestFile("Secret2", "SecretValue2"));
 
             var config = new ConfigurationBuilder()
-                .AddDirectoryFiles(o =>
+                .AddKeyPerFile(o =>
                 {
                     o.FileProvider = testFileProvider;
                     o.IgnoreCondition = null;
@@ -113,7 +113,7 @@ namespace Microsoft.Extensions.Configuration.DirectoryFiles.Test
                 new TestFile("Secret2", "SecretValue2"));
 
             var config = new ConfigurationBuilder()
-                .AddDirectoryFiles(o =>
+                .AddKeyPerFile(o =>
                 {
                     o.FileProvider = testFileProvider;
                     o.IgnoreCondition = s => true;
@@ -132,7 +132,7 @@ namespace Microsoft.Extensions.Configuration.DirectoryFiles.Test
                 new TestFile("Secret2", "SecretValue2"));
 
             var config = new ConfigurationBuilder()
-                .AddDirectoryFiles(o =>
+                .AddKeyPerFile(o =>
                 {
                     o.FileProvider = testFileProvider;
                     o.IgnorePrefix = "me";
@@ -153,7 +153,7 @@ namespace Microsoft.Extensions.Configuration.DirectoryFiles.Test
                 new TestFile("Secret2", "SecretValue2"));
 
             var config = new ConfigurationBuilder()
-                .AddDirectoryFiles(o =>
+                .AddKeyPerFile(o =>
                 {
                     o.FileProvider = testFileProvider;
                     o.IgnorePrefix = null;

@@ -2,17 +2,17 @@ using System;
 using System.IO;
 using Microsoft.Extensions.FileProviders;
 
-namespace Microsoft.Extensions.Configuration.DirectoryFiles
+namespace Microsoft.Extensions.Configuration.KeyPerFile
 {
     /// <summary>
-    /// An <see cref="IConfigurationSource"/> used to configure <see cref="DirectoryFilesConfigurationProvider"/>.
+    /// An <see cref="IConfigurationSource"/> used to configure <see cref="KeyPerFileConfigurationProvider"/>.
     /// </summary>
-    public class DirectoryFilesConfigurationSource : IConfigurationSource
+    public class KeyPerFileConfigurationSource : IConfigurationSource
     {
         /// <summary>
         /// Constructor;
         /// </summary>
-        public DirectoryFilesConfigurationSource()
+        public KeyPerFileConfigurationSource()
             => IgnoreCondition = s => IgnorePrefix != null && s.StartsWith(IgnorePrefix);
 
         /// <summary>
@@ -38,11 +38,11 @@ namespace Microsoft.Extensions.Configuration.DirectoryFiles
         public bool Optional { get; set; }
 
         /// <summary>
-        /// Builds the <see cref="DirectoryFilesConfigurationProvider"/> for this source.
+        /// Builds the <see cref="KeyPerFileConfigurationProvider"/> for this source.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
-        /// <returns>A <see cref="DirectoryFilesConfigurationProvider"/></returns>
+        /// <returns>A <see cref="KeyPerFileConfigurationProvider"/></returns>
         public IConfigurationProvider Build(IConfigurationBuilder builder)
-            => new DirectoryFilesConfigurationProvider(this);
+            => new KeyPerFileConfigurationProvider(this);
     }
 }

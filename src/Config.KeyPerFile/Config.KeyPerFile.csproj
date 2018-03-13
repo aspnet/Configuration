@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyName>Microsoft.Extensions.Configuration.DirectoryFiles</AssemblyName>
-    <RootNamespace>Microsoft.Extensions.Configuration.DirectoryFiles</RootNamespace>
-    <Description>Configuration providers that uses files in a directory for Microsoft.Extensions.Configuration.</Description>
+    <AssemblyName>Microsoft.Extensions.Configuration.KeyPerFile</AssemblyName>
+    <RootNamespace>Microsoft.Extensions.Configuration.KeyPerFile</RootNamespace>
+    <Description>Configuration provider that uses files in a directory for Microsoft.Extensions.Configuration.</Description>
     <TargetFramework>netstandard2.0</TargetFramework>
     <EnableApiCheck>false</EnableApiCheck>
   </PropertyGroup>

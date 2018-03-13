@@ -1,13 +1,13 @@
 using System;
-using Microsoft.Extensions.Configuration.DirectoryFiles;
+using Microsoft.Extensions.Configuration.KeyPerFile;
 using Microsoft.Extensions.FileProviders;
 
 namespace Microsoft.Extensions.Configuration
 {
     /// <summary>
-    /// Extension methods for registering <see cref="DirectoryFilesConfigurationProvider"/> with <see cref="IConfigurationBuilder"/>.
+    /// Extension methods for registering <see cref="KeyPerFileConfigurationProvider"/> with <see cref="IConfigurationBuilder"/>.
     /// </summary>
-    public static class DirectoryFilesConfigurationBuilderExtensions
+    public static class KeyPerFileConfigurationBuilderExtensions
     {
         /// <summary>
         /// Adds configuration using files from a directory. File names are used as the key,
@@ -17,8 +17,8 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="directoryPath">The path to the directory.</param>
         /// <param name="optional">Whether the directory is optional.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddDirectoryFiles(this IConfigurationBuilder builder, string directoryPath, bool optional)
-            => builder.AddDirectoryFiles(source =>
+        public static IConfigurationBuilder AddKeyPerFile(this IConfigurationBuilder builder, string directoryPath, bool optional)
+            => builder.AddKeyPerFile(source =>
             {
                 source.FileProvider = new PhysicalFileProvider(directoryPath);
                 source.Optional = optional;
@@ -31,7 +31,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="configureSource">Configures the source.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddDirectoryFiles(this IConfigurationBuilder builder, Action<DirectoryFilesConfigurationSource> configureSource)
+        public static IConfigurationBuilder AddKeyPerFile(this IConfigurationBuilder builder, Action<KeyPerFileConfigurationSource> configureSource)
             => builder.Add(configureSource);
     }
 }
