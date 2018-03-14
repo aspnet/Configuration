@@ -36,7 +36,6 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="configureOptions">Configures the binder options.</param>
         /// <returns>The new instance of T if successful, default(T) otherwise.</returns>
         public static T Get<T>(this IConfiguration configuration, Action<BinderOptions> configureOptions)
-
         {
             if (configuration == null)
             {
