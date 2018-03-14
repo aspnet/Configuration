@@ -588,7 +588,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             configurationBuilder.AddInMemoryCollection(dic);
             var config = configurationBuilder.Build();
 
-            var options = config.Get<ComplexOptions>(new BinderOptions { BindNonPublicProperties = true });
+            var options = config.Get<ComplexOptions>(o => o.BindNonPublicProperties = true);
             Assert.Equal("stuff", options.GetType().GetTypeInfo().GetDeclaredProperty(property).GetValue(options));
         }
 
@@ -606,7 +606,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             configurationBuilder.AddInMemoryCollection(dic);
             var config = configurationBuilder.Build();
 
-            var options = config.Get<ComplexOptions>(new BinderOptions { BindNonPublicProperties = true });
+            var options = config.Get<ComplexOptions>(o => o.BindNonPublicProperties = true);
             Assert.Null(options.GetType().GetTypeInfo().GetDeclaredProperty(property).GetValue(options));
         }
 
@@ -654,7 +654,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             var config = configurationBuilder.Build();
 
             var options = new ComplexOptions();
-            config.Bind(options, new BinderOptions { BindNonPublicProperties = true });
+            config.Bind(options, o => o.BindNonPublicProperties = true );
             Assert.Equal("stuff", options.GetType().GetTypeInfo().GetDeclaredProperty(property).GetValue(options));
         }
 
@@ -673,7 +673,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             var config = configurationBuilder.Build();
 
             var options = new ComplexOptions();
-            config.Bind(options, new BinderOptions { BindNonPublicProperties = true });
+            config.Bind(options, o => o.BindNonPublicProperties = true);
             Assert.Null(options.GetType().GetTypeInfo().GetDeclaredProperty(property).GetValue(options));
         }
 

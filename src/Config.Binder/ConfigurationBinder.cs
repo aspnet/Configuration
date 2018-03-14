@@ -24,7 +24,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="configuration">The configuration instance to bind.</param>
         /// <returns>The new instance of T if successful, default(T) otherwise.</returns>
         public static T Get<T>(this IConfiguration configuration)
-            => configuration.Get<T>(new BinderOptions());
+            => configuration.Get<T>(_ => { });
 
         /// <summary>
         /// Attempts to bind the configuration instance to a new instance of type T.
@@ -33,9 +33,9 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <typeparam name="T">The type of the new instance to bind.</typeparam>
         /// <param name="configuration">The configuration instance to bind.</param>
-        /// <param name="options">The binder options.</param>
+        /// <param name="configureOptions">Configures the binder options.</param>
         /// <returns>The new instance of T if successful, default(T) otherwise.</returns>
-        public static T Get<T>(this IConfiguration configuration, BinderOptions options)
+        public static T Get<T>(this IConfiguration configuration, Action<BinderOptions> configureOptions)
 
         {
             if (configuration == null)
@@ -43,7 +43,7 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            var result = configuration.Get(typeof(T), options);
+            var result = configuration.Get(typeof(T), configureOptions);
             if (result == null)
             {
                 return default(T);
@@ -60,7 +60,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="type">The type of the new instance to bind.</param>
         /// <returns>The new instance if successful, null otherwise.</returns>
         public static object Get(this IConfiguration configuration, Type type)
-            => configuration.Get(type, new BinderOptions());
+            => configuration.Get(type, _ => { });
 
         /// <summary>
         /// Attempts to bind the configuration instance to a new instance of type T.
@@ -69,15 +69,17 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <param name="configuration">The configuration instance to bind.</param>
         /// <param name="type">The type of the new instance to bind.</param>
-        /// <param name="options">The binder options.</param>
+        /// <param name="configureOptions">Configures the binder options.</param>
         /// <returns>The new instance if successful, null otherwise.</returns>
-        public static object Get(this IConfiguration configuration, Type type, BinderOptions options)
+        public static object Get(this IConfiguration configuration, Type type, Action<BinderOptions> configureOptions)
         {
             if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
 
+            var options = new BinderOptions();
+            configureOptions?.Invoke(options);
             return BindInstance(type, instance: null, config: configuration, options: options);
         }
 
@@ -96,15 +98,15 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="configuration">The configuration instance to bind.</param>
         /// <param name="instance">The object to bind.</param>
         public static void Bind(this IConfiguration configuration, object instance)
-            => configuration.Bind(instance, new BinderOptions());
+            => configuration.Bind(instance, o => { });
 
         /// <summary>
         /// Attempts to bind the given object instance to configuration values by matching property names against configuration keys recursively.
         /// </summary>
         /// <param name="configuration">The configuration instance to bind.</param>
         /// <param name="instance">The object to bind.</param>
-        /// <param name="options">The binder options.</param>
-        public static void Bind(this IConfiguration configuration, object instance, BinderOptions options)
+        /// <param name="configureOptions">Configures the binder options.</param>
+        public static void Bind(this IConfiguration configuration, object instance, Action<BinderOptions> configureOptions)
         {
             if (configuration == null)
             {
@@ -113,6 +115,8 @@ namespace Microsoft.Extensions.Configuration
 
             if (instance != null)
             {
+                var options = new BinderOptions();
+                configureOptions?.Invoke(options);
                 BindInstance(instance.GetType(), instance, configuration, options);
             }
         }
