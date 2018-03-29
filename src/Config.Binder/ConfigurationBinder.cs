@@ -206,7 +206,7 @@ namespace Microsoft.Extensions.Configuration
                 // point in going further down the graph
                 return;
             }
-
+            DataMemberAttribute propertyDataMemberAttribute = property.GetCustomAttribute<DataMemberAttribute>(true);
             propertyValue = BindInstance(property.PropertyType, propertyValue, config.GetSection(property.Name), options);
 
 
