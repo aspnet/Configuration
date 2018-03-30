@@ -180,7 +180,7 @@ namespace Microsoft.Extensions.Configuration
         {
             if (instance != null)
             {
-                foreach(var requiredProperty in options.RequiredProperties)
+                foreach (var requiredProperty in options.RequiredProperties)
                 {
                     if (configuration.GetSection(requiredProperty)?.Value == null)
                     {
@@ -204,7 +204,7 @@ namespace Microsoft.Extensions.Configuration
             {
                 return;
             }
-
+            var propertyName = property.Name;
             var propertyValue = property.GetValue(instance);
             var hasSetter = property.SetMethod != null && (property.SetMethod.IsPublic || options.BindNonPublicProperties);
 
@@ -215,14 +215,18 @@ namespace Microsoft.Extensions.Configuration
                 return;
             }
 
-            propertyValue = BindInstance(property.PropertyType, propertyValue, config.GetSection(property.Name), options);
+            if (options.ConfigToPropertyMap.ContainsKey(propertyName) && !string.IsNullOrEmpty(options.ConfigToPropertyMap[propertyName]))
+            {
+                propertyName = options.ConfigToPropertyMap[propertyName];
+            }
 
+            propertyValue = BindInstance(property.PropertyType, propertyValue, config.GetSection(propertyName), options);
 
             if (propertyValue != null && hasSetter)
             {
                 property.SetValue(instance, propertyValue);
             }
-         
+
         }
 
         private static object BindToCollection(TypeInfo typeInfo, IConfiguration config, BinderOptions options)

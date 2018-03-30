@@ -21,5 +21,10 @@ namespace Microsoft.Extensions.Configuration
         /// When a required property isn't found the binder will throw an exception.
         /// </summary>
         public ICollection<string> RequiredProperties { get; set; } = new Collection<string>();
+
+        /// <summary>
+        /// When ConfigToPropertyMap is specified for a property, use this one instead of the property name.
+        /// </summary>
+        public IDictionary<string, string> ConfigToPropertyMap { get; set; } = new Dictionary<string, string>();
     }
 }
