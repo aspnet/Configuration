@@ -184,7 +184,7 @@ namespace Microsoft.Extensions.Configuration
                 {
                     if (configuration.GetSection(requiredProperty)?.Value == null)
                     {
-                        throw new SerializationException(Resources.FormatError_FailedBindingRequiredProperty(requiredProperty));
+                        throw new InvalidOperationException(Resources.FormatError_FailedBindingRequiredProperty(requiredProperty));
                     }
                 }
 

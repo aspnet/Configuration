@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Microsoft.Extensions.Configuration
 {
@@ -19,6 +20,6 @@ namespace Microsoft.Extensions.Configuration
         /// <summary>
         /// When a required property isn't found the binder will throw an exception.
         /// </summary>
-        public List<string> RequiredProperties { get; set; } = new List<string>();
+        public ICollection<string> RequiredProperties { get; set; } = new Collection<string>();
     }
 }
