@@ -180,6 +180,14 @@ namespace Microsoft.Extensions.Configuration
         {
             if (instance != null)
             {
+                foreach(var requiredProperty in options.RequiredProperties)
+                {
+                    if (configuration.GetSection(requiredProperty)?.Value == null)
+                    {
+                        throw new SerializationException(Resources.FormatError_FailedBindingRequiredProperty(requiredProperty));
+                    }
+                }
+
                 foreach (var property in GetAllProperties(instance.GetType().GetTypeInfo()))
                 {
                     BindProperty(property, instance, configuration, options);
@@ -205,11 +213,6 @@ namespace Microsoft.Extensions.Configuration
                 // Property doesn't have a value and we cannot set it so there is no
                 // point in going further down the graph
                 return;
-            }
-
-            if (config.GetSection(property.Name)?.Value == null && options.RequiredProperties.Contains(property.Name))
-            {
-                throw new SerializationException(Resources.FormatError_FailedBindingRequiredProperty(property.Name));
             }
 
             propertyValue = BindInstance(property.PropertyType, propertyValue, config.GetSection(property.Name), options);
