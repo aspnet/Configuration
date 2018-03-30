@@ -167,6 +167,26 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
         }
 
         [Fact]
+        public void RequiredPropertyDefinedBind()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                {"Integer", "5"},
+            };
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddInMemoryCollection(dic);
+            var config = configurationBuilder.Build();
+
+            var options = new ComplexOptions();
+
+            config.Bind(options, o =>
+            {
+                o.RequiredProperties.Add("Integer");
+            });
+            Assert.Equal(5, options.Integer);
+        }
+
+        [Fact]
         public void CanBindIConfigurationSectionWithDerivedOptionsSection()
         {
             var dic = new Dictionary<string, string>
