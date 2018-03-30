@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using System.Runtime.Serialization;
 using Xunit;
 
 namespace Microsoft.Extensions.Configuration.Binder.Test
@@ -142,6 +143,27 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             Assert.Equal(-2, options.Integer);
             Assert.Equal(11, options.Nested.Integer);
             Assert.Equal("Derived:Sup", options.Virtual);
+        }
+
+        [Fact]
+        public void ThrowOnRequiredPropertyNotDefinedBind()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                {"Integer", "5"},
+            };
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddInMemoryCollection(dic);
+            var config = configurationBuilder.Build();
+
+            var options = new ComplexOptions();
+            
+            var exception = Assert.Throws<SerializationException>(
+               () => config.Bind(options, o =>
+               {
+                   o.RequiredProperties.Add("Integer");
+                   o.RequiredProperties.Add("Integer2");
+               }));
         }
 
         [Fact]
