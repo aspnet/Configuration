@@ -158,7 +158,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
 
             var options = new ComplexOptions();
             
-            var exception = Assert.Throws<SerializationException>(
+            var exception = Assert.Throws<InvalidOperationException>(
                () => config.Bind(options, o =>
                {
                    o.RequiredProperties.Add("Integer");
