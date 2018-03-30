@@ -1,6 +1,8 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Collections.Generic;
+
 namespace Microsoft.Extensions.Configuration
 {
     /// <summary>
@@ -13,5 +15,10 @@ namespace Microsoft.Extensions.Configuration
         /// If true, the binder will attempt to set all non read-only properties.
         /// </summary>
         public bool BindNonPublicProperties { get; set; }
+
+        /// <summary>
+        /// When a required property isn't found the binder will throw an exception.
+        /// </summary>
+        public List<string> RequiredProperties { get; set; } = new List<string>();
     }
 }

@@ -206,7 +206,12 @@ namespace Microsoft.Extensions.Configuration
                 // point in going further down the graph
                 return;
             }
-            DataMemberAttribute propertyDataMemberAttribute = property.GetCustomAttribute<DataMemberAttribute>(true);
+
+            if (config.GetSection(property.Name)?.Value == null && options.RequiredProperties.Contains(property.Name))
+            {
+                throw new SerializationException(Resources.FormatError_FailedBindingRequiredProperty(property.Name));
+            }
+
             propertyValue = BindInstance(property.PropertyType, propertyValue, config.GetSection(property.Name), options);
 
 
@@ -214,11 +219,7 @@ namespace Microsoft.Extensions.Configuration
             {
                 property.SetValue(instance, propertyValue);
             }
-
-            if (config.GetSection(property.Name)?.Value == null && propertyDataMemberAttribute != null && propertyDataMemberAttribute.IsRequired)
-            {
-                throw new SerializationException(Resources.FormatError_FailedBindingRequiredProperty(property.Name));
-            }
+         
         }
 
         private static object BindToCollection(TypeInfo typeInfo, IConfiguration config, BinderOptions options)
