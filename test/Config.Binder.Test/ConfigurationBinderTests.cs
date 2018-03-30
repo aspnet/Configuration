@@ -208,6 +208,26 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
         }
 
         [Fact]
+        public void IgnoredPropertyNotBind()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                {"Integer", "5"},
+            };
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddInMemoryCollection(dic);
+            var config = configurationBuilder.Build();
+
+            var options = new ComplexOptions();
+
+            config.Bind(options, o =>
+            {
+                o.IgnoredProperties.Add("Integer");
+            });
+            Assert.Equal(default, options.Integer);
+        }
+
+        [Fact]
         public void PropertyNameMappedBind()
         {
             var dic = new Dictionary<string, string>
