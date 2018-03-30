@@ -26,5 +26,11 @@ namespace Microsoft.Extensions.Configuration
         /// When ConfigToPropertyMap is specified for a property, use this one instead of the property name.
         /// </summary>
         public IDictionary<string, string> ConfigToPropertyMap { get; set; } = new Dictionary<string, string>();
+
+        /// <summary>
+        /// When a ignored property is set the binder will not bind it.
+        /// </summary>
+        public ICollection<string> IgnoredProperties { get; set; } = new Collection<string>();
+
     }
 }

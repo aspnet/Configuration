@@ -194,7 +194,7 @@ namespace Microsoft.Extensions.Configuration
                     }
                 }
 
-                foreach (var property in GetAllProperties(instance.GetType().GetTypeInfo()))
+                foreach (var property in GetAllProperties(instance.GetType().GetTypeInfo()).Where(p=>!options.IgnoredProperties.Contains(p.Name)))
                 {
                     BindProperty(property, instance, configuration, options);
                 }
