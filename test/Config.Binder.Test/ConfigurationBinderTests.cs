@@ -187,6 +187,47 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
         }
 
         [Fact]
+        public void RequiredPropertyDefinedAndNameMappedBind()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                {"Integer2", "5"},
+            };
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddInMemoryCollection(dic);
+            var config = configurationBuilder.Build();
+
+            var options = new ComplexOptions();
+
+            config.Bind(options, o =>
+            {
+                o.RequiredProperties.Add("Integer");
+                o.ConfigToPropertyMap["Integer"] = "Integer2";
+            });
+            Assert.Equal(5, options.Integer);
+        }
+
+        [Fact]
+        public void PropertyNameMappedBind()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                {"Integer2", "5"},
+            };
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddInMemoryCollection(dic);
+            var config = configurationBuilder.Build();
+
+            var options = new ComplexOptions();
+
+            config.Bind(options, o =>
+            {
+                o.ConfigToPropertyMap["Integer"] = "Integer2";
+            });
+            Assert.Equal(5, options.Integer);
+        }
+
+        [Fact]
         public void CanBindIConfigurationSectionWithDerivedOptionsSection()
         {
             var dic = new Dictionary<string, string>
