@@ -182,9 +182,15 @@ namespace Microsoft.Extensions.Configuration
             {
                 foreach (var requiredProperty in options.RequiredProperties)
                 {
-                    if (configuration.GetSection(requiredProperty)?.Value == null)
+                    var propertyName = requiredProperty;
+                    if (options.ConfigToPropertyMap.ContainsKey(propertyName) && !string.IsNullOrEmpty(options.ConfigToPropertyMap[propertyName]))
                     {
-                        throw new InvalidOperationException(Resources.FormatError_FailedBindingRequiredProperty(requiredProperty));
+                        propertyName = options.ConfigToPropertyMap[propertyName];
+                    }
+
+                    if (configuration.GetSection(propertyName)?.Value == null)
+                    {
+                        throw new InvalidOperationException(Resources.FormatError_FailedBindingRequiredProperty(propertyName));
                     }
                 }
 
