@@ -133,6 +133,6 @@
     <value>Cannot create instance of type '{0}' because multidimensional arrays are not supported.</value>
   </data>
   <data name="FormatError_FailedBindingRequiredProperty" xml:space="preserve">
-    <value>Required member '{0}' is missing or cannot be serialized.</value>
+    <value>Required member '{0}' is missing.</value>
   </data>
 </root>
