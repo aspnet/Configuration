@@ -47,7 +47,7 @@ namespace Microsoft.Extensions.Configuration.Xml
 
                 // keep track of the tree we followed to get where we are (breadcrumb style)
                 var currentPath = new Stack<Element>();
-                
+
                 var preNodeType = reader.NodeType;
                 while (reader.Read())
                 {
@@ -55,7 +55,7 @@ namespace Microsoft.Extensions.Configuration.Xml
                     {
                         case XmlNodeType.Element:
                             var parent = currentPath.Any() ? currentPath.Peek() : null;
-                            var element = new Element(parent, reader.LocalName, reader.GetAttribute(NameAttributeKey), GetLineInfo(reader));
+                            var element = new Element(parent, reader.LocalName, GetName(reader), GetLineInfo(reader));
 
                             // check if this element has appeared before
                             var siblingKeyToken = allElements
@@ -180,41 +180,30 @@ namespace Microsoft.Extensions.Configuration.Xml
         }
 
         // The special attribute "Name" only contributes to prefix
-        // This method adds a prefix if current node in reader represents a "Name" attribute
-        private static void AddNamePrefix(XmlReader reader, Stack<string> prefixStack,
-            IDictionary<string, string> data, XmlWriter writer)
+        // This method retrieves the Name of the element, if the attribute is present
+        // Unfortunately XmlReader.GetAttribute cannot be used, as it does not support looking for attributes in a case insensitive manner
+        private static string GetName(XmlReader reader)
         {
-            if (!string.Equals(reader.LocalName, NameAttributeKey, StringComparison.OrdinalIgnoreCase))
+            string name = null;
+
+            while (reader.MoveToNextAttribute() && name == null)
             {
-                return;
+                if (string.Equals(reader.LocalName, NameAttributeKey, StringComparison.OrdinalIgnoreCase))
+                {
+                    // If there is a namespace attached to current attribute
+                    if (!string.IsNullOrEmpty(reader.NamespaceURI))
+                    {
+                        throw new FormatException(Resources.FormatError_NamespaceIsNotSupported(GetLineInfo(reader)));
+                    }
+                    name = reader.Value;
+                    break;
+                }
             }
 
-            // If current element is not root element
-            if (prefixStack.Any())
-            {
-                var lastPrefix = prefixStack.Pop();
-                prefixStack.Push(ConfigurationPath.Combine(lastPrefix, reader.Value));
-            }
-            else
-            {
-                prefixStack.Push(reader.Value);
-            }
-        }
+            // Go back to the element containing the name we just processed
+            reader.MoveToElement();
 
-        // Common attributes contribute to key-value pairs
-        // This method adds a key-value pair if current node in reader represents a common attribute
-        private static void AddAttributePair(XmlReader reader, Stack<string> prefixStack,
-            IDictionary<string, string> data, XmlWriter writer)
-        {
-            prefixStack.Push(reader.LocalName);
-            var key = ConfigurationPath.Combine(prefixStack.Reverse());
-            if (data.ContainsKey(key))
-            {
-                throw new FormatException(Resources.FormatError_KeyIsDuplicated(key, GetLineInfo(reader)));
-            }
-
-            data[key] = reader.Value;
-            prefixStack.Pop();
+            return name;
         }
     }
 

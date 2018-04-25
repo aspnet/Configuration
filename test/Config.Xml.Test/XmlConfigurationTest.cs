@@ -136,6 +136,32 @@ namespace Microsoft.Extensions.Configuration.Xml.Test
         }
 
         [Fact]
+        public void LowercaseNameAttributeContributesToPrefix()
+        {
+            var xml =
+                @"<settings>
+                    <Data name='DefaultConnection'>
+                        <ConnectionString>TestConnectionString</ConnectionString>
+                        <Provider>SqlClient</Provider>
+                    </Data>
+                    <Data name='Inventory'>
+                        <ConnectionString>AnotherTestConnectionString</ConnectionString>
+                        <Provider>MySql</Provider>
+                    </Data>
+                </settings>";
+            var xmlConfigSrc = new XmlConfigurationProvider(new XmlConfigurationSource());
+
+            xmlConfigSrc.Load(TestStreamHelpers.StringToStream(xml));
+
+            Assert.Equal("DefaultConnection", xmlConfigSrc.Get("Data:DefaultConnection:Name"));
+            Assert.Equal("TestConnectionString", xmlConfigSrc.Get("Data:DefaultConnection:ConnectionString"));
+            Assert.Equal("SqlClient", xmlConfigSrc.Get("Data:DefaultConnection:Provider"));
+            Assert.Equal("Inventory", xmlConfigSrc.Get("Data:Inventory:Name"));
+            Assert.Equal("AnotherTestConnectionString", xmlConfigSrc.Get("Data:Inventory:ConnectionString"));
+            Assert.Equal("MySql", xmlConfigSrc.Get("Data:Inventory:Provider"));
+        }
+
+        [Fact]
         public void NameAttributeInRootElementContributesToPrefix()
         {
             var xml =
