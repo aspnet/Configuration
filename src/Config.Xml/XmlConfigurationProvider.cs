@@ -186,7 +186,7 @@ namespace Microsoft.Extensions.Configuration.Xml
         {
             string name = null;
 
-            while (reader.MoveToNextAttribute() && name == null)
+            while (reader.MoveToNextAttribute())
             {
                 if (string.Equals(reader.LocalName, NameAttributeKey, StringComparison.OrdinalIgnoreCase))
                 {
