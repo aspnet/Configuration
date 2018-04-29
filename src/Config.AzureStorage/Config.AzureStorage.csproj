@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Microsoft.Extensions.Configuration.AzureStorage</AssemblyName>
+    <RootNamespace>Microsoft.Extensions.Configuration.AzureStorage</RootNamespace>
+    <Description>Azure Storage configuration provider implementation for Microsoft.Extensions.Configuration.</Description>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageTags>$(PackageTags);azure;storage</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Config\Config.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WindowsAzure.Storage" Version="9.1.1" />
+  </ItemGroup>
+
+</Project>
