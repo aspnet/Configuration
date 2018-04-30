@@ -21,11 +21,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="source">The source settings.</param>
         public FileConfigurationProvider(FileConfigurationSource source)
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-            Source = source;
+            Source = source ?? throw new ArgumentNullException(nameof(source));
 
             if (Source.ReloadOnChange && Source.FileProvider != null)
             {
@@ -105,9 +101,7 @@ namespace Microsoft.Extensions.Configuration
         /// <exception cref="FileNotFoundException">If Optional is <c>false</c> on the source and a
         /// file does not exist at specified Path.</exception>
         public override void Load()
-        {
-            Load(reload: false);
-        }
+            => Load(reload: false);
 
         /// <summary>
         /// Loads this provider's data from a stream.
