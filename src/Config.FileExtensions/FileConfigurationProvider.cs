@@ -59,7 +59,8 @@ namespace Microsoft.Extensions.Configuration
                     {
                         error.Append($" The physical path is '{file.PhysicalPath}'.");
                     }
-                    throw new FileNotFoundException(error.ToString());
+
+                    HandleException(new FileNotFoundException(error.ToString()));
                 }
             }
             else
@@ -77,26 +78,31 @@ namespace Microsoft.Extensions.Configuration
                     }
                     catch (Exception e)
                     {
-                        bool ignoreException = false;
-                        if (Source.OnLoadException != null)
-                        {
-                            var exceptionContext = new FileLoadExceptionContext
-                            {
-                                Provider = this,
-                                Exception = e
-                            };
-                            Source.OnLoadException.Invoke(exceptionContext);
-                            ignoreException = exceptionContext.Ignore;
-                        }
-                        if (!ignoreException)
-                        {
-                            throw e;
-                        }
+                        HandleException(e);
                     }
                 }
             }
             // REVIEW: Should we raise this in the base as well / instead?
             OnReload();
+        }
+
+        private void HandleException(Exception e)
+        {
+            bool ignoreException = false;
+            if (Source.OnLoadException != null)
+            {
+                var exceptionContext = new FileLoadExceptionContext
+                {
+                    Provider = this,
+                    Exception = e
+                };
+                Source.OnLoadException.Invoke(exceptionContext);
+                ignoreException = exceptionContext.Ignore;
+            }
+            if (!ignoreException)
+            {
+                throw e;
+            }
         }
 
         /// <summary>
