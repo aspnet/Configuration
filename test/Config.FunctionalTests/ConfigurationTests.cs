@@ -87,6 +87,45 @@ CommonKey3:CommonKey4=IniValue6";
         }
 
         [Fact]
+        public void ThrowsOnFileNotFoundWhenNotIgnored()
+        {
+            // Arrange
+            var configurationBuilder = new ConfigurationBuilder();
+
+            // Act
+            configurationBuilder.AddJsonFile(c =>
+            {
+                c.Path = Path.Combine(_fileSystem.RootPath, _jsonFile);
+            });
+
+            //Assert
+            Assert.Throws<FileNotFoundException>(() => configurationBuilder.Build());
+        }
+
+        [Fact]
+        public void CanHandleExceptionIfFileNotFound()
+        {
+            // Arrange
+            var configurationBuilder = new ConfigurationBuilder();
+
+            // Act
+            configurationBuilder.AddJsonFile(c =>
+            {
+                c.Path = Path.Combine(_fileSystem.RootPath, _jsonFile);
+                c.OnLoadException = e =>
+                {
+                    e.Ignore = true;
+
+                    var exception = e.Exception as FileNotFoundException;
+                    Assert.NotNull(exception);
+                };
+            });
+
+            //Assert
+            configurationBuilder.Build();
+        }
+
+        [Fact]
         public void MissingFileIncludesAbsolutePathIfPhysicalFileProvider()
         {
             var error = Assert.Throws<FileNotFoundException>(() => new ConfigurationBuilder().AddIniFile("missing.ini").Build());
