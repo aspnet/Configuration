@@ -31,7 +31,7 @@ namespace Microsoft.Extensions.Configuration.Memory
             {
                 foreach (var pair in _source.InitialData)
                 {
-                    Data.Add(pair.Key, pair.Value);
+                    Set(pair.Key, pair.Value);
                 }
             }
         }
@@ -43,7 +43,7 @@ namespace Microsoft.Extensions.Configuration.Memory
         /// <param name="value">The configuration value.</param>
         public void Add(string key, string value)
         {
-            Data.Add(key, value);
+            Set(key, value);
         }
 
         /// <summary>
