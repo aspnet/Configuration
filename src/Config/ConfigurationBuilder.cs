@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Net;
 
 namespace Microsoft.Extensions.Configuration
 {
@@ -21,6 +23,13 @@ namespace Microsoft.Extensions.Configuration
         /// and the registered <see cref="IConfigurationProvider"/>s.
         /// </summary>
         public IDictionary<string, object> Properties { get; } = new Dictionary<string, object>();
+
+        static ConfigurationBuilder()
+        {
+            TypeDescriptor.AddAttributes(
+                typeof(IPAddress),
+                new TypeConverterAttribute(typeof(IpAddressConverter)));
+        }
 
         /// <summary>
         /// Adds a new configuration source.

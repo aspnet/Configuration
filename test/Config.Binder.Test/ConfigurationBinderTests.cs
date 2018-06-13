@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net;
 using System.Reflection;
 using Xunit;
 
@@ -312,6 +313,8 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
         // enum test
         [InlineData("Constructor", typeof(AttributeTargets))]
         [InlineData("CA761232-ED42-11CE-BACD-00AA0057B223", typeof(Guid))]
+        [InlineData("127.0.0.1", typeof(IPAddress))]
+        [InlineData("16777343", typeof(IPAddress))]
         public void CanReadAllSupportedTypes(string value, Type type)
         {
             // arrange
@@ -325,7 +328,8 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
 
             var optionsType = typeof(GenericOptions<>).MakeGenericType(type);
             var options = Activator.CreateInstance(optionsType);
-            var expectedValue = TypeDescriptor.GetConverter(type).ConvertFromInvariantString(value);
+            var converter = TypeDescriptor.GetConverter(type);
+            var expectedValue = converter?.ConvertFromInvariantString(value);
 
             // act
             config.Bind(options);
