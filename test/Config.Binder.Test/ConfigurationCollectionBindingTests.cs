@@ -10,7 +10,7 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
 {
     public class ConfigurationCollectionBinding
     {
-        [Fact]
+	    [Fact]
         public void GetList()
         {
             var input = new Dictionary<string, string>
@@ -982,7 +982,85 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
             Assert.Equal("val_3", options.IReadOnlyDictionary["ghi"]);
         }
 
-        private class UnintializedCollectionsOptions
+	    [Fact]
+	    public void GetListWithSubstitution()
+	    {
+		    var input = new Dictionary<string, string>
+		    {
+			    {"SubstituteVar", "MySubstituteVar"},
+			    {"StringList:0", "{SubstituteVar}0"},
+			    {"StringList:1", "val1"},
+			    {"StringList:2", "val2"},
+			    {"StringList:x", "valx"}
+		    };
+
+		    var configurationBuilder = new ConfigurationBuilder();
+		    configurationBuilder.AddInMemoryCollection(input);
+		    var config = configurationBuilder.Build();
+		    var list = new List<string>();
+		    config.GetSection("StringList").Bind(list);
+
+		    Assert.Equal(4, list.Count);
+
+		    Assert.Equal("MySubstituteVar0", list[0]);
+		    Assert.Equal("val1", list[1]);
+		    Assert.Equal("val2", list[2]);
+		    Assert.Equal("valx", list[3]);
+	    }
+
+	    [Fact]
+	    public void GetListWithMoreThanOneSubstitutions()
+	    {
+		    var input = new Dictionary<string, string>
+		    {
+			    {"SubstituteVar1", "MySubstituteVar1"},
+			    {"SubstituteVar2", "MySubstituteVar2"},
+				{"StringList:0", "{SubstituteVar1}-{SubstituteVar2}"},
+			    {"StringList:1", "val1"},
+			    {"StringList:2", "val2"},
+			    {"StringList:x", "valx"}
+		    };
+
+		    var configurationBuilder = new ConfigurationBuilder();
+		    configurationBuilder.AddInMemoryCollection(input);
+		    var config = configurationBuilder.Build();
+		    var list = new List<string>();
+		    config.GetSection("StringList").Bind(list);
+
+		    Assert.Equal(4, list.Count);
+
+		    Assert.Equal("MySubstituteVar1-MySubstituteVar2", list[0]);
+		    Assert.Equal("val1", list[1]);
+		    Assert.Equal("val2", list[2]);
+		    Assert.Equal("valx", list[3]);
+	    }
+
+		[Fact]
+	    public void GetListWithoutSubstitution()
+	    {
+		    var input = new Dictionary<string, string>
+		    {
+			    {"StringList:0", "{SubstituteVar}0"},
+			    {"StringList:1", "val1"},
+			    {"StringList:2", "val2"},
+			    {"StringList:x", "valx"}
+		    };
+
+		    var configurationBuilder = new ConfigurationBuilder();
+		    configurationBuilder.AddInMemoryCollection(input);
+		    var config = configurationBuilder.Build();
+		    var list = new List<string>();
+		    config.GetSection("StringList").Bind(list);
+
+		    Assert.Equal(4, list.Count);
+
+		    Assert.Equal("{SubstituteVar}0", list[0]);
+		    Assert.Equal("val1", list[1]);
+		    Assert.Equal("val2", list[2]);
+		    Assert.Equal("valx", list[3]);
+	    }
+
+		private class UnintializedCollectionsOptions
         {
             public IEnumerable<string> IEnumerable { get; set; }
             public IDictionary<string, string> IDictionary { get; set; }

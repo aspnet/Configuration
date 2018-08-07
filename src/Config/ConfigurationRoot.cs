@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using Microsoft.Extensions.Primitives;
 
@@ -50,17 +51,28 @@ namespace Microsoft.Extensions.Configuration
         {
             get
             {
-                foreach (var provider in _providers.Reverse())
-                {
-                    string value;
+				foreach (var provider in _providers.Reverse())
+	            {
+		            string value;
+		            if (provider.TryGet(key, out value) && value != null)
+		            {
+			            var stringValueArray = value.Split(new char[] { '{', '}' }, StringSplitOptions.RemoveEmptyEntries);
+			            var stringBuilder = new StringBuilder();
 
-                    if (provider.TryGet(key, out value))
-                    {
-                        return value;
-                    }
-                }
+			            foreach (var stringValue in stringValueArray)
+			            {
+				            string interpolatedValue;
+				            if (provider.TryGet(stringValue, out interpolatedValue))
+				            {
+					            value = value.Replace("{" + $"{stringValue}" + "}", interpolatedValue);
+				            }
+			            }
 
-                return null;
+			            return value;
+		            }
+	            }
+
+	            return null;
             }
 
             set
