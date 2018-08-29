@@ -28,7 +28,7 @@ namespace Microsoft.Extensions.Configuration.KeyPerFile.Test
         public void ThrowsWhenNotOptionalAndDirectoryDoesntExist()
         {
             var e = Assert.Throws<ArgumentException>(() => new ConfigurationBuilder().AddKeyPerFile("nonexistent", false).Build());
-            Assert.Equal("The path must be absolute.", e.Message);
+            Assert.Contains("The path must be absolute.", e.Message);
         }
 
         [Fact]
