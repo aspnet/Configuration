@@ -93,7 +93,7 @@ let main argv =
                     break;
             }
 
-            var assemblyInfoFile = Path.Combine(_tempDir, $"obj/Debug/{testTfm}/UserSecretsAssemblyInfo" + sourceExt);
+            var assemblyInfoFile = Path.Combine(_tempDir, $"obj/Debug/{testTfm}/test.AssemblyInfo" + sourceExt);
 
             AssertDotNet("restore");
 
