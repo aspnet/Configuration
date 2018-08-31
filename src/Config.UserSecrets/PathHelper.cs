@@ -40,8 +40,18 @@ namespace Microsoft.Extensions.Configuration.UserSecrets
                         badCharIndex));
             }
 
-            var root = Environment.GetEnvironmentVariable("APPDATA") ??         // On Windows it goes to %APPDATA%\Microsoft\UserSecrets\
-                        Environment.GetEnvironmentVariable("HOME");             // On Mac/Linux it goes to ~/.microsoft/usersecrets/
+            const string userSecretsDir = "DOTNET_USER_SECRETS_ROOT";
+
+            var root = Environment.GetEnvironmentVariable("APPDATA") ??       // On Windows it goes to %APPDATA%\Microsoft\UserSecrets\
+                       Environment.GetEnvironmentVariable("HOME") ??          // On Mac/Linux it goes to ~/.microsoft/usersecrets/
+                       Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) ??
+                       Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) ??
+                       Environment.GetEnvironmentVariable(userSecretsDir); // a final final fallback
+
+            if (string.IsNullOrEmpty(root))
+            {
+                throw new InvalidOperationException("Could not determine an appropriate location for storing user secrets. Set the " + userSecretsDir + " environment variable to a folder where user secrets should be stored.");
+            }
 
             if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPDATA")))
             {
