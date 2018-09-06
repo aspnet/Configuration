@@ -40,17 +40,18 @@ namespace Microsoft.Extensions.Configuration.UserSecrets
                         badCharIndex));
             }
 
-            const string userSecretsDir = "DOTNET_USER_SECRETS_ROOT";
+            const string userSecretsFallbackDir = "DOTNET_USER_SECRETS_FALLBACK_DIR";
 
-            var root = Environment.GetEnvironmentVariable("APPDATA") ??       // On Windows it goes to %APPDATA%\Microsoft\UserSecrets\
-                       Environment.GetEnvironmentVariable("HOME") ??          // On Mac/Linux it goes to ~/.microsoft/usersecrets/
-                       Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) ??
-                       Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) ??
-                       Environment.GetEnvironmentVariable(userSecretsDir); // a final final fallback
+            // For backwards compat, this checks env vars first before using Env.GetFolderPath
+            var root = Environment.GetEnvironmentVariable("APPDATA")                             // On Windows it goes to %APPDATA%\Microsoft\UserSecrets\
+                       ?? Environment.GetEnvironmentVariable("HOME")                             // On Mac/Linux it goes to ~/.microsoft/usersecrets/
+                       ?? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) 
+                       ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+                       ?? Environment.GetEnvironmentVariable(userSecretsFallbackDir);            // this fallback is an escape hatch if everything else fails
 
             if (string.IsNullOrEmpty(root))
             {
-                throw new InvalidOperationException("Could not determine an appropriate location for storing user secrets. Set the " + userSecretsDir + " environment variable to a folder where user secrets should be stored.");
+                throw new InvalidOperationException("Could not determine an appropriate location for storing user secrets. Set the " + userSecretsFallbackDir + " environment variable to a folder where user secrets should be stored.");
             }
 
             if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPDATA")))
