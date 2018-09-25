@@ -292,7 +292,11 @@ namespace Microsoft.Extensions.Configuration
             var configValue = section?.Value;
             object convertedValue;
             Exception error;
-            if (configValue != null && TryConvertValue(type, configValue, out convertedValue, out error))
+            if (configValue == string.Empty)
+            {
+                return CreateInstance(type);
+            }
+            else if (configValue != null && TryConvertValue(type, configValue, out convertedValue, out error))
             {
                 if (error != null)
                 {

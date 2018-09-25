@@ -39,7 +39,13 @@ namespace Microsoft.Extensions.Configuration.Json
 
         private void VisitJObject(JObject jObject)
         {
-            foreach (var property in jObject.Properties())
+            var properties = jObject.Properties();
+            if (!properties.Any())
+            {
+                SetEmpty();
+            }
+
+            foreach (var property in properties)
             {
                 EnterContext(property.Name);
                 VisitProperty(property);
@@ -70,8 +76,10 @@ namespace Microsoft.Extensions.Configuration.Json
                 case JTokenType.Boolean:
                 case JTokenType.Bytes:
                 case JTokenType.Raw:
-                case JTokenType.Null:
                     VisitPrimitive(token.Value<JValue>());
+                    break;
+                case JTokenType.Null:
+                    VisitNull(token.Value<JObject>());
                     break;
 
                 default:
@@ -83,8 +91,24 @@ namespace Microsoft.Extensions.Configuration.Json
             }
         }
 
+        private void VisitNull(JObject jObject)
+        {
+            var key = _currentPath;
+
+            if (_data.ContainsKey(key))
+            {
+                throw new FormatException(Resources.FormatError_KeyIsDuplicated(key));
+            }
+            _data[key] = null;
+        }
+
         private void VisitArray(JArray array)
         {
+            if (array.Count == 0)
+            {
+                SetEmpty();
+            }
+
             for (int index = 0; index < array.Count; index++)
             {
                 EnterContext(index.ToString());
@@ -114,6 +138,17 @@ namespace Microsoft.Extensions.Configuration.Json
         {
             _context.Pop();
             _currentPath = ConfigurationPath.Combine(_context.Reverse());
+        }
+
+        private void SetEmpty()
+        {
+            var key = _currentPath;
+
+            if (_data.ContainsKey(key))
+            {
+                throw new FormatException(Resources.FormatError_KeyIsDuplicated(key));
+            }
+            _data[key] = string.Empty;
         }
     }
 }

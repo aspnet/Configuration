@@ -227,6 +227,57 @@ namespace Microsoft.Extensions.Configuration.Binder.Test
         }
 
         [Fact]
+        public void BindEmptyLists()
+        {
+            var input = new Dictionary<string, string>
+            {
+                {"StringList", ""},
+                {"IntList", ""},
+                {"CustomList", ""}
+            };
+
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddInMemoryCollection(input);
+            var config = configurationBuilder.Build();
+            var options = new OptionsWithLists();
+            config.Bind(options);
+
+            var stringList = options.StringList;
+            var intList = options.IntList;
+            var customList = options.CustomList;
+
+            Assert.Empty(stringList);
+            Assert.Empty(intList);
+            Assert.Empty(customList);
+        }
+
+
+        [Fact]
+        public void BindNullLists()
+        {
+            var input = new Dictionary<string, string>
+            {
+                {"StringList", null},
+                {"IntList", null},
+                {"CustomList", null}
+            };
+
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddInMemoryCollection(input);
+            var config = configurationBuilder.Build();
+            var options = new OptionsWithLists();
+            config.Bind(options);
+
+            var stringList = options.StringList;
+            var intList = options.IntList;
+            var customList = options.CustomList;
+
+            Assert.Null(stringList);
+            Assert.Null(intList);
+            Assert.Null(customList);
+        }
+
+        [Fact]
         public void GetIntList()
         {
             var input = new Dictionary<string, string>

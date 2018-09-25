@@ -51,6 +51,39 @@ namespace Microsoft.Extensions.Configuration
         }
 
         [Fact]
+        public void LoadMethodCanHandleNullValue()
+        {
+            var json = @"
+{
+    'name': null
+}";
+            var jsonConfigSrc = LoadProvider(json);
+            Assert.Null(jsonConfigSrc.Get("name"));
+        }
+
+        [Fact]
+        public void LoadMethodCanHandleEmptyObject()
+        {
+            var json = @"
+{
+    'name': {}
+}";
+            var jsonConfigSrc = LoadProvider(json);
+            Assert.Equal(string.Empty, jsonConfigSrc.Get("name"));
+        }
+
+        [Fact]
+        public void LoadMethodCanHandleEmptyArray()
+        {
+            var json = @"
+{
+    'name': []
+}";
+            var jsonConfigSrc = LoadProvider(json);
+            Assert.Equal(string.Empty, jsonConfigSrc.Get("name"));
+        }
+
+        [Fact]
         public void LoadWithCulture()
         {
             var previousCulture = CultureInfo.CurrentCulture;
