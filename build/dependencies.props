@@ -6,7 +6,7 @@
     <InternalAspNetCoreSdkPackageVersion>3.0.0-alpha1-20180919.1</InternalAspNetCoreSdkPackageVersion>
     <MicrosoftAspNetCoreTestingPackageVersion>3.0.0-alpha1-10495</MicrosoftAspNetCoreTestingPackageVersion>
     <MicrosoftAzureKeyVaultPackageVersion>2.3.2</MicrosoftAzureKeyVaultPackageVersion>
-    <MicrosoftAzureServicesAppAuthenticationPackageVersion>1.0.1</MicrosoftAzureServicesAppAuthenticationPackageVersion>
+    <MicrosoftAzureServicesAppAuthenticationPackageVersion>1.0.3</MicrosoftAzureServicesAppAuthenticationPackageVersion>
     <MicrosoftExtensionsFileProvidersPhysicalPackageVersion>3.0.0-alpha1-10495</MicrosoftExtensionsFileProvidersPhysicalPackageVersion>
     <MicrosoftExtensionsPrimitivesPackageVersion>3.0.0-alpha1-10495</MicrosoftExtensionsPrimitivesPackageVersion>
     <MicrosoftNETCoreApp20PackageVersion>2.0.9</MicrosoftNETCoreApp20PackageVersion>
