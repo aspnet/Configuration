@@ -414,7 +414,7 @@ namespace Microsoft.Extensions.Configuration
                     }
                     else if (keyTypeIsEnum)
                     {
-                        var key = Convert.ToInt32(Enum.Parse(keyType, child.Key));
+                        var key = Enum.Parse(keyType, child.Key);
                         setter.SetValue(dictionary, item, new object[] { key });
                     }
                 }
