@@ -16,16 +16,24 @@ phases:
   queue:
     name: DotNetCore-Windows
     timeoutInMinutes: 120
-- template: eng/common/templates/steps/helix-publish.yml@arcade
-  parameters:
-    HelixSource: your/helix/source
-    HelixType: type/tests
-    # HelixBuild: $(Build.BuildNumber) -- This property is set by default
-    HelixTargetQueues: Windows.10.Amd64.Open;Windows.7.Amd64.Open
-    HelixAccessToken: $('BotAccount-dotnet-github-anon-kaonashi-bot-helix-token')
-    # HelixPreCommands: '' -- any commands that you would like to run prior to running your job
-    # HelixPostCommands: '' -- any commands that you would like to run after running your job
-    WorkItemDirectory: tests
-    WorkItemCommand: runtests.cmd
-    EnableXUnitReporter: true # required for reporting out XUnit test results
-    # WaitForWorkItemCompletion: true -- defaults to true
+
+steps:
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: custom
+      projects: eng/common/helixpublish.proj
+      custom: msbuild
+      arguments: '/t:test /p:Language=msbuild'
+    displayName: Send tests job to Helix
+    env:
+      HelixSource: your/helix/source
+      HelixType: type/tests
+      HelixBuild: $(Build.BuildNumber)
+      HelixTargetQueues: Windows.10.Amd64.Open;Windows.7.Amd64.Open
+      HelixAccessToken: $('BotAccount-dotnet-github-anon-kaonashi-bot-helix-token')
+      HelixPreCommands: ''
+      HelixPostCommands: ''
+      WorkItemDirectory: tests
+      WorkItemCommand: runtests.cmd
+      EnableXUnitReporter: true
+      WaitForWorkItemCompletion: true
