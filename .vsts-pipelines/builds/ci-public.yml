@@ -12,6 +12,10 @@ resources:
     ref: refs/heads/master
 
 phases:
+- phase: Helix
+  queue:
+    name: DotNetCore-Windows
+    timeoutInMinutes: 120
 - template: eng/common/templates/steps/helix-publish.yml@arcade
   parameters:
     HelixSource: your/helix/source
