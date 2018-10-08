@@ -2,14 +2,26 @@ trigger:
 - master
 - release/*
 
-# See https://github.com/aspnet/BuildTools
-resources:
-  repositories:
-  - repository: buildtools
-    type: github
-    endpoint: DotNet-Bot GitHub Connection
-    name: aspnet/BuildTools
-    ref: refs/heads/release/2.2
-
 phases:
-- template: .vsts-pipelines/templates/project-ci.yml@buildtools
+- phase: Helix
+  steps:
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: custom
+      projects: eng/common/helixpublish.proj
+      custom: msbuild
+      arguments: '/t:test /p:Language=msbuild'
+    displayName: Send tests job to Helix
+    env:
+      HelixSource: 'pr/dotnet-github-anon-kaonashi-bot'
+      HelixType: 'tests/default'
+      HelixBuild: $(Build.BuildNumber)
+      HelixTargetQueues: Windows.10.Amd64.Open;Windows.7.Amd64.Open
+      HelixAccessToken: $('BotAccount-dotnet-github-anon-kaonashi-bot-helix-token')
+      HelixPreCommands: ''
+      HelixPostCommands: ''
+      EnableXUnitReporter: false
+      WaitForWorkItemCompletion: true
+      WorkItemDirectory: ''
+      WorkItemCommand: 'echo Hai!'
+
