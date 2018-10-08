@@ -11,12 +11,6 @@ resources:
     name: dotnet/arcade
     ref: refs/heads/master
 
-phases:
-- phase: Helix
-  queue:
-    name: DotNetCore-Windows
-    timeoutInMinutes: 120
-
 steps:
   - task: DotNetCoreCLI@2
     inputs:
