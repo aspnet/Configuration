@@ -102,7 +102,7 @@ namespace Microsoft.Extensions.Configuration
         public static T GetConfig<T>(this IConfiguration configuration)
         {
             //Validate configuration
-            if (!string.IsNullOrEmpty(configuration.FileContent))
+            if (string.IsNullOrEmpty(configuration.FileContent))
             {
                 return default(T);
             }

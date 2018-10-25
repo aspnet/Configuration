@@ -61,6 +61,9 @@ namespace Microsoft.Extensions.Configuration.Json
             //load JObject
             var jsonConfig = JObject.Load(_reader);
 
+            //Set stream position to the start
+            input.Position = 0;
+
             //Return JObject
             return jsonConfig;
         }

@@ -5,6 +5,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using Microsoft.Extensions.Configuration.Json;
+using Microsoft.Extensions.Configuration.Json.Test.Model;
 using Microsoft.Extensions.Configuration.Test;
 using Xunit;
 
@@ -166,6 +167,28 @@ namespace Microsoft.Extensions.Configuration
         public void ThrowFormatExceptionWhenFileIsEmpty()
         {
             var exception = Assert.Throws<FormatException>(() => LoadProvider(@""));
+        }
+
+        [Fact]
+        public void ConvertJsonFileToGenericType()
+        {
+            //Get Startup directory
+            var path = AppDomain.CurrentDomain.BaseDirectory + "Startup";
+
+            //Create builder
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(path)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+            //Build configuration
+            var configuration = builder.Build();
+
+            //Parse appsettings.json to a generic type
+            var appSetting = configuration.GetConfig<AppSettingModel>();
+
+            //Pass test if the object was populated
+            Assert.NotNull(appSetting);
+
         }
     }
 }
