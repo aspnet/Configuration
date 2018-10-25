@@ -18,6 +18,11 @@ namespace Microsoft.Extensions.Configuration
         private ConfigurationReloadToken _changeToken = new ConfigurationReloadToken();
 
         /// <summary>
+        /// The content of the configuration file
+        /// </summary>
+        public string FileContent { get; set; }
+
+        /// <summary>
         /// Initializes a Configuration root with a list of providers.
         /// </summary>
         /// <param name="providers">The <see cref="IConfigurationProvider"/>s for this configuration.</param>
@@ -34,6 +39,10 @@ namespace Microsoft.Extensions.Configuration
                 p.Load();
                 ChangeToken.OnChange(() => p.GetReloadToken(), () => RaiseChanged());
             }
+
+            //Get File content
+            FileContent = providers.FirstOrDefault(x => !string.IsNullOrEmpty(x.FileContent))?.FileContent;
+
         }
 
         /// <summary>

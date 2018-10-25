@@ -17,6 +17,11 @@ namespace Microsoft.Extensions.Configuration
         private string _key;
 
         /// <summary>
+        /// The content of the configuration file from the Configuration Root
+        /// </summary>
+        public string FileContent => _root.FileContent;
+
+        /// <summary>
         /// Initializes a new instance.
         /// </summary>
         /// <param name="root">The configuration root.</param>
@@ -90,6 +95,8 @@ namespace Microsoft.Extensions.Configuration
                 _root[ConfigurationPath.Combine(Path, key)] = value;
             }
         }
+
+        
 
         /// <summary>
         /// Gets a configuration sub-section with the specified key.

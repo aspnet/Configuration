@@ -12,6 +12,11 @@ namespace Microsoft.Extensions.Configuration
     public interface IConfigurationProvider
     {
         /// <summary>
+        /// The content of the configuration file
+        /// </summary>
+        string FileContent { get; set; }
+
+        /// <summary>
         /// Tries to get a configuration value for the specified key.
         /// </summary>
         /// <param name="key">The key.</param>

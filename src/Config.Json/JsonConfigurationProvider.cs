@@ -29,6 +29,7 @@ namespace Microsoft.Extensions.Configuration.Json
             try
             {
                 Data = JsonConfigurationFileParser.Parse(stream);
+                FileContent = JsonConfigurationFileParser.ParseToString(stream);
             }
             catch (JsonReaderException e)
             {

@@ -30,6 +30,11 @@ namespace Microsoft.Extensions.Configuration
         protected IDictionary<string, string> Data { get; set; }
 
         /// <summary>
+        /// The content of the configuration file
+        /// </summary>
+        public string FileContent { get; set; }
+
+        /// <summary>
         /// Attempts to find a value with the given key, returns true if one is found, false otherwise.
         /// </summary>
         /// <param name="key">The key to lookup.</param>

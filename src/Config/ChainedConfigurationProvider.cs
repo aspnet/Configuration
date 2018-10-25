@@ -16,6 +16,11 @@ namespace Microsoft.Extensions.Configuration
         private readonly IConfiguration _config;
 
         /// <summary>
+        /// The content of the configuration file
+        /// </summary>
+        public string FileContent { get; set; }
+
+        /// <summary>
         /// Initialize a new instance from the source configuration.
         /// </summary>
         /// <param name="source">The source configuration.</param>
@@ -32,6 +37,8 @@ namespace Microsoft.Extensions.Configuration
 
             _config = source.Configuration;
         }
+
+        
 
         /// <summary>
         /// Tries to get a configuration value for the specified key.

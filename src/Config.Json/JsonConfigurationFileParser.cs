@@ -21,20 +21,62 @@ namespace Microsoft.Extensions.Configuration.Json
 
         private JsonTextReader _reader;
 
-        public static IDictionary<string, string> Parse(Stream input)
-            => new JsonConfigurationFileParser().ParseStream(input);
+        public static IDictionary<string, string> Parse(Stream input) => new JsonConfigurationFileParser().ParseStream(input);
+
+        /// <summary>
+        /// Parse a stream to a Json string
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string ParseToString(Stream input)
+        {
+           return new JsonConfigurationFileParser().ParseStreamToString(input);
+        }
 
         private IDictionary<string, string> ParseStream(Stream input)
         {
             _data.Clear();
-            _reader = new JsonTextReader(new StreamReader(input));
-            _reader.DateParseHandling = DateParseHandling.None;
 
-            var jsonConfig = JObject.Load(_reader);
-
+            //Parse a stream to a Json Object
+            var jsonConfig = ParseStreamToJsonObject(input);
+            
             VisitJObject(jsonConfig);
 
             return _data;
+        }
+
+        /// <summary>
+        /// Parse a stream to a Json Object
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private JObject ParseStreamToJsonObject(Stream input)
+        {
+            //Read stream to json textreader
+            _reader = new JsonTextReader(new StreamReader(input))
+            {
+                DateParseHandling = DateParseHandling.None
+            };
+
+            //load JObject
+            var jsonConfig = JObject.Load(_reader);
+
+            //Return JObject
+            return jsonConfig;
+        }
+
+        /// <summary>
+        /// Parse a stream to a generic object
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private string ParseStreamToString(Stream input)
+        {
+            //Read stream to json textreader
+            var jsonConfig = ParseStreamToJsonObject(input);
+
+            //Convert to generic
+            return jsonConfig.ToString(Formatting.None);
         }
 
         private void VisitJObject(JObject jObject)
