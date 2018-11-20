@@ -308,7 +308,7 @@ namespace Microsoft.Extensions.Configuration
                 // If we don't have an instance, try to create one
                 if (instance == null)
                 {
-                    // We are alrady done if binding to a new collection instance worked
+                    // We are already done if binding to a new collection instance worked
                     instance = AttemptBindToCollectionInterfaces(type, config, options);
                     if (instance != null)
                     {
